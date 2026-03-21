@@ -54,21 +54,21 @@ export default function ModelBar() {
   };
 
   return (
-    <div className="flex items-center gap-2 px-4 py-2 border-b border-[#1e1e2e] bg-[#111122]">
+    <div className="flex items-center gap-2 px-4 py-2 border-b border-[#e2e8f0] dark:border-[#1e1e2e] bg-white dark:bg-[#111122] transition-colors">
       {/* Provider selector */}
       <div className="relative">
         <button
           onClick={() => { setProviderOpen(!providerOpen); setModelOpen(false); }}
-          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#1e1e2e] hover:bg-[#2d2d3f] text-xs transition-colors"
+          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#f1f5f9] dark:bg-[#1e1e2e] hover:bg-[#e2e8f0] dark:hover:bg-[#2d2d3f] text-xs transition-colors"
         >
           <span className={PROVIDER_COLORS[selectedProvider]}>{PROVIDER_LABELS[selectedProvider]}</span>
-          <ChevronDown size={11} className="text-slate-500" />
+          <ChevronDown size={11} className="text-slate-400 dark:text-slate-500" />
         </button>
         {providerOpen && (
-          <div className="absolute top-full left-0 mt-1 bg-[#1e1e2e] border border-[#2d2d3f] rounded-lg shadow-xl z-50 overflow-hidden min-w-[130px]">
+          <div className="absolute top-full left-0 mt-1 bg-white dark:bg-[#1e1e2e] border border-[#d1d8e4] dark:border-[#2d2d3f] rounded-lg shadow-xl z-50 overflow-hidden min-w-[130px]">
             {(['anthropic', 'openai', 'gemini', 'deepseek', 'kimi'] as Provider[]).map(p => (
               <button key={p} onClick={() => handleProviderChange(p)}
-                className={clsx('w-full text-left px-3 py-2 text-xs hover:bg-[#2d2d3f] transition-colors', PROVIDER_COLORS[p])}>
+                className={clsx('w-full text-left px-3 py-2 text-xs hover:bg-[#f1f5f9] dark:hover:bg-[#2d2d3f] transition-colors', PROVIDER_COLORS[p])}>
                 {PROVIDER_LABELS[p]}
               </button>
             ))}
@@ -80,20 +80,20 @@ export default function ModelBar() {
       <div className="relative">
         <button
           onClick={() => { setModelOpen(!modelOpen); setProviderOpen(false); }}
-          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#1e1e2e] hover:bg-[#2d2d3f] text-xs text-slate-300 transition-colors"
+          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#f1f5f9] dark:bg-[#1e1e2e] hover:bg-[#e2e8f0] dark:hover:bg-[#2d2d3f] text-xs text-slate-600 dark:text-slate-300 transition-colors"
         >
-          <Zap size={11} className="text-violet-400" />
+          <Zap size={11} className="text-violet-500 dark:text-violet-400" />
           <span className="max-w-[150px] truncate">{currentModels.find(m => m.id === selectedModel)?.name || selectedModel}</span>
-          <ChevronDown size={11} className="text-slate-500" />
+          <ChevronDown size={11} className="text-slate-400 dark:text-slate-500" />
         </button>
         {modelOpen && (
-          <div className="absolute top-full left-0 mt-1 bg-[#1e1e2e] border border-[#2d2d3f] rounded-lg shadow-xl z-50 overflow-hidden min-w-[200px] max-h-64 overflow-y-auto">
+          <div className="absolute top-full left-0 mt-1 bg-white dark:bg-[#1e1e2e] border border-[#d1d8e4] dark:border-[#2d2d3f] rounded-lg shadow-xl z-50 overflow-hidden min-w-[200px] max-h-64 overflow-y-auto">
             {currentModels.map(m => (
               <button key={m.id} onClick={() => handleModelChange(m.id)}
-                className={clsx('w-full text-left px-3 py-2 text-xs hover:bg-[#2d2d3f] transition-colors',
-                  m.id === selectedModel ? 'text-violet-400' : 'text-slate-300')}>
+                className={clsx('w-full text-left px-3 py-2 text-xs hover:bg-[#f1f5f9] dark:hover:bg-[#2d2d3f] transition-colors',
+                  m.id === selectedModel ? 'text-violet-500 dark:text-violet-400' : 'text-slate-600 dark:text-slate-300')}>
                 <div>{m.name}</div>
-                <div className="text-slate-600 text-[10px]">{(m.context / 1000).toFixed(0)}K context</div>
+                <div className="text-slate-400 dark:text-slate-600 text-[10px]">{(m.context / 1000).toFixed(0)}K context</div>
               </button>
             ))}
           </div>
@@ -106,8 +106,8 @@ export default function ModelBar() {
         className={clsx(
           'flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs transition-colors',
           activeConversation?.system_prompt
-            ? 'bg-violet-600/20 text-violet-400 hover:bg-violet-600/30'
-            : 'bg-[#1e1e2e] text-slate-500 hover:bg-[#2d2d3f] hover:text-slate-300'
+            ? 'bg-violet-600/20 text-violet-500 dark:text-violet-400 hover:bg-violet-600/30'
+            : 'bg-[#f1f5f9] dark:bg-[#1e1e2e] text-slate-500 hover:bg-[#e2e8f0] dark:hover:bg-[#2d2d3f] hover:text-slate-700 dark:hover:text-slate-300'
         )}
       >
         <BookOpen size={11} />
@@ -116,8 +116,8 @@ export default function ModelBar() {
 
       {/* Token counter */}
       {tokenCount > 0 && (
-        <div className="ml-auto text-xs text-slate-600">
-          <span className="text-violet-400">{tokenCount}</span> {t('tokens')}
+        <div className="ml-auto text-xs text-slate-400 dark:text-slate-600">
+          <span className="text-violet-500 dark:text-violet-400">{tokenCount}</span> {t('tokens')}
         </div>
       )}
 

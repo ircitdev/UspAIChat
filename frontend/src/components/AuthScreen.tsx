@@ -193,12 +193,12 @@ export default function AuthScreen() {
           } else if (poll.status === 'expired' || poll.status === 'not_found') {
             stopPolling();
             setTgStatus('expired');
-            setTgError('Код истёк. Запросите новый.');
+            setTgError('Kod expired. Request new one.');
           }
         } catch {}
       }, 2000);
     } catch {
-      setTgError('Не удалось подключиться к боту. Попробуйте позже.');
+      setTgError('Could not connect to bot. Try later.');
     }
   };
 
@@ -220,7 +220,7 @@ export default function AuthScreen() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0d0d1a] flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[#f8f9fc] dark:bg-[#0d0d1a] flex items-center justify-center px-4 transition-colors">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-violet-600/10 rounded-full blur-3xl" />
       </div>
@@ -231,15 +231,15 @@ export default function AuthScreen() {
           <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-600 to-purple-800 flex items-center justify-center mb-3 shadow-lg shadow-violet-900/40">
             <img src="/logo_w.png" alt="" className="w-7 h-7" />
           </div>
-          <h1 className="text-2xl font-bold text-slate-100">UspAIChat</h1>
-          <p className="text-sm text-slate-500 mt-1">
+          <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100">UspAIChat</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-500 mt-1">
             {mode === 'telegram' ? 'Войти через Telegram' : mode === 'email' ? 'Войти по email' : 'Добро пожаловать!'}
           </p>
         </div>
 
-        <div className="bg-[#111122] border border-[#2d2d3f] rounded-2xl p-6 shadow-2xl">
+        <div className="bg-white dark:bg-[#111122] border border-[#d1d8e4] dark:border-[#2d2d3f] rounded-2xl p-6 shadow-2xl dark:shadow-2xl shadow-slate-200/50 transition-colors">
 
-          {/* ── MAIN: OAuth buttons ── */}
+          {/* -- MAIN: OAuth buttons -- */}
           {mode === 'main' && (
             <div className="space-y-3">
               {/* Google Sign-In (rendered by Google SDK) */}
@@ -251,7 +251,7 @@ export default function AuthScreen() {
               {appleClientId && (
                 <button onClick={handleAppleSignIn}
                   disabled={oauthLoading === 'apple'}
-                  className="w-full py-2.5 rounded-full bg-white hover:bg-gray-100 text-black text-sm font-semibold transition-all flex items-center justify-center gap-2 disabled:opacity-60">
+                  className="w-full py-2.5 rounded-full bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-black text-sm font-semibold transition-all flex items-center justify-center gap-2 disabled:opacity-60">
                   {oauthLoading === 'apple' ? <Loader2 size={15} className="animate-spin" /> : <AppleIcon size={17} />}
                   Продолжить с Apple
                 </button>
@@ -266,14 +266,14 @@ export default function AuthScreen() {
 
               {/* Divider */}
               <div className="flex items-center gap-3 pt-1">
-                <div className="flex-1 h-px bg-[#2d2d3f]" />
-                <span className="text-xs text-slate-600">или</span>
-                <div className="flex-1 h-px bg-[#2d2d3f]" />
+                <div className="flex-1 h-px bg-[#e2e8f0] dark:bg-[#2d2d3f]" />
+                <span className="text-xs text-slate-400 dark:text-slate-600">или</span>
+                <div className="flex-1 h-px bg-[#e2e8f0] dark:bg-[#2d2d3f]" />
               </div>
 
               {/* Email login link */}
               <button onClick={() => { setMode('email'); clearError(); }}
-                className="w-full py-2.5 rounded-full bg-[#1e1e2e] hover:bg-[#2d2d3f] border border-[#2d2d3f] text-slate-300 text-sm font-medium transition-all flex items-center justify-center gap-2">
+                className="w-full py-2.5 rounded-full bg-[#e8ecf2] dark:bg-[#1e1e2e] hover:bg-[#d1d8e4] dark:hover:bg-[#2d2d3f] border border-[#d1d8e4] dark:border-[#2d2d3f] text-slate-600 dark:text-slate-300 text-sm font-medium transition-all flex items-center justify-center gap-2">
                 <Mail size={15} />
                 Войти по email и паролю
               </button>
@@ -289,28 +289,28 @@ export default function AuthScreen() {
             </div>
           )}
 
-          {/* ── EMAIL LOGIN FORM ── */}
+          {/* -- EMAIL LOGIN FORM -- */}
           {mode === 'email' && (
             <div className="space-y-3">
               <button onClick={goBack}
-                className="text-xs text-slate-500 hover:text-slate-300 flex items-center gap-1 mb-2">
+                className="text-xs text-slate-500 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 flex items-center gap-1 mb-2">
                 &larr; Назад
               </button>
 
               <form onSubmit={handleEmailLogin} className="space-y-3">
                 <div className="relative">
-                  <Mail size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+                  <Mail size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
                   <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} required
-                    className="w-full bg-[#1e1e2e] border border-[#2d2d3f] rounded-xl pl-9 pr-3 py-2.5 text-sm text-slate-200 placeholder:text-slate-600 outline-none focus:border-violet-500 transition-colors" />
+                    className="w-full bg-[#f1f5f9] dark:bg-[#1e1e2e] border border-[#d1d8e4] dark:border-[#2d2d3f] rounded-xl pl-9 pr-3 py-2.5 text-sm text-slate-800 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-600 outline-none focus:border-violet-500 transition-colors" />
                 </div>
 
                 <div className="relative">
-                  <Lock size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+                  <Lock size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
                   <input type={showPassword ? 'text' : 'password'} placeholder="Пароль"
                     value={password} onChange={e => setPassword(e.target.value)} required minLength={6}
-                    className="w-full bg-[#1e1e2e] border border-[#2d2d3f] rounded-xl pl-9 pr-9 py-2.5 text-sm text-slate-200 placeholder:text-slate-600 outline-none focus:border-violet-500 transition-colors" />
+                    className="w-full bg-[#f1f5f9] dark:bg-[#1e1e2e] border border-[#d1d8e4] dark:border-[#2d2d3f] rounded-xl pl-9 pr-9 py-2.5 text-sm text-slate-800 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-600 outline-none focus:border-violet-500 transition-colors" />
                   <button type="button" onClick={() => setShowPassword(v => !v)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300">
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300">
                     {showPassword ? <EyeOff size={14} /> : <Eye size={14} />}
                   </button>
                 </div>
@@ -331,44 +331,44 @@ export default function AuthScreen() {
                 </button>
               </form>
 
-              <p className="text-xs text-slate-600 text-center">
+              <p className="text-xs text-slate-400 dark:text-slate-600 text-center">
                 Пароль можно задать в профиле после входа через Google или Apple
               </p>
             </div>
           )}
 
-          {/* ── TELEGRAM FLOW ── */}
+          {/* -- TELEGRAM FLOW -- */}
           {mode === 'telegram' && (
             <div className="space-y-4">
               <button onClick={goBack}
-                className="text-xs text-slate-500 hover:text-slate-300 flex items-center gap-1">
+                className="text-xs text-slate-500 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 flex items-center gap-1">
                 &larr; Назад
               </button>
 
               {tgStatus === 'waiting' && tgState && (
                 <div className="space-y-4">
                   <div className="text-center">
-                    <p className="text-sm text-slate-400 mb-4">
+                    <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
                       Отправьте этот код боту{' '}
                       <a href={`https://t.me/${tgState.botUsername}`} target="_blank" rel="noopener noreferrer"
                         className="text-[#2AABEE] hover:underline">@{tgState.botUsername}</a>
                     </p>
 
-                    <div className="relative inline-flex items-center gap-3 bg-[#1a1a2e] border border-[#2d2d3f] rounded-2xl px-6 py-4">
-                      <span className="text-4xl font-mono font-bold tracking-[0.3em] text-slate-100">
+                    <div className="relative inline-flex items-center gap-3 bg-[#f1f5f9] dark:bg-[#1a1a2e] border border-[#d1d8e4] dark:border-[#2d2d3f] rounded-2xl px-6 py-4">
+                      <span className="text-4xl font-mono font-bold tracking-[0.3em] text-slate-800 dark:text-slate-100">
                         {tgState.code}
                       </span>
-                      <button onClick={copyCode} className="text-slate-500 hover:text-slate-200 transition-colors">
+                      <button onClick={copyCode} className="text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-200 transition-colors">
                         {codeCopied ? <Check size={16} className="text-green-400" /> : <Copy size={16} />}
                       </button>
                     </div>
 
-                    <p className={clsx('text-xs mt-3 font-mono', timeLeft < 60 ? 'text-red-400' : 'text-slate-500')}>
+                    <p className={clsx('text-xs mt-3 font-mono', timeLeft < 60 ? 'text-red-400' : 'text-slate-400 dark:text-slate-500')}>
                       Истекает через {formatTime(timeLeft)}
                     </p>
                   </div>
 
-                  <div className="flex items-center justify-center gap-2 text-sm text-slate-500">
+                  <div className="flex items-center justify-center gap-2 text-sm text-slate-500 dark:text-slate-500">
                     <div className="w-4 h-4 border-2 border-[#2AABEE] border-t-transparent rounded-full animate-spin" />
                     Ожидаю подтверждения...
                   </div>
@@ -386,7 +386,7 @@ export default function AuthScreen() {
                 <div className="text-center space-y-3">
                   <p className="text-red-400 text-sm">{tgError}</p>
                   <button onClick={initTelegram}
-                    className="flex items-center gap-2 mx-auto px-4 py-2 bg-[#1e1e2e] hover:bg-[#2d2d3f] rounded-lg text-sm text-slate-300 transition-colors">
+                    className="flex items-center gap-2 mx-auto px-4 py-2 bg-[#e8ecf2] dark:bg-[#1e1e2e] hover:bg-[#d1d8e4] dark:hover:bg-[#2d2d3f] rounded-lg text-sm text-slate-600 dark:text-slate-300 transition-colors">
                     <RefreshCw size={14} /> Получить новый код
                   </button>
                 </div>
@@ -395,7 +395,7 @@ export default function AuthScreen() {
           )}
         </div>
 
-        <p className="text-center text-xs text-slate-600 mt-4">
+        <p className="text-center text-xs text-slate-400 dark:text-slate-600 mt-4">
           Данные синхронизируются между устройствами
         </p>
       </motion.div>

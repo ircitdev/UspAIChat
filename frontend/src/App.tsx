@@ -8,6 +8,7 @@ import SearchModal from './components/SearchModal';
 import AuthScreen from './components/AuthScreen';
 import useAppStore from './store/appStore';
 import useAuthStore from './store/authStore';
+import './store/themeStore'; // ensure theme is initialized
 
 export default function App() {
   const { user, restoreSession } = useAuthStore();
@@ -41,7 +42,7 @@ export default function App() {
 
   if (!sessionChecked) {
     return (
-      <div className="min-h-screen bg-[#0d0d1a] flex items-center justify-center">
+      <div className="min-h-screen bg-[#f8f9fc] dark:bg-[#0d0d1a] flex items-center justify-center transition-colors">
         <div className="flex flex-col items-center gap-3">
           <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-violet-600 to-purple-800 flex items-center justify-center">
             <img src="/logo_w.png" alt="" className="w-6 h-6" />
@@ -55,7 +56,7 @@ export default function App() {
   if (!user) return <AuthScreen />;
 
   return (
-    <div className="flex h-screen bg-[#0d0d1a] text-slate-100 overflow-hidden">
+    <div className="flex h-screen bg-[#f8f9fc] dark:bg-[#0d0d1a] text-slate-800 dark:text-slate-100 overflow-hidden transition-colors">
       <Sidebar />
       <main className="flex-1 flex flex-col overflow-hidden">
         <ChatWindow />

@@ -23,13 +23,13 @@ const LANGUAGES = [
 ];
 
 const SHORTCUTS = [
-  { keys: 'Ctrl+N', desc: 'Новый чат' },
-  { keys: 'Ctrl+K', desc: 'Поиск' },
-  { keys: 'Ctrl+,', desc: 'Настройки' },
-  { keys: 'Ctrl+B', desc: 'Скрыть боковую панель' },
-  { keys: 'Enter', desc: 'Отправить сообщение' },
-  { keys: 'Shift+Enter', desc: 'Новая строка' },
-  { keys: 'Escape', desc: 'Закрыть окно' },
+  { keys: 'Ctrl+N', desc: 'New chat' },
+  { keys: 'Ctrl+K', desc: 'Search' },
+  { keys: 'Ctrl+,', desc: 'Settings' },
+  { keys: 'Ctrl+B', desc: 'Toggle sidebar' },
+  { keys: 'Enter', desc: 'Send message' },
+  { keys: 'Shift+Enter', desc: 'New line' },
+  { keys: 'Escape', desc: 'Close modal' },
 ];
 
 export default function SettingsModal() {
@@ -71,12 +71,12 @@ export default function SettingsModal() {
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="bg-[#111122] border border-[#2d2d3f] rounded-2xl w-full max-w-lg mx-4 shadow-2xl overflow-hidden"
+        className="bg-white dark:bg-[#111122] border border-[#d1d8e4] dark:border-[#2d2d3f] rounded-2xl w-full max-w-lg mx-4 shadow-2xl overflow-hidden transition-colors"
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#1e1e2e]">
-          <h2 className="text-base font-semibold text-slate-100">{t('settings')}</h2>
-          <button onClick={() => setSettingsOpen(false)} className="p-1.5 hover:bg-[#1e1e2e] rounded-lg transition-colors text-slate-400">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-[#e2e8f0] dark:border-[#1e1e2e]">
+          <h2 className="text-base font-semibold text-slate-800 dark:text-slate-100">{t('settings')}</h2>
+          <button onClick={() => setSettingsOpen(false)} className="p-1.5 hover:bg-[#f1f5f9] dark:hover:bg-[#1e1e2e] rounded-lg transition-colors text-slate-400">
             <X size={16} />
           </button>
         </div>
@@ -90,7 +90,7 @@ export default function SettingsModal() {
           ].map(tab_ => (
             <button key={tab_.id} onClick={() => setTab(tab_.id as 'keys' | 'language' | 'shortcuts')}
               className={clsx('flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs transition-colors',
-                tab === tab_.id ? 'bg-violet-600 text-white' : 'text-slate-400 hover:bg-[#1e1e2e]')}>
+                tab === tab_.id ? 'bg-violet-600 text-white' : 'text-slate-500 dark:text-slate-400 hover:bg-[#f1f5f9] dark:hover:bg-[#1e1e2e]')}>
               <tab_.icon size={12} />
               {tab_.label}
             </button>
@@ -105,9 +105,9 @@ export default function SettingsModal() {
                 <label className={clsx('text-sm font-medium', p.color)}>{p.name}</label>
                 {apiKeyStatus[p.id]?.configured && (
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-green-400 flex items-center gap-1"><Check size={10} /> Настроен</span>
+                    <span className="text-xs text-green-500 dark:text-green-400 flex items-center gap-1"><Check size={10} /> Configured</span>
                     <button onClick={() => deleteKey(p.id)} className="text-xs text-red-400 hover:text-red-300 flex items-center gap-1">
-                      <Trash2 size={10} /> Удалить
+                      <Trash2 size={10} /> Delete
                     </button>
                   </div>
                 )}
@@ -118,10 +118,10 @@ export default function SettingsModal() {
                   placeholder={p.placeholder}
                   value={keys[p.id] || ''}
                   onChange={e => setKeys(prev => ({ ...prev, [p.id]: e.target.value }))}
-                  className="w-full bg-[#1e1e2e] border border-[#2d2d3f] rounded-lg px-3 py-2 pr-8 text-sm text-slate-200 placeholder:text-slate-600 outline-none focus:border-violet-500 transition-colors"
+                  className="w-full bg-[#f1f5f9] dark:bg-[#1e1e2e] border border-[#d1d8e4] dark:border-[#2d2d3f] rounded-lg px-3 py-2 pr-8 text-sm text-slate-700 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-600 outline-none focus:border-violet-500 transition-colors"
                 />
                 <button onClick={() => setShow(prev => ({ ...prev, [p.id]: !prev[p.id] }))}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300">
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300">
                   {show[p.id] ? <EyeOff size={13} /> : <Eye size={13} />}
                 </button>
               </div>
@@ -131,7 +131,7 @@ export default function SettingsModal() {
                   placeholder="Base URL (optional, for proxies)"
                   value={baseUrls[p.id] || ''}
                   onChange={e => setBaseUrls(prev => ({ ...prev, [p.id]: e.target.value }))}
-                  className="w-full bg-[#1e1e2e] border border-[#2d2d3f] rounded-lg px-3 py-2 text-sm text-slate-200 placeholder:text-slate-600 outline-none focus:border-violet-500 transition-colors"
+                  className="w-full bg-[#f1f5f9] dark:bg-[#1e1e2e] border border-[#d1d8e4] dark:border-[#2d2d3f] rounded-lg px-3 py-2 text-sm text-slate-700 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-600 outline-none focus:border-violet-500 transition-colors"
                 />
               )}
               <button
@@ -140,9 +140,9 @@ export default function SettingsModal() {
                 className={clsx('w-full py-1.5 rounded-lg text-xs font-medium transition-all',
                   saved[p.id] ? 'bg-green-600 text-white' :
                   keys[p.id] ? 'bg-violet-600 hover:bg-violet-700 text-white' :
-                  'bg-[#1e1e2e] text-slate-600 cursor-not-allowed')}
+                  'bg-[#e8ecf2] dark:bg-[#1e1e2e] text-slate-400 dark:text-slate-600 cursor-not-allowed')}
               >
-                {saved[p.id] ? `✓ Saved` : t('save')}
+                {saved[p.id] ? `\u2713 Saved` : t('save')}
               </button>
             </div>
           ))}
@@ -152,7 +152,7 @@ export default function SettingsModal() {
               {LANGUAGES.map(l => (
                 <button key={l.code} onClick={() => changeLanguage(l.code)}
                   className={clsx('w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm transition-colors',
-                    lang === l.code ? 'bg-violet-600/20 border border-violet-500 text-violet-300' : 'bg-[#1e1e2e] hover:bg-[#2d2d3f] text-slate-300')}>
+                    lang === l.code ? 'bg-violet-600/20 border border-violet-500 text-violet-600 dark:text-violet-300' : 'bg-[#f1f5f9] dark:bg-[#1e1e2e] hover:bg-[#e2e8f0] dark:hover:bg-[#2d2d3f] text-slate-600 dark:text-slate-300')}>
                   {l.name}
                   {lang === l.code && <Check size={14} />}
                 </button>
@@ -164,8 +164,8 @@ export default function SettingsModal() {
             <div className="space-y-2">
               {SHORTCUTS.map(s => (
                 <div key={s.keys} className="flex items-center justify-between py-1.5">
-                  <span className="text-sm text-slate-400">{s.desc}</span>
-                  <kbd className="bg-[#1e1e2e] border border-[#2d2d3f] rounded px-2 py-0.5 text-xs text-slate-300 font-mono">{s.keys}</kbd>
+                  <span className="text-sm text-slate-500 dark:text-slate-400">{s.desc}</span>
+                  <kbd className="bg-[#f1f5f9] dark:bg-[#1e1e2e] border border-[#d1d8e4] dark:border-[#2d2d3f] rounded px-2 py-0.5 text-xs text-slate-600 dark:text-slate-300 font-mono">{s.keys}</kbd>
                 </div>
               ))}
             </div>

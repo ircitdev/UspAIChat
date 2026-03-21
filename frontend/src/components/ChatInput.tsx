@@ -89,17 +89,17 @@ export default function ChatInput({ onSend, disabled }: Props) {
                 <img
                   src={`data:${f.mimetype};base64,${f.base64}`}
                   alt={f.filename}
-                  className="h-20 w-20 object-cover rounded-xl border border-[#2d2d3f]"
+                  className="h-20 w-20 object-cover rounded-xl border border-[#d1d8e4] dark:border-[#2d2d3f]"
                 />
                 <button
                   onClick={() => setFiles(prev => prev.filter(x => x.id !== f.id))}
-                  className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-[#1e1e2e] border border-[#2d2d3f] flex items-center justify-center text-slate-400 hover:text-red-400 opacity-0 group-hover/img:opacity-100 transition-all"
+                  className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-white dark:bg-[#1e1e2e] border border-[#d1d8e4] dark:border-[#2d2d3f] flex items-center justify-center text-slate-400 hover:text-red-400 opacity-0 group-hover/img:opacity-100 transition-all"
                 >
                   <X size={10} />
                 </button>
               </div>
             ) : (
-              <div key={f.id} className="flex items-center gap-1.5 bg-[#1e1e2e] border border-[#2d2d3f] rounded-lg px-2 py-1 text-xs text-slate-400">
+              <div key={f.id} className="flex items-center gap-1.5 bg-[#e8ecf2] dark:bg-[#1e1e2e] border border-[#d1d8e4] dark:border-[#2d2d3f] rounded-lg px-2 py-1 text-xs text-slate-500 dark:text-slate-400">
                 <FileText size={11} />
                 <span className="max-w-[120px] truncate">{f.filename}</span>
                 <button onClick={() => setFiles(prev => prev.filter(x => x.id !== f.id))} className="hover:text-red-400 transition-colors">
@@ -112,13 +112,13 @@ export default function ChatInput({ onSend, disabled }: Props) {
       )}
 
       <div className={clsx(
-        'flex items-end gap-2 bg-[#1a1a2e] border rounded-2xl px-3 py-2 transition-all',
-        disabled ? 'border-[#1e1e2e] opacity-75' : 'border-[#2d2d3f] focus-within:border-violet-500'
+        'flex items-end gap-2 bg-[#f1f5f9] dark:bg-[#1a1a2e] border rounded-2xl px-3 py-2 transition-all',
+        disabled ? 'border-[#e2e8f0] dark:border-[#1e1e2e] opacity-75' : 'border-[#d1d8e4] dark:border-[#2d2d3f] focus-within:border-violet-500'
       )}>
         <button
           onClick={() => fileInputRef.current?.click()}
           disabled={disabled || uploading}
-          className="p-1.5 text-slate-500 hover:text-violet-400 transition-colors shrink-0 mb-0.5"
+          className="p-1.5 text-slate-400 dark:text-slate-500 hover:text-violet-500 dark:hover:text-violet-400 transition-colors shrink-0 mb-0.5"
           title={t('uploadFile')}
         >
           <Paperclip size={16} className={uploading ? 'animate-pulse' : ''} />
@@ -136,7 +136,7 @@ export default function ChatInput({ onSend, disabled }: Props) {
           disabled={disabled}
           minRows={1}
           maxRows={8}
-          className="flex-1 bg-transparent text-sm text-slate-200 placeholder:text-slate-600 resize-none outline-none py-1 leading-relaxed"
+          className="flex-1 bg-transparent text-sm text-slate-800 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-600 resize-none outline-none py-1 leading-relaxed"
         />
 
         <button
@@ -146,13 +146,13 @@ export default function ChatInput({ onSend, disabled }: Props) {
             'p-1.5 rounded-xl transition-all shrink-0 mb-0.5',
             (text.trim() || files.length > 0) && !disabled
               ? 'bg-violet-600 text-white hover:bg-violet-700'
-              : 'text-slate-600 cursor-not-allowed'
+              : 'text-slate-400 dark:text-slate-600 cursor-not-allowed'
           )}
         >
           <Send size={15} />
         </button>
       </div>
-      <p className="text-center text-xs text-slate-700 mt-1">Enter — отправить • Shift+Enter — новая строка • Ctrl+V — вставить изображение</p>
+      <p className="text-center text-xs text-slate-400 dark:text-slate-700 mt-1">Enter -- send / Shift+Enter -- new line / Ctrl+V -- paste image</p>
     </div>
   );
 }

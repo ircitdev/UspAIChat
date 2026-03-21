@@ -68,7 +68,7 @@ export default function ChatWindow() {
           id: 'err-' + Date.now(),
           conversation_id: activeConversationId,
           role: 'assistant',
-          content: `⚠️ ${error}`,
+          content: `\u26A0\uFE0F ${error}`,
           created_at: Date.now() / 1000,
           token_count: 0,
           files: []
@@ -80,9 +80,9 @@ export default function ChatWindow() {
 
   if (!activeConversationId) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center gap-4 text-slate-500">
+      <div className="flex-1 flex flex-col items-center justify-center gap-4 text-slate-400 dark:text-slate-500">
         {!sidebarOpen && (
-          <button onClick={() => setSidebarOpen(true)} className="absolute top-4 left-4 p-2 hover:bg-[#1e1e2e] rounded-lg transition-colors">
+          <button onClick={() => setSidebarOpen(true)} className="absolute top-4 left-4 p-2 hover:bg-[#f1f5f9] dark:hover:bg-[#1e1e2e] rounded-lg transition-colors">
             <PanelLeft size={18} />
           </button>
         )}
@@ -90,9 +90,9 @@ export default function ChatWindow() {
           <img src="/logo_w.png" alt="" className="w-8 h-8" />
         </div>
         <div className="text-center">
-          <h2 className="text-xl font-semibold text-slate-300 mb-1">UspAIChat</h2>
+          <h2 className="text-xl font-semibold text-slate-600 dark:text-slate-300 mb-1">UspAIChat</h2>
           <p className="text-sm">{t('startNewChat')}</p>
-          <p className="text-xs mt-2 opacity-60">Ctrl+N — новый чат • Ctrl+K — поиск • Ctrl+, — настройки</p>
+          <p className="text-xs mt-2 opacity-60">Ctrl+N -- new chat / Ctrl+K -- search / Ctrl+, -- settings</p>
         </div>
       </div>
     );
@@ -105,7 +105,7 @@ export default function ChatWindow() {
       {/* Messages */}
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-2">
         {!sidebarOpen && (
-          <button onClick={() => setSidebarOpen(true)} className="fixed top-4 left-4 z-10 p-2 hover:bg-[#1e1e2e] rounded-lg transition-colors text-slate-400">
+          <button onClick={() => setSidebarOpen(true)} className="fixed top-4 left-4 z-10 p-2 hover:bg-[#f1f5f9] dark:hover:bg-[#1e1e2e] rounded-lg transition-colors text-slate-500 dark:text-slate-400">
             <PanelLeft size={18} />
           </button>
         )}
@@ -136,7 +136,7 @@ export default function ChatWindow() {
       {/* Token counter */}
       {tokenCount > 0 && (
         <div className="px-4 pb-1 text-right">
-          <span className="text-xs text-slate-600">{tokenCount} tokens</span>
+          <span className="text-xs text-slate-400 dark:text-slate-600">{tokenCount} tokens</span>
         </div>
       )}
 
@@ -153,14 +153,14 @@ function StreamingBubble({ content }: { content: string }) {
       <div className="w-7 h-7 rounded-full bg-gradient-to-br from-violet-600 to-purple-800 flex items-center justify-center shrink-0 mt-1">
         <img src="/logo_w.png" alt="" className="w-4 h-4" />
       </div>
-      <div className="flex-1 bg-[#1a1a2e] rounded-2xl rounded-tl-sm px-4 py-3 text-sm text-slate-200 leading-relaxed">
+      <div className="flex-1 bg-[#f1f5f9] dark:bg-[#1a1a2e] rounded-2xl rounded-tl-sm px-4 py-3 text-sm text-slate-700 dark:text-slate-200 leading-relaxed transition-colors">
         {content ? (
           <span>
             {content}
             <span className="inline-block w-0.5 h-4 bg-violet-400 ml-0.5 animate-cursor align-middle" />
           </span>
         ) : (
-          <span className="text-slate-500 flex items-center gap-2">
+          <span className="text-slate-400 dark:text-slate-500 flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-violet-400 animate-bounce" style={{ animationDelay: '0ms' }} />
             <span className="w-1.5 h-1.5 rounded-full bg-violet-400 animate-bounce" style={{ animationDelay: '150ms' }} />
             <span className="w-1.5 h-1.5 rounded-full bg-violet-400 animate-bounce" style={{ animationDelay: '300ms' }} />

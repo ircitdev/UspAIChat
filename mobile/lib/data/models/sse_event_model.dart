@@ -1,4 +1,6 @@
 sealed class SseEvent {
+  const SseEvent();
+
   factory SseEvent.fromJson(Map<String, dynamic> json) {
     final type = json['type'] as String;
     switch (type) {
@@ -26,32 +28,32 @@ sealed class SseEvent {
 
 class SseStart extends SseEvent {
   final String messageId;
-  SseStart({required this.messageId});
+  const SseStart({required this.messageId});
 }
 
 class SseChunk extends SseEvent {
   final String content;
-  SseChunk({required this.content});
+  const SseChunk({required this.content});
 }
 
 class SseTokens extends SseEvent {
   final int count;
-  SseTokens({required this.count});
+  const SseTokens({required this.count});
 }
 
 class SsePrice extends SseEvent {
   final double pricePer1k;
-  SsePrice({required this.pricePer1k});
+  const SsePrice({required this.pricePer1k});
 }
 
 class SseDone extends SseEvent {
   final String messageId;
   final String fullContent;
   final double? balanceAfter;
-  SseDone({required this.messageId, required this.fullContent, this.balanceAfter});
+  const SseDone({required this.messageId, required this.fullContent, this.balanceAfter});
 }
 
 class SseError extends SseEvent {
   final String error;
-  SseError({required this.error});
+  const SseError({required this.error});
 }
