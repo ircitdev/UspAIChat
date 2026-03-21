@@ -1,0 +1,78 @@
+name: uspaichat_mobile
+description: UspAIChat - AI Chat Mobile App
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.6.0
+  flutter: ">=3.27.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  # State management
+  flutter_riverpod: ^2.5.1
+
+  # Navigation
+  go_router: ^14.2.0
+
+  # Network
+  dio: ^5.4.3+1
+
+  # Auth
+  google_sign_in: ^6.2.1
+  sign_in_with_apple: ^6.1.0
+  flutter_secure_storage: ^9.2.2
+  url_launcher: ^6.2.5
+
+  # UI
+  flutter_markdown: ^0.7.1
+  flutter_highlight: ^0.7.0
+  cached_network_image: ^3.3.1
+  shimmer: ^3.0.0
+  flutter_svg: ^2.0.10+1
+
+  # Files
+  image_picker: ^1.0.7
+  file_picker: ^8.0.3
+  permission_handler: ^11.3.1
+  mime: ^1.0.5
+
+  # i18n
+  intl: ^0.19.0
+
+  # Storage
+  shared_preferences: ^2.2.3
+
+  # Utils
+  uuid: ^4.3.3
+  timeago: ^3.6.1
+  share_plus: ^9.0.0
+  connectivity_plus: ^6.0.3
+  json_annotation: ^4.9.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.2
+  build_runner: ^2.4.9
+  json_serializable: ^6.8.0
+  flutter_launcher_icons: ^0.13.1
+  flutter_native_splash: ^2.4.0
+
+flutter:
+  uses-material-design: true
+  generate: true
+  assets:
+    - assets/images/
+    - assets/icons/
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/logo.png"
+  adaptive_icon_background: "#0D0D1A"
+  adaptive_icon_foreground: "assets/images/logo.png"
