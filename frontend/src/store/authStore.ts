@@ -11,6 +11,8 @@ interface User {
   avatar?: string;
   telegram_id?: number | null;
   telegram_username?: string | null;
+  google_id?: string | null;
+  apple_id?: string | null;
   created_at: number;
 }
 
