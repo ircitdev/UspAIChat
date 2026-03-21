@@ -87,7 +87,7 @@ export default function ChatWindow() {
           </button>
         )}
         <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-600 to-purple-800 flex items-center justify-center">
-          <Bot size={28} className="text-white" />
+          <img src="/logo_w.png" alt="" className="w-8 h-8" />
         </div>
         <div className="text-center">
           <h2 className="text-xl font-semibold text-slate-300 mb-1">UspAIChat</h2>
@@ -151,7 +151,7 @@ function StreamingBubble({ content }: { content: string }) {
   return (
     <div className="flex gap-3 max-w-3xl mx-auto w-full">
       <div className="w-7 h-7 rounded-full bg-gradient-to-br from-violet-600 to-purple-800 flex items-center justify-center shrink-0 mt-1">
-        <Bot size={14} className="text-white" />
+        <img src="/logo_w.png" alt="" className="w-4 h-4" />
       </div>
       <div className="flex-1 bg-[#1a1a2e] rounded-2xl rounded-tl-sm px-4 py-3 text-sm text-slate-200 leading-relaxed">
         {content ? (

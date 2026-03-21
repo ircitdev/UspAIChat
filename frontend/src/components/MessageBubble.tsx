@@ -30,7 +30,7 @@ export default function MessageBubble({ message }: Props) {
         'w-7 h-7 rounded-full flex items-center justify-center shrink-0 mt-1',
         isUser ? 'bg-[#2d2d3f]' : 'bg-gradient-to-br from-violet-600 to-purple-800'
       )}>
-        {isUser ? <User size={14} className="text-slate-300" /> : <Bot size={14} className="text-white" />}
+        {isUser ? <User size={14} className="text-slate-300" /> : <img src="/logo_w.png" alt="" className="w-4 h-4" />}
       </div>
 
       {/* Content */}

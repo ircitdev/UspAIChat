@@ -44,7 +44,7 @@ export default function App() {
       <div className="min-h-screen bg-[#0d0d1a] flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
           <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-violet-600 to-purple-800 flex items-center justify-center">
-            <Bot size={22} className="text-white" />
+            <img src="/logo_w.png" alt="" className="w-6 h-6" />
           </div>
           <div className="w-5 h-5 border-2 border-violet-400 border-t-transparent rounded-full animate-spin" />
         </div>

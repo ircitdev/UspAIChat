@@ -229,7 +229,7 @@ export default function AuthScreen() {
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
           <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-600 to-purple-800 flex items-center justify-center mb-3 shadow-lg shadow-violet-900/40">
-            <Bot size={26} className="text-white" />
+            <img src="/logo_w.png" alt="" className="w-7 h-7" />
           </div>
           <h1 className="text-2xl font-bold text-slate-100">UspAIChat</h1>
           <p className="text-sm text-slate-500 mt-1">

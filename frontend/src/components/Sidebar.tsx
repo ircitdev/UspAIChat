@@ -67,7 +67,7 @@ export default function Sidebar() {
             <div className="p-3 border-b border-[#1e1e2e]">
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-violet-600 to-purple-800 flex items-center justify-center">
-                  <Bot size={14} className="text-white" />
+                  <img src="/logo_w.png" alt="" className="w-4 h-4" />
                 </div>
                 <span className="font-semibold text-sm text-slate-100">UspAIChat</span>
               </div>
