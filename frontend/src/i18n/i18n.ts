@@ -1,0 +1,96 @@
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
+
+const resources = {
+  en: {
+    translation: {
+      newChat: 'New Chat',
+      search: 'Search conversations...',
+      settings: 'Settings',
+      systemPrompt: 'System Prompt',
+      model: 'Model',
+      provider: 'Provider',
+      send: 'Send',
+      thinking: 'Thinking...',
+      deleteConversation: 'Delete conversation',
+      pinConversation: 'Pin conversation',
+      renameConversation: 'Rename',
+      noConversations: 'No conversations yet',
+      startNewChat: 'Start a new chat',
+      typeMessage: 'Type a message...',
+      tokens: 'tokens',
+      uploadFile: 'Upload file',
+      documents: 'Documents',
+      apiKey: 'API Key',
+      save: 'Save',
+      cancel: 'Cancel',
+      confirm: 'Confirm',
+      delete: 'Delete',
+      errorApiKey: 'API key not configured. Go to Model Settings.',
+      language: 'Language',
+      shortcuts: 'Shortcuts',
+      copyCode: 'Copy',
+      copied: 'Copied!',
+    }
+  },
+  ru: {
+    translation: {
+      newChat: 'Новый чат',
+      search: 'Поиск по чатам...',
+      settings: 'Настройки',
+      systemPrompt: 'Системный промпт',
+      model: 'Модель',
+      provider: 'Провайдер',
+      send: 'Отправить',
+      thinking: 'Думаю...',
+      deleteConversation: 'Удалить чат',
+      pinConversation: 'Закрепить',
+      renameConversation: 'Переименовать',
+      noConversations: 'Нет чатов',
+      startNewChat: 'Начните новый чат',
+      typeMessage: 'Напишите сообщение...',
+      tokens: 'токенов',
+      uploadFile: 'Загрузить файл',
+      documents: 'Документы',
+      apiKey: 'API Ключ',
+      save: 'Сохранить',
+      cancel: 'Отмена',
+      confirm: 'Подтвердить',
+      delete: 'Удалить',
+      errorApiKey: 'API ключ не настроен. Перейдите в настройки модели.',
+      language: 'Язык',
+      shortcuts: 'Горячие клавиши',
+      copyCode: 'Копировать',
+      copied: 'Скопировано!',
+    }
+  },
+  zh: {
+    translation: {
+      newChat: '新对话',
+      search: '搜索对话...',
+      settings: '设置',
+      systemPrompt: '系统提示',
+      model: '模型',
+      provider: '提供商',
+      send: '发送',
+      thinking: '思考中...',
+      typeMessage: '输入消息...',
+      tokens: '令牌',
+      uploadFile: '上传文件',
+      documents: '文档',
+      apiKey: 'API密钥',
+      save: '保存',
+      cancel: '取消',
+      delete: '删除',
+    }
+  }
+};
+
+i18n.use(initReactI18next).init({
+  resources,
+  lng: localStorage.getItem('language') || 'ru',
+  fallbackLng: 'en',
+  interpolation: { escapeValue: false }
+});
+
+export default i18n;
