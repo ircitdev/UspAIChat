@@ -435,3 +435,90 @@ POST /auth/login { email, password } → токены
 | `Shift+Enter` | Новая строка |
 | `Escape` | Закрыть модальное окно |
 | `Ctrl+V` | Вставить изображение из буфера |
+
+---
+
+## Мобильное приложение (Flutter)
+
+Нативное мобильное приложение для iOS и Android в директории `mobile/`.
+
+### Технологии
+
+| Технология | Назначение |
+|---|---|
+| Flutter 3.29 / Dart 3.7 | Фреймворк |
+| Riverpod | Состояние |
+| GoRouter | Навигация |
+| Dio | HTTP + SSE стриминг |
+| google_sign_in | Google Sign-In (нативный) |
+| sign_in_with_apple | Apple Sign-In (нативный) |
+| flutter_markdown | Рендеринг Markdown |
+| flutter_secure_storage | Хранение токенов |
+
+### Экраны
+
+| Экран | Описание |
+|---|---|
+| SplashScreen | Логотип + восстановление сессии |
+| AuthScreen | Google, Apple, Telegram, Email кнопки |
+| HomeScreen | Drawer с чатами + ChatScreen |
+| ChatScreen | Сообщения + SSE стриминг + ввод + файлы |
+| SearchScreen | FTS поиск |
+| SettingsScreen | API-ключи, язык |
+| ProfileScreen | Пароль, Telegram |
+| AdminScreen | Статистика, пользователи, баланс |
+
+### Сборка
+
+```bash
+cd mobile
+
+# Установка зависимостей
+flutter pub get
+
+# Debug APK
+flutter build apk --debug
+
+# Release APK
+flutter build apk --release
+
+# iOS (требует macOS)
+flutter build ipa --release
+```
+
+**Bundle ID:** `ru.aifuturenow.uspaichat_mobile`
+
+Подробный план разработки: [mobile/PLAN.md](mobile/PLAN.md)
+
+---
+
+## Деплой (Production)
+
+### Сервер
+
+Приложение развёрнуто на `app.aifuturenow.ru` (31.44.7.144):
+
+- **Backend:** PM2 (`uspaichat`, порт 3088)
+- **Frontend:** Nginx раздаёт `frontend/dist/`
+- **Node.js:** v20 LTS
+- **БД:** SQLite в `/var/www/uspaichat/data/`
+
+### Обновление на сервере
+
+```bash
+ssh root@31.44.7.144
+cd /var/www/uspaichat
+git pull origin main
+cd frontend && npm run build
+pm2 restart uspaichat
+```
+
+### SSL
+
+```bash
+certbot --nginx -d app.aifuturenow.ru
+```
+
+### GitHub
+
+Репозиторий: https://github.com/ircitdev/UspAIChat
