@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { X, Key, Check, Eye, EyeOff, Globe, Keyboard, Trash2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import useAppStore from '../store/appStore';
+import useAuthStore from '../store/authStore';
 import api from '../services/api';
 import i18n from '../i18n/i18n';
 import clsx from 'clsx';
@@ -35,7 +36,8 @@ const SHORTCUTS = [
 export default function SettingsModal() {
   const { t } = useTranslation();
   const { setSettingsOpen, apiKeyStatus, loadApiKeyStatus } = useAppStore();
-  const [tab, setTab] = useState<'keys' | 'language' | 'shortcuts'>('keys');
+  const isAdmin = useAuthStore(s => s.user?.role === 'admin');
+  const [tab, setTab] = useState<'keys' | 'language' | 'shortcuts'>(isAdmin ? 'keys' : 'language');
   const [keys, setKeys] = useState<Record<string, string>>({});
   const [baseUrls, setBaseUrls] = useState<Record<string, string>>({});
   const [show, setShow] = useState<Record<string, boolean>>({});
@@ -84,7 +86,7 @@ export default function SettingsModal() {
         {/* Tabs */}
         <div className="flex gap-1 px-4 pt-3">
           {[
-            { id: 'keys', icon: Key, label: 'API Keys' },
+            ...(isAdmin ? [{ id: 'keys', icon: Key, label: 'API Keys' }] : []),
             { id: 'language', icon: Globe, label: t('language') },
             { id: 'shortcuts', icon: Keyboard, label: t('shortcuts') }
           ].map(tab_ => (
