@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { X, Key, Check, Eye, EyeOff, Globe, Keyboard, Trash2 } from 'lucide-react';
+import { X, Key, Check, Eye, EyeOff, Globe, Keyboard, Trash2, Info } from 'lucide-react';
 import { motion } from 'framer-motion';
 import useAppStore from '../store/appStore';
 import useAuthStore from '../store/authStore';
@@ -37,7 +37,7 @@ export default function SettingsModal() {
   const { t } = useTranslation();
   const { setSettingsOpen, apiKeyStatus, loadApiKeyStatus } = useAppStore();
   const isAdmin = useAuthStore(s => s.user?.role === 'admin');
-  const [tab, setTab] = useState<'keys' | 'language' | 'shortcuts'>(isAdmin ? 'keys' : 'language');
+  const [tab, setTab] = useState<'keys' | 'language' | 'shortcuts' | 'about'>(isAdmin ? 'keys' : 'language');
   const [keys, setKeys] = useState<Record<string, string>>({});
   const [baseUrls, setBaseUrls] = useState<Record<string, string>>({});
   const [show, setShow] = useState<Record<string, boolean>>({});
@@ -88,9 +88,10 @@ export default function SettingsModal() {
           {[
             ...(isAdmin ? [{ id: 'keys', icon: Key, label: 'API Keys' }] : []),
             { id: 'language', icon: Globe, label: t('language') },
-            { id: 'shortcuts', icon: Keyboard, label: t('shortcuts') }
+            { id: 'shortcuts', icon: Keyboard, label: t('shortcuts') },
+            { id: 'about', icon: Info, label: 'О приложении' }
           ].map(tab_ => (
-            <button key={tab_.id} onClick={() => setTab(tab_.id as 'keys' | 'language' | 'shortcuts')}
+            <button key={tab_.id} onClick={() => setTab(tab_.id as 'keys' | 'language' | 'shortcuts' | 'about')}
               className={clsx('flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs transition-colors',
                 tab === tab_.id ? 'bg-violet-600 text-white' : 'text-slate-500 dark:text-slate-400 hover:bg-[#f1f5f9] dark:hover:bg-[#1e1e2e]')}>
               <tab_.icon size={12} />
@@ -170,6 +171,37 @@ export default function SettingsModal() {
                   <kbd className="bg-[#f1f5f9] dark:bg-[#1e1e2e] border border-[#d1d8e4] dark:border-[#2d2d3f] rounded px-2 py-0.5 text-xs text-slate-600 dark:text-slate-300 font-mono">{s.keys}</kbd>
                 </div>
               ))}
+            </div>
+          )}
+
+          {tab === 'about' && (
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-violet-600 to-purple-800 flex items-center justify-center shadow-lg">
+                  <img src="/logo_w.png" alt="" className="w-7 h-7" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100">UspAIChat</h3>
+                  <p className="text-xs text-slate-400 dark:text-slate-500">v1.0.0</p>
+                </div>
+              </div>
+
+              <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                AI-ассистент с поддержкой нескольких провайдеров: Anthropic Claude, OpenAI, Google Gemini, DeepSeek и Kimi.
+                Потоковая генерация ответов, загрузка файлов и изображений, полнотекстовый поиск, системные промпты и мультиязычный интерфейс.
+              </p>
+
+              <div className="border border-[#e2e8f0] dark:border-[#2d2d3f] rounded-xl p-4 space-y-2">
+                <p className="text-sm font-medium text-slate-700 dark:text-slate-200">Разработчик</p>
+                <p className="text-sm text-slate-600 dark:text-slate-300">Aleksandr Uspeshnyy</p>
+                <a href="https://t.me/uspeshnyy" target="_blank" rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-sm text-[#2AABEE] hover:underline">
+                  <svg width={14} height={14} viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.48 14.364l-2.95-.924c-.641-.203-.654-.641.136-.953l11.526-4.443c.537-.194 1.006.131.37.204z"/>
+                  </svg>
+                  @uspeshnyy
+                </a>
+              </div>
             </div>
           )}
         </div>
