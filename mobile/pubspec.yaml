@@ -35,6 +35,10 @@ dependencies:
   shimmer: ^3.0.0
   flutter_svg: ^2.0.10+1
 
+  # Voice
+  speech_to_text: ^6.6.0
+  flutter_tts: ^4.0.2
+
   # Files
   image_picker: ^1.0.7
   file_picker: ^8.0.3

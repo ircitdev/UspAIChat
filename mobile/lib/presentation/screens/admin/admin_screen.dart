@@ -134,37 +134,159 @@ class _StatCard extends StatelessWidget {
   }
 }
 
-class _UsersTab extends StatelessWidget {
+class _UsersTab extends ConsumerWidget {
   final List<dynamic> users;
   final VoidCallback onRefresh;
   const _UsersTab({required this.users, required this.onRefresh});
 
+  Future<void> _toggleBlock(BuildContext context, Dio dio, Map<String, dynamic> user) async {
+    final isBlocked = user['is_blocked'] == 1;
+    try {
+      await dio.patch(ApiConstants.adminUserBlock(user['id']), data: {'is_blocked': isBlocked ? 0 : 1});
+      onRefresh();
+    } catch (e) {
+      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+    }
+  }
+
+  Future<void> _toggleRole(BuildContext context, Dio dio, Map<String, dynamic> user) async {
+    final newRole = user['role'] == 'admin' ? 'user' : 'admin';
+    try {
+      await dio.patch(ApiConstants.adminUserRole(user['id']), data: {'role': newRole});
+      onRefresh();
+    } catch (e) {
+      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+    }
+  }
+
+  Future<void> _deleteUser(BuildContext context, Dio dio, Map<String, dynamic> user) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Delete ${user['username']}?'),
+        content: const Text('This action cannot be undone.'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Delete', style: TextStyle(color: AppColors.error)),
+          ),
+        ],
+      ),
+    );
+    if (confirm != true) return;
+    try {
+      await dio.delete(ApiConstants.adminUserDelete(user['id']));
+      onRefresh();
+    } catch (e) {
+      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+    }
+  }
+
+  Future<void> _topUp(BuildContext context, Dio dio, Map<String, dynamic> user) async {
+    final amountCtrl = TextEditingController();
+    final amount = await showDialog<double>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Top up ${user['username']}'),
+        content: TextField(
+          controller: amountCtrl,
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          decoration: const InputDecoration(hintText: 'Amount', prefixText: '\$ '),
+          autofocus: true,
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          ElevatedButton(
+            onPressed: () {
+              final val = double.tryParse(amountCtrl.text);
+              if (val != null && val > 0) Navigator.pop(ctx, val);
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.violet600),
+            child: const Text('Top up'),
+          ),
+        ],
+      ),
+    );
+    if (amount == null) return;
+    try {
+      await dio.post(ApiConstants.adminTopup, data: {'user_id': user['id'], 'amount': amount});
+      onRefresh();
+      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Added \$${amount.toStringAsFixed(2)} to ${user['username']}')));
+    } catch (e) {
+      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+    }
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final dio = ref.read(apiClientProvider).dio;
+
     return ListView.builder(
       padding: const EdgeInsets.all(8),
       itemCount: users.length,
       itemBuilder: (_, i) {
         final u = users[i] as Map<String, dynamic>;
+        final isBlocked = u['is_blocked'] == 1;
+        final isAdmin = u['role'] == 'admin';
+
         return Card(
           margin: const EdgeInsets.only(bottom: 8),
           child: ListTile(
             leading: CircleAvatar(
               radius: 18,
-              backgroundColor: u['role'] == 'admin' ? AppColors.warning : AppColors.violet600,
+              backgroundColor: isAdmin ? AppColors.warning : (isBlocked ? AppColors.error : AppColors.violet600),
               child: Text((u['username'] ?? '?')[0].toUpperCase(),
                 style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
             ),
-            title: Text(u['username'] ?? '', style: const TextStyle(color: AppColors.textPrimary, fontSize: 14)),
-            subtitle: Text('${u['email'] ?? 'No email'} | Balance: ${(u['balance'] as num?)?.toStringAsFixed(2) ?? '0'}',
-              style: const TextStyle(color: AppColors.textDim, fontSize: 11)),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
+            title: Row(
               children: [
-                if (u['is_blocked'] == 1)
-                  const Icon(Icons.block, size: 16, color: AppColors.error),
-                if (u['role'] == 'admin')
-                  const Icon(Icons.star, size: 16, color: AppColors.warning),
+                Expanded(child: Text(u['username'] ?? '', style: const TextStyle(color: AppColors.textPrimary, fontSize: 14))),
+                if (isBlocked) const Padding(
+                  padding: EdgeInsets.only(left: 4),
+                  child: Icon(Icons.block, size: 14, color: AppColors.error),
+                ),
+                if (isAdmin) const Padding(
+                  padding: EdgeInsets.only(left: 4),
+                  child: Icon(Icons.star, size: 14, color: AppColors.warning),
+                ),
+              ],
+            ),
+            subtitle: Text('${u['email'] ?? 'No email'} | Balance: \$${(u['balance'] as num?)?.toStringAsFixed(2) ?? '0.00'}',
+              style: const TextStyle(color: AppColors.textDim, fontSize: 11)),
+            trailing: PopupMenuButton<String>(
+              icon: const Icon(Icons.more_vert, size: 18, color: AppColors.textDim),
+              onSelected: (action) {
+                switch (action) {
+                  case 'topup': _topUp(context, dio, u);
+                  case 'block': _toggleBlock(context, dio, u);
+                  case 'role': _toggleRole(context, dio, u);
+                  case 'delete': _deleteUser(context, dio, u);
+                }
+              },
+              itemBuilder: (_) => [
+                const PopupMenuItem(value: 'topup', child: Row(children: [
+                  Icon(Icons.add_circle, size: 16, color: AppColors.success),
+                  SizedBox(width: 8),
+                  Text('Top up balance'),
+                ])),
+                PopupMenuItem(value: 'block', child: Row(children: [
+                  Icon(isBlocked ? Icons.check_circle : Icons.block, size: 16,
+                    color: isBlocked ? AppColors.success : AppColors.warning),
+                  const SizedBox(width: 8),
+                  Text(isBlocked ? 'Unblock' : 'Block'),
+                ])),
+                PopupMenuItem(value: 'role', child: Row(children: [
+                  Icon(isAdmin ? Icons.person : Icons.admin_panel_settings, size: 16, color: AppColors.violet400),
+                  const SizedBox(width: 8),
+                  Text(isAdmin ? 'Demote to user' : 'Promote to admin'),
+                ])),
+                const PopupMenuDivider(),
+                const PopupMenuItem(value: 'delete', child: Row(children: [
+                  Icon(Icons.delete_forever, size: 16, color: AppColors.error),
+                  SizedBox(width: 8),
+                  Text('Delete user', style: TextStyle(color: AppColors.error)),
+                ])),
               ],
             ),
           ),

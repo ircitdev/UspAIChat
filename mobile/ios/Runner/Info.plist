@@ -56,6 +56,10 @@
 	<string>1017206611284-s3opaggqvqct2goa0ut3gkv270o5gbqc.apps.googleusercontent.com</string>
 	<key>GIDServerClientID</key>
 	<string>1017206611284-f3c49n6a1f8kbjupd3906c2oc7m1a090.apps.googleusercontent.com</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Voice input for AI chat messages</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Microphone access for voice input</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>

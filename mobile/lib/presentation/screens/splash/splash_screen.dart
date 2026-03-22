@@ -19,9 +19,15 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   }
 
   Future<void> _init() async {
-    final restored = await ref.read(authProvider.notifier).restoreSession();
-    if (!mounted) return;
-    context.go(restored ? '/' : '/auth');
+    try {
+      final restored = await ref.read(authProvider.notifier).restoreSession()
+          .timeout(const Duration(seconds: 10));
+      if (!mounted) return;
+      context.go(restored ? '/' : '/auth');
+    } catch (_) {
+      if (!mounted) return;
+      context.go('/auth');
+    }
   }
 
   @override
