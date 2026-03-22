@@ -3,6 +3,7 @@ import { v4 as uuid } from 'uuid';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { getDB } from '../db/database.js';
+import { processReferral } from '../services/telegram.js';
 
 const router = Router();
 
@@ -10,7 +11,7 @@ export const JWT_SECRET = process.env.JWT_SECRET || 'uspaichat_secret_change_in_
 const JWT_EXPIRES = '15m';
 const REFRESH_EXPIRES = 60 * 60 * 24 * 30;
 
-const SAFE_USER_FIELDS = 'id, email, username, role, is_blocked, avatar, created_at';
+const SAFE_USER_FIELDS = 'id, email, username, role, is_blocked, avatar, balance, referral_code, referral_earnings, created_at';
 
 function makeTokens(userId) {
   const accessToken = jwt.sign({ userId }, JWT_SECRET, { expiresIn: JWT_EXPIRES });
@@ -42,9 +43,16 @@ router.post('/register', async (req, res) => {
   const passwordHash = await bcrypt.hash(password, 12);
   const id = uuid();
   const now = Math.floor(Date.now() / 1000);
+  const refCode = id.replace(/-/g, '').slice(0, 8).toUpperCase();
   db.prepare(
-    'INSERT INTO users (id, email, username, password_hash, role, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)'
-  ).run(id, email.toLowerCase().trim(), username.trim(), passwordHash, role, now, now);
+    'INSERT INTO users (id, email, username, password_hash, role, referral_code, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+  ).run(id, email.toLowerCase().trim(), username.trim(), passwordHash, role, refCode, now, now);
+
+  // Process referral if ref code provided
+  const { ref } = req.body;
+  if (ref) {
+    try { processReferral(id, ref); } catch {}
+  }
 
   const user = db.prepare(`SELECT ${SAFE_USER_FIELDS} FROM users WHERE id = ?`).get(id);
   const tokens = makeTokens(id);

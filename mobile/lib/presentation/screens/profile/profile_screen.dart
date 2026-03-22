@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../data/datasources/remote/auth_api.dart';
 import '../../../providers/auth_provider.dart';
@@ -162,6 +165,98 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     ),
                   ]),
                 ],
+              ],
+            ),
+          )),
+
+          const SizedBox(height: 8),
+
+          // Balance & Payment
+          if (!user.isAdmin)
+            Card(child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(children: [
+                    const Icon(Icons.account_balance_wallet, size: 16, color: AppColors.violet400),
+                    const SizedBox(width: 8),
+                    const Text('Баланс', style: TextStyle(color: AppColors.textPrimary, fontSize: 14, fontWeight: FontWeight.w500)),
+                    const Spacer(),
+                    Text('${user.balance.toStringAsFixed(2)} кр.',
+                      style: TextStyle(color: user.balance < 1 ? AppColors.error : AppColors.success, fontSize: 14, fontWeight: FontWeight.bold)),
+                  ]),
+                  const SizedBox(height: 12),
+                  SizedBox(width: double.infinity, child: ElevatedButton.icon(
+                    onPressed: () async {
+                      final uri = Uri.parse('https://t.me/UspAIChatbot?start=pay');
+                      if (await canLaunchUrl(uri)) await launchUrl(uri, mode: LaunchMode.externalApplication);
+                    },
+                    icon: const Icon(Icons.telegram, size: 16),
+                    label: const Text('Пополнить через Telegram'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.telegram,
+                      foregroundColor: Colors.white,
+                    ),
+                  )),
+                ],
+              ),
+            )),
+
+          const SizedBox(height: 8),
+
+          // Referral
+          Card(child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(children: [
+                  const Icon(Icons.people, size: 16, color: AppColors.violet400),
+                  const SizedBox(width: 8),
+                  const Text('Реферальная программа', style: TextStyle(color: AppColors.textPrimary, fontSize: 14, fontWeight: FontWeight.w500)),
+                ]),
+                const SizedBox(height: 12),
+                if (user.referralCode != null) ...[
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: AppColors.surfaceLight,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: AppColors.cardBorder),
+                    ),
+                    child: Row(children: [
+                      Expanded(child: Text(
+                        'https://t.me/UspAIChatbot?start=ref_${user.referralCode}',
+                        style: const TextStyle(color: AppColors.textMuted, fontSize: 11),
+                        overflow: TextOverflow.ellipsis,
+                      )),
+                      IconButton(
+                        icon: const Icon(Icons.copy, size: 16, color: AppColors.violet400),
+                        onPressed: () {
+                          Clipboard.setData(ClipboardData(text: 'https://t.me/UspAIChatbot?start=ref_${user.referralCode}'));
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Ссылка скопирована')));
+                        },
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
+                      ),
+                      const SizedBox(width: 8),
+                      IconButton(
+                        icon: const Icon(Icons.share, size: 16, color: AppColors.violet400),
+                        onPressed: () => Share.share(
+                          'Привет! Присоединяйся к UspAIChat — AI чат с множеством моделей. Регистрируйся и получи бонус!\nhttps://t.me/UspAIChatbot?start=ref_${user.referralCode}',
+                        ),
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
+                      ),
+                    ]),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text('Приглашай друзей и получай 50 кредитов + 10% от первого пополнения!',
+                    style: TextStyle(color: AppColors.textDim, fontSize: 11)),
+                ] else
+                  const Text('Реферальный код будет доступен после входа через Telegram',
+                    style: TextStyle(color: AppColors.textDim, fontSize: 12)),
               ],
             ),
           )),

@@ -3,6 +3,7 @@ import { v4 as uuid } from 'uuid';
 import { OAuth2Client } from 'google-auth-library';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
+import { processReferral } from '../services/telegram.js';
 import { getDB } from '../db/database.js';
 import { JWT_SECRET } from './auth.js';
 
@@ -70,11 +71,15 @@ router.post('/google', async (req, res) => {
       const role = userCount.cnt === 0 ? 'admin' : 'user';
       const id = uuid();
       const now = Math.floor(Date.now() / 1000);
+      const refCode = id.replace(/-/g, '').slice(0, 8).toUpperCase();
       db.prepare(
-        'INSERT INTO users (id, email, username, google_id, avatar, role, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
-      ).run(id, email ? email.toLowerCase() : null, name, googleId, picture, role, now, now);
+        'INSERT INTO users (id, email, username, google_id, avatar, role, referral_code, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
+      ).run(id, email ? email.toLowerCase() : null, name, googleId, picture, role, refCode, now, now);
       user = db.prepare('SELECT * FROM users WHERE id = ?').get(id);
       if (role === 'admin') console.log(`First user "${name}" registered as ADMIN via Google`);
+      // Process referral
+      const { ref } = req.body;
+      if (ref) { try { processReferral(id, ref); } catch {} }
     }
 
     if (user.is_blocked) {
@@ -153,11 +158,14 @@ router.post('/apple', async (req, res) => {
       const id = uuid();
       const now = Math.floor(Date.now() / 1000);
       const username = name || (email ? email.split('@')[0] : 'Apple User');
+      const refCode = id.replace(/-/g, '').slice(0, 8).toUpperCase();
       db.prepare(
-        'INSERT INTO users (id, email, username, apple_id, role, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)'
-      ).run(id, email ? email.toLowerCase() : null, username, appleId, role, now, now);
+        'INSERT INTO users (id, email, username, apple_id, role, referral_code, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+      ).run(id, email ? email.toLowerCase() : null, username, appleId, role, refCode, now, now);
       user = db.prepare('SELECT * FROM users WHERE id = ?').get(id);
       if (role === 'admin') console.log(`First user "${username}" registered as ADMIN via Apple`);
+      const { ref } = req.body;
+      if (ref) { try { processReferral(id, ref); } catch {} }
     }
 
     if (user.is_blocked) {

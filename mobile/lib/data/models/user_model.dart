@@ -12,6 +12,8 @@ class User {
   final String? appleId;
   final int createdAt;
   final bool? hasPassword;
+  final String? referralCode;
+  final double referralEarnings;
 
   User({
     required this.id,
@@ -27,6 +29,8 @@ class User {
     this.appleId,
     required this.createdAt,
     this.hasPassword,
+    this.referralCode,
+    this.referralEarnings = 0,
   });
 
   bool get isAdmin => role == 'admin';
@@ -46,9 +50,11 @@ class User {
     appleId: json['apple_id'] as String?,
     createdAt: json['created_at'] as int,
     hasPassword: json['has_password'] as bool?,
+    referralCode: json['referral_code'] as String?,
+    referralEarnings: (json['referral_earnings'] as num?)?.toDouble() ?? 0,
   );
 
-  User copyWith({double? balance, int? telegramId, String? telegramUsername, bool? hasPassword}) => User(
+  User copyWith({double? balance, int? telegramId, String? telegramUsername, bool? hasPassword, double? referralEarnings}) => User(
     id: id,
     email: email,
     username: username,
@@ -62,5 +68,7 @@ class User {
     appleId: appleId,
     createdAt: createdAt,
     hasPassword: hasPassword ?? this.hasPassword,
+    referralCode: referralCode,
+    referralEarnings: referralEarnings ?? this.referralEarnings,
   );
 }

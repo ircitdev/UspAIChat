@@ -51,7 +51,10 @@ interface Transaction {
 interface Props { onClose: () => void; currentUserId: string; }
 
 export default function AdminPanel({ onClose, currentUserId }: Props) {
-  const [tab, setTab] = useState<'stats' | 'users' | 'keys' | 'balance'>('stats');
+  const [tab, setTab] = useState<'stats' | 'users' | 'keys' | 'balance' | 'payments' | 'promo'>('stats');
+  const [adminPayments, setAdminPayments] = useState<any[]>([]);
+  const [adminPromos, setAdminPromos] = useState<any[]>([]);
+  const [newPromo, setNewPromo] = useState({ code: '', type: 'bonus', value: 20, max_uses: 100, per_user_limit: 1 });
   const [stats, setStats] = useState<Stats | null>(null);
   const [users, setUsers] = useState<User[]>([]);
   const [search, setSearch] = useState('');
@@ -74,6 +77,8 @@ export default function AdminPanel({ onClose, currentUserId }: Props) {
     { id: 'anthropic', name: 'Anthropic Claude', color: 'text-orange-400', placeholder: 'sk-ant-api...' },
     { id: 'openai', name: 'OpenAI', color: 'text-green-400', placeholder: 'sk-...' },
     { id: 'gemini', name: 'Google Gemini', color: 'text-blue-400', placeholder: 'AIza...' },
+    { id: 'deepseek', name: 'DeepSeek', color: 'text-cyan-400', placeholder: 'sk-...' },
+    { id: 'kimi', name: 'Kimi (Moonshot AI)', color: 'text-purple-400', placeholder: 'sk-...' },
   ];
 
   const loadStats = async () => {
@@ -193,6 +198,8 @@ export default function AdminPanel({ onClose, currentUserId }: Props) {
             { id: 'stats', icon: BarChart2, label: 'Stats' },
             { id: 'users', icon: Users, label: `Users (${stats?.totalUsers ?? '\u2026'})` },
             { id: 'balance', icon: Wallet, label: 'Balance' },
+            { id: 'payments', icon: TrendingUp, label: 'Payments' },
+            { id: 'promo', icon: Plus, label: 'Promo' },
             { id: 'keys', icon: Key, label: 'API Keys' },
           ].map(t => (
             <button key={t.id} onClick={() => setTab(t.id as never)}
@@ -418,6 +425,93 @@ export default function AdminPanel({ onClose, currentUserId }: Props) {
               {!txLoading && transactions.length === 0 && (
                 <div className="text-center py-8 text-slate-400 dark:text-slate-600 text-sm">No transactions yet</div>
               )}
+            </div>
+          )}
+
+          {/* -- PAYMENTS -- */}
+          {tab === 'payments' && (
+            <div className="space-y-3">
+              <button onClick={async () => {
+                try { const { data } = await api.get('/payments/history?limit=100'); setAdminPayments(data); } catch {}
+              }} className="text-xs text-violet-500 hover:text-violet-400 transition-colors flex items-center gap-1">
+                <RefreshCw size={10} /> Load payments
+              </button>
+              {adminPayments.map(p => (
+                <div key={p.id} className="flex items-center gap-3 p-3 rounded-lg bg-[#f8fafc] dark:bg-[#0d0d1a] border border-[#e2e8f0] dark:border-[#1e1e2e]">
+                  <div className={clsx('w-2 h-2 rounded-full shrink-0', p.status === 'succeeded' ? 'bg-green-500' : p.status === 'pending' ? 'bg-yellow-500' : 'bg-red-400')} />
+                  <div className="flex-1 min-w-0">
+                    <div className="text-xs text-slate-800 dark:text-white font-medium">{p.amount} ₽ → {Math.round(p.credits)} кр.</div>
+                    <div className="text-[10px] text-slate-400">{p.source} {p.promo_code ? `| ${p.promo_code}` : ''}</div>
+                  </div>
+                  <div className="text-[10px] text-slate-400">{p.paid_at ? format(new Date(p.paid_at * 1000), 'dd.MM HH:mm') : 'pending'}</div>
+                </div>
+              ))}
+              {adminPayments.length === 0 && (
+                <div className="text-center py-8 text-slate-400 dark:text-slate-600 text-sm">Click refresh to load</div>
+              )}
+            </div>
+          )}
+
+          {/* -- PROMO CODES -- */}
+          {tab === 'promo' && (
+            <div className="space-y-4">
+              <div className="p-3 rounded-lg bg-[#f8fafc] dark:bg-[#0d0d1a] border border-[#e2e8f0] dark:border-[#1e1e2e] space-y-2">
+                <div className="text-xs font-medium text-slate-600 dark:text-slate-300">Create promo code</div>
+                <div className="grid grid-cols-2 gap-2">
+                  <input value={newPromo.code} onChange={e => setNewPromo(p => ({ ...p, code: e.target.value.toUpperCase() }))}
+                    placeholder="Code (auto if empty)" className="col-span-2 px-2 py-1.5 rounded-lg bg-white dark:bg-[#1e1e2e] border border-[#d1d8e4] dark:border-[#2d2d3f] text-xs text-slate-800 dark:text-slate-200" />
+                  <select value={newPromo.type} onChange={e => setNewPromo(p => ({ ...p, type: e.target.value }))}
+                    className="px-2 py-1.5 rounded-lg bg-white dark:bg-[#1e1e2e] border border-[#d1d8e4] dark:border-[#2d2d3f] text-xs text-slate-800 dark:text-slate-200">
+                    <option value="bonus">Bonus %</option>
+                    <option value="discount">Discount %</option>
+                    <option value="fixed">Fixed credits</option>
+                  </select>
+                  <input type="number" value={newPromo.value} onChange={e => setNewPromo(p => ({ ...p, value: +e.target.value }))}
+                    placeholder="Value" className="px-2 py-1.5 rounded-lg bg-white dark:bg-[#1e1e2e] border border-[#d1d8e4] dark:border-[#2d2d3f] text-xs text-slate-800 dark:text-slate-200" />
+                  <input type="number" value={newPromo.max_uses} onChange={e => setNewPromo(p => ({ ...p, max_uses: +e.target.value }))}
+                    placeholder="Max uses" className="px-2 py-1.5 rounded-lg bg-white dark:bg-[#1e1e2e] border border-[#d1d8e4] dark:border-[#2d2d3f] text-xs text-slate-800 dark:text-slate-200" />
+                  <button onClick={async () => {
+                    try {
+                      await api.post('/promo', newPromo);
+                      setNewPromo({ code: '', type: 'bonus', value: 20, max_uses: 100, per_user_limit: 1 });
+                      const { data } = await api.get('/promo');
+                      setAdminPromos(data);
+                    } catch (err: any) { alert(err.response?.data?.error || 'Error'); }
+                  }} className="px-3 py-1.5 rounded-lg bg-violet-600 text-white text-xs hover:bg-violet-700 transition-colors">Create</button>
+                </div>
+              </div>
+
+              <button onClick={async () => {
+                try { const { data } = await api.get('/promo'); setAdminPromos(data); } catch {}
+              }} className="text-xs text-violet-500 hover:text-violet-400 transition-colors flex items-center gap-1">
+                <RefreshCw size={10} /> Load promos
+              </button>
+
+              {adminPromos.map(p => (
+                <div key={p.id} className="p-3 rounded-lg bg-[#f8fafc] dark:bg-[#0d0d1a] border border-[#e2e8f0] dark:border-[#1e1e2e]">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-sm font-mono font-bold text-violet-500">{p.code}</span>
+                    <div className="flex items-center gap-2">
+                      <span className={clsx('text-[10px] px-1.5 py-0.5 rounded', p.is_active ? 'bg-green-500/20 text-green-500' : 'bg-red-400/20 text-red-400')}>
+                        {p.is_active ? 'Active' : 'Inactive'}
+                      </span>
+                      <button onClick={async () => {
+                        await api.put(`/promo/${p.id}`, { is_active: p.is_active ? 0 : 1 });
+                        const { data } = await api.get('/promo'); setAdminPromos(data);
+                      }} className="text-[10px] text-slate-400 hover:text-slate-200">Toggle</button>
+                      <button onClick={async () => {
+                        await api.delete(`/promo/${p.id}`);
+                        const { data } = await api.get('/promo'); setAdminPromos(data);
+                      }} className="text-[10px] text-red-400 hover:text-red-300">Delete</button>
+                    </div>
+                  </div>
+                  <div className="text-xs text-slate-400">
+                    {p.type === 'bonus' ? `+${p.value}%` : p.type === 'discount' ? `-${p.value}%` : `+${p.value} кр.`}
+                    {' | '}{p.uses_count}/{p.max_uses ?? '∞'} uses
+                    {' | '}per user: {p.per_user_limit}
+                  </div>
+                </div>
+              ))}
             </div>
           )}
 
