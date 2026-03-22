@@ -14,12 +14,14 @@ class ChatState {
   final String streamingContent;
   final int tokenCount;
   final String? error;
+  final SseRoutingInfo? routingInfo;
 
   ChatState({
     this.streaming = false,
     this.streamingContent = '',
     this.tokenCount = 0,
     this.error,
+    this.routingInfo,
   });
 }
 
@@ -52,17 +54,26 @@ class ChatNotifier extends StateNotifier<ChatState> {
         cancelToken: _cancelToken,
         onEvent: (event) {
           switch (event) {
+            case SseRoutingInfo():
+              state = ChatState(
+                streaming: true,
+                streamingContent: state.streamingContent,
+                tokenCount: state.tokenCount,
+                routingInfo: event,
+              );
             case SseChunk(:final content):
               state = ChatState(
                 streaming: true,
                 streamingContent: state.streamingContent + content,
                 tokenCount: state.tokenCount,
+                routingInfo: state.routingInfo,
               );
             case SseTokens(:final count):
               state = ChatState(
                 streaming: true,
                 streamingContent: state.streamingContent,
                 tokenCount: count,
+                routingInfo: state.routingInfo,
               );
             case SseDone(:final balanceAfter):
               if (balanceAfter != null) {

@@ -6,12 +6,19 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
+import 'package:flutter_tts/flutter_tts.dart';
+import 'package:intl/intl.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../data/datasources/remote/file_api.dart';
+import '../../../data/datasources/remote/model_api.dart';
 import '../../../data/models/message_model.dart';
+import '../../../data/models/prompt_template_model.dart';
+import '../../../data/models/sse_event_model.dart';
 import '../../../providers/auth_provider.dart';
 import '../../../providers/chat_provider.dart';
 import '../../../providers/conversation_provider.dart';
+import '../../../providers/prompt_template_provider.dart';
 
 class ChatScreen extends ConsumerStatefulWidget {
   const ChatScreen({super.key});
@@ -26,11 +33,53 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   final _focusNode = FocusNode();
   List<File> _attachedFiles = [];
 
+  // Voice
+  final stt.SpeechToText _speech = stt.SpeechToText();
+  final FlutterTts _tts = FlutterTts();
+  bool _isListening = false;
+  bool _autoSpeak = false;
+  bool _speechAvailable = false;
+  bool _showScrollBtn = false;
+
+  // Prompt templates
+  bool _showTemplates = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initSpeech();
+    _initTts();
+    _scrollCtrl.addListener(_onScroll);
+    // Load templates
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(promptTemplateProvider.notifier).loadTemplates();
+    });
+  }
+
+  Future<void> _initSpeech() async {
+    _speechAvailable = await _speech.initialize();
+    setState(() {});
+  }
+
+  void _initTts() {
+    _tts.setLanguage('ru-RU');
+    _tts.setSpeechRate(0.5);
+  }
+
+  void _onScroll() {
+    if (!_scrollCtrl.hasClients) return;
+    final dist = _scrollCtrl.position.maxScrollExtent - _scrollCtrl.position.pixels;
+    final show = dist > 200;
+    if (show != _showScrollBtn) setState(() => _showScrollBtn = show);
+  }
+
   @override
   void dispose() {
     _inputCtrl.dispose();
     _scrollCtrl.dispose();
     _focusNode.dispose();
+    _speech.stop();
+    _tts.stop();
     super.dispose();
   }
 
@@ -46,6 +95,38 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     });
   }
 
+  Future<void> _toggleListening() async {
+    if (!_speechAvailable) return;
+    if (_isListening) {
+      await _speech.stop();
+      setState(() => _isListening = false);
+    } else {
+      setState(() => _isListening = true);
+      await _speech.listen(
+        onResult: (result) {
+          if (result.finalResult) {
+            _inputCtrl.text = _inputCtrl.text.isEmpty
+                ? result.recognizedWords
+                : '${_inputCtrl.text} ${result.recognizedWords}';
+            _inputCtrl.selection = TextSelection.fromPosition(
+              TextPosition(offset: _inputCtrl.text.length),
+            );
+          }
+        },
+        localeId: 'ru_RU',
+      );
+    }
+  }
+
+  Future<void> _speak(String text) async {
+    final clean = text
+        .replaceAll(RegExp(r'```[\s\S]*?```'), ' блок кода ')
+        .replaceAll(RegExp(r'`[^`]+`'), '')
+        .replaceAll(RegExp(r'[#*_~>|]'), '')
+        .replaceAll(RegExp(r'\n+'), '. ');
+    await _tts.speak(clean);
+  }
+
   Future<void> _send() async {
     final text = _inputCtrl.text.trim();
     if (text.isEmpty) return;
@@ -54,16 +135,23 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     final conv = convState.active;
     if (conv == null) return;
 
+    // Save files before clearing state
+    final filesToUpload = List<File>.from(_attachedFiles);
+
     _inputCtrl.clear();
-    final files = _attachedFiles.toList();
-    setState(() => _attachedFiles = []);
+    setState(() {
+      _showTemplates = false;
+      _attachedFiles = [];
+    });
 
     List<Map<String, dynamic>>? fileData;
-    if (files.isNotEmpty) {
+    if (filesToUpload.isNotEmpty) {
       final fileApi = FileApi(ref.read(apiClientProvider));
-      final attachments = await fileApi.uploadFiles(files, conv.id);
+      final attachments = await fileApi.uploadFiles(filesToUpload, conv.id);
       fileData = attachments.map((a) => a.toJson()).toList();
     }
+
+    final prevLen = ref.read(conversationProvider).messages.length;
 
     await ref.read(chatProvider.notifier).sendMessage(
       conversationId: conv.id,
@@ -73,6 +161,15 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       systemPrompt: conv.systemPrompt,
       files: fileData,
     );
+
+    // Auto-speak last assistant message
+    if (_autoSpeak) {
+      final msgs = ref.read(conversationProvider).messages;
+      if (msgs.length > prevLen) {
+        final last = msgs.last;
+        if (last.isAssistant) _speak(last.content);
+      }
+    }
   }
 
   Future<void> _pickImage() async {
@@ -88,34 +185,127 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     }
   }
 
+  void _onTextChanged(String value) {
+    if (value == '/' || (value.startsWith('/') && !value.contains(' ') && value.length < 30)) {
+      setState(() => _showTemplates = true);
+    } else {
+      if (_showTemplates) setState(() => _showTemplates = false);
+    }
+  }
+
+  void _insertTemplate(PromptTemplate tpl) {
+    _inputCtrl.text = tpl.content;
+    _inputCtrl.selection = TextSelection.fromPosition(TextPosition(offset: tpl.content.length));
+    setState(() => _showTemplates = false);
+    _focusNode.requestFocus();
+  }
+
+  String _formatDateGroup(int timestamp) {
+    final date = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final msgDay = DateTime(date.year, date.month, date.day);
+    if (msgDay == today) return 'Сегодня';
+    if (msgDay == today.subtract(const Duration(days: 1))) return 'Вчера';
+    return DateFormat('d MMMM yyyy', 'ru').format(date);
+  }
+
   @override
   Widget build(BuildContext context) {
     final convState = ref.watch(conversationProvider);
     final chatState = ref.watch(chatProvider);
     final messages = convState.messages;
+    final templates = ref.watch(promptTemplateProvider);
 
     if (chatState.streaming) _scrollToBottom();
 
+    // Group messages by date
+    final groups = <String, List<Message>>{};
+    for (final msg in messages) {
+      final key = _formatDateGroup(msg.createdAt);
+      groups.putIfAbsent(key, () => []).add(msg);
+    }
+
     return Column(
       children: [
-        // Model bar
         _ModelBar(conv: convState.active),
 
         // Messages
         Expanded(
-          child: convState.loading
-            ? const Center(child: CircularProgressIndicator(color: AppColors.violet600))
-            : ListView.builder(
-                controller: _scrollCtrl,
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                itemCount: messages.length + (chatState.streaming ? 1 : 0),
-                itemBuilder: (_, i) {
-                  if (i < messages.length) {
-                    return _MessageBubble(message: messages[i]);
-                  }
-                  return _StreamingBubble(content: chatState.streamingContent);
-                },
+          child: Stack(
+            children: [
+              convState.loading
+                ? _MessageSkeleton()
+                : AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 200),
+                    child: ListView(
+                      key: ValueKey(convState.activeId),
+                      controller: _scrollCtrl,
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      children: [
+                        for (final entry in groups.entries) ...[
+                          // Date separator
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            child: Row(children: [
+                              const Expanded(child: Divider(color: AppColors.cardBorder)),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 12),
+                                child: Text(entry.key, style: const TextStyle(color: AppColors.textDim, fontSize: 11)),
+                              ),
+                              const Expanded(child: Divider(color: AppColors.cardBorder)),
+                            ]),
+                          ),
+                          ...entry.value.map((msg) => _MessageBubble(
+                            message: msg,
+                            onDelete: () => ref.read(conversationProvider.notifier).deleteMessage(msg.conversationId, msg.id),
+                            onSpeak: msg.isAssistant ? () => _speak(msg.content) : null,
+                          )),
+                        ],
+                        if (chatState.streaming) ...[
+                          if (chatState.routingInfo != null)
+                            _RoutingBadge(info: chatState.routingInfo!),
+                          _StreamingBubble(content: chatState.streamingContent),
+                        ],
+                      ],
+                    ),
+                  ),
+
+              // Scroll to bottom + auto-speak
+              Positioned(
+                right: 12,
+                bottom: 12,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (_speechAvailable)
+                      FloatingActionButton.small(
+                        heroTag: 'tts',
+                        onPressed: () => setState(() {
+                          _autoSpeak = !_autoSpeak;
+                          if (!_autoSpeak) _tts.stop();
+                        }),
+                        backgroundColor: _autoSpeak ? AppColors.violet600 : AppColors.surfaceLight,
+                        child: Icon(
+                          _autoSpeak ? Icons.volume_up : Icons.volume_off,
+                          size: 18,
+                          color: _autoSpeak ? Colors.white : AppColors.textMuted,
+                        ),
+                      ),
+                    if (_showScrollBtn) ...[
+                      const SizedBox(height: 8),
+                      FloatingActionButton.small(
+                        heroTag: 'scroll',
+                        onPressed: _scrollToBottom,
+                        backgroundColor: AppColors.surfaceLight,
+                        child: const Icon(Icons.keyboard_arrow_down, color: AppColors.textMuted),
+                      ),
+                    ],
+                  ],
+                ),
               ),
+            ],
+          ),
         ),
 
         // Error
@@ -128,6 +318,41 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               borderRadius: BorderRadius.circular(10),
             ),
             child: Text(chatState.error!, style: const TextStyle(color: AppColors.error, fontSize: 12)),
+          ),
+
+        // Prompt templates popup
+        if (_showTemplates && templates.isNotEmpty)
+          Container(
+            constraints: const BoxConstraints(maxHeight: 200),
+            margin: const EdgeInsets.symmetric(horizontal: 8),
+            decoration: BoxDecoration(
+              color: AppColors.surface,
+              border: Border.all(color: AppColors.cardBorder),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: templates.length,
+              itemBuilder: (_, i) {
+                final tpl = templates[i];
+                final filter = _inputCtrl.text.length > 1 ? _inputCtrl.text.substring(1).toLowerCase() : '';
+                if (filter.isNotEmpty && !tpl.name.toLowerCase().contains(filter)) return const SizedBox.shrink();
+                return ListTile(
+                  dense: true,
+                  title: Text(tpl.name, style: const TextStyle(fontSize: 13, color: AppColors.textPrimary)),
+                  subtitle: Text(tpl.content, maxLines: 1, overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontSize: 11, color: AppColors.textDim)),
+                  trailing: Chip(
+                    label: Text(tpl.category, style: const TextStyle(fontSize: 9)),
+                    padding: EdgeInsets.zero,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    backgroundColor: AppColors.surfaceLight,
+                    side: const BorderSide(color: AppColors.cardBorder),
+                  ),
+                  onTap: () => _insertTemplate(tpl),
+                );
+              },
+            ),
           ),
 
         // Attached files
@@ -184,17 +409,28 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     ),
                   ),
                 ),
+                // Mic button
+                if (_speechAvailable)
+                  IconButton(
+                    icon: Icon(
+                      _isListening ? Icons.mic_off : Icons.mic,
+                      size: 20,
+                      color: _isListening ? AppColors.error : AppColors.textMuted,
+                    ),
+                    onPressed: _toggleListening,
+                  ),
                 Expanded(
                   child: TextField(
                     controller: _inputCtrl,
                     focusNode: _focusNode,
                     maxLines: 4,
                     minLines: 1,
+                    onChanged: _onTextChanged,
                     style: const TextStyle(color: AppColors.textPrimary, fontSize: 14),
-                    decoration: const InputDecoration(
-                      hintText: 'Type a message...',
+                    decoration: InputDecoration(
+                      hintText: _isListening ? 'Говорите...' : 'Type a message... (/ for templates)',
                       border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                     ),
                     textInputAction: TextInputAction.send,
                     onSubmitted: (_) => _send(),
@@ -217,13 +453,152 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   }
 }
 
-class _ModelBar extends ConsumerWidget {
+// Skeleton loading
+class _MessageSkeleton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: List.generate(3, (i) => Align(
+          alignment: i.isEven ? Alignment.centerLeft : Alignment.centerRight,
+          child: Container(
+            margin: const EdgeInsets.only(bottom: 12),
+            width: MediaQuery.of(context).size.width * (i.isEven ? 0.7 : 0.5),
+            height: 60 + (i * 10),
+            decoration: BoxDecoration(
+              color: AppColors.surfaceLight.withOpacity(0.5),
+              borderRadius: BorderRadius.circular(16),
+            ),
+          ),
+        )),
+      ),
+    );
+  }
+}
+
+class _ModelBar extends ConsumerStatefulWidget {
   final dynamic conv;
   const _ModelBar({this.conv});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_ModelBar> createState() => _ModelBarState();
+}
+
+class _ModelBarState extends ConsumerState<_ModelBar> {
+  Map<String, List<dynamic>>? _models;
+
+  Future<void> _loadModels() async {
+    if (_models != null) return;
+    final api = ModelApi(ref.read(apiClientProvider));
+    final models = await api.getModels();
+    setState(() => _models = models);
+  }
+
+  static const _providerLabels = {
+    'auto': 'Авто (Smart Router)',
+    'anthropic': 'Anthropic',
+    'openai': 'OpenAI',
+    'gemini': 'Google',
+    'deepseek': 'DeepSeek',
+    'kimi': 'Kimi',
+  };
+
+  void _showProviderPicker() async {
+    await _loadModels();
+    if (_models == null || !mounted) return;
+    final providers = _models!.keys.toList();
+    final conv = widget.conv;
+
+    showModalBottomSheet(
+      context: context,
+      builder: (ctx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Padding(
+              padding: EdgeInsets.all(16),
+              child: Text('Select provider', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            ),
+            ...providers.map((p) => ListTile(
+              leading: p == 'auto'
+                ? const Icon(Icons.auto_awesome, size: 16, color: AppColors.violet400)
+                : Container(
+                    width: 8, height: 8,
+                    decoration: BoxDecoration(shape: BoxShape.circle, color: AppColors.providerColor(p)),
+                  ),
+              title: Text(_providerLabels[p] ?? p.toUpperCase(), style: TextStyle(
+                color: p == 'auto' ? AppColors.violet400 : AppColors.providerColor(p),
+                fontWeight: FontWeight.w600, fontSize: 14,
+              )),
+              subtitle: p == 'auto' ? const Text('Автоматический выбор модели', style: TextStyle(fontSize: 11, color: AppColors.textDim)) : null,
+              trailing: p == conv.provider ? const Icon(Icons.check, size: 16, color: AppColors.violet400) : null,
+              onTap: () {
+                Navigator.pop(ctx);
+                if (p == 'auto') {
+                  ref.read(conversationProvider.notifier).updateConversation(
+                    conv.id, {'provider': 'auto', 'model': 'auto'},
+                  );
+                } else {
+                  final models = _models![p]!;
+                  if (models.isNotEmpty) {
+                    ref.read(conversationProvider.notifier).updateConversation(
+                      conv.id, {'provider': p, 'model': models.first.id},
+                    );
+                  }
+                }
+              },
+            )),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showModelPicker() async {
+    await _loadModels();
+    if (_models == null || !mounted) return;
+    final conv = widget.conv;
+    final models = _models![conv.provider] ?? [];
+
+    showModalBottomSheet(
+      context: context,
+      builder: (ctx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Text('${conv.provider.toUpperCase()} models',
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            ),
+            ...models.map((m) => ListTile(
+              dense: true,
+              title: Text(m.name, style: const TextStyle(color: AppColors.textPrimary, fontSize: 13)),
+              subtitle: Text('Context: ${m.context}', style: const TextStyle(color: AppColors.textDim, fontSize: 11)),
+              trailing: m.id == conv.model ? const Icon(Icons.check, size: 16, color: AppColors.violet400) : null,
+              onTap: () {
+                ref.read(conversationProvider.notifier).updateConversation(conv.id, {'model': m.id});
+                Navigator.pop(ctx);
+              },
+            )),
+            if (models.isEmpty)
+              const Padding(
+                padding: EdgeInsets.all(16),
+                child: Text('No models available', style: TextStyle(color: AppColors.textDim)),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final conv = widget.conv;
     if (conv == null) return const SizedBox.shrink();
+    final isAuto = conv.provider == 'auto';
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: const BoxDecoration(
@@ -232,22 +607,48 @@ class _ModelBar extends ConsumerWidget {
       ),
       child: Row(
         children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-            decoration: BoxDecoration(
-              color: AppColors.providerColor(conv.provider).withOpacity(0.15),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Text(conv.provider.toUpperCase(),
-              style: TextStyle(color: AppColors.providerColor(conv.provider), fontSize: 11, fontWeight: FontWeight.w600),
+          GestureDetector(
+            onTap: _showProviderPicker,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                color: isAuto ? AppColors.violet600.withOpacity(0.15) : AppColors.providerColor(conv.provider).withOpacity(0.15),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(mainAxisSize: MainAxisSize.min, children: [
+                if (isAuto) ...[
+                  const Icon(Icons.auto_awesome, size: 12, color: AppColors.violet400),
+                  const SizedBox(width: 4),
+                  const Text('АВТО',
+                    style: TextStyle(color: AppColors.violet400, fontSize: 11, fontWeight: FontWeight.w600),
+                  ),
+                ] else ...[
+                  Text(conv.provider.toUpperCase(),
+                    style: TextStyle(color: AppColors.providerColor(conv.provider), fontSize: 11, fontWeight: FontWeight.w600),
+                  ),
+                ],
+                const SizedBox(width: 4),
+                Icon(Icons.unfold_more, size: 12, color: isAuto ? AppColors.violet400 : AppColors.providerColor(conv.provider)),
+              ]),
             ),
           ),
           const SizedBox(width: 8),
           Expanded(
-            child: Text(conv.model,
-              style: const TextStyle(color: AppColors.textMuted, fontSize: 12),
-              overflow: TextOverflow.ellipsis,
-            ),
+            child: isAuto
+              ? const Text('Smart Router', style: TextStyle(color: AppColors.textMuted, fontSize: 12))
+              : GestureDetector(
+                  onTap: _showModelPicker,
+                  child: Row(children: [
+                    Flexible(
+                      child: Text(conv.model,
+                        style: const TextStyle(color: AppColors.textMuted, fontSize: 12),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    const Icon(Icons.unfold_more, size: 12, color: AppColors.textDim),
+                  ]),
+                ),
           ),
           IconButton(
             icon: Icon(Icons.tune, size: 18,
@@ -264,51 +665,115 @@ class _ModelBar extends ConsumerWidget {
 
 class _MessageBubble extends StatelessWidget {
   final Message message;
-  const _MessageBubble({required this.message});
+  final VoidCallback onDelete;
+  final VoidCallback? onSpeak;
+
+  const _MessageBubble({required this.message, required this.onDelete, this.onSpeak});
 
   @override
   Widget build(BuildContext context) {
     final isUser = message.isUser;
-    return Align(
-      alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
-      child: Container(
-        margin: EdgeInsets.only(
-          top: 4, bottom: 4,
-          left: isUser ? 48 : 0,
-          right: isUser ? 0 : 48,
-        ),
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: isUser ? AppColors.violet600 : AppColors.surfaceLight,
-          borderRadius: BorderRadius.circular(16).copyWith(
-            bottomRight: isUser ? const Radius.circular(4) : null,
-            bottomLeft: !isUser ? const Radius.circular(4) : null,
+    return GestureDetector(
+      onLongPress: () {
+        showModalBottomSheet(
+          context: context,
+          builder: (_) => SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.copy),
+                  title: const Text('Copy'),
+                  onTap: () {
+                    Clipboard.setData(ClipboardData(text: message.content));
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Copied'), duration: Duration(seconds: 1)),
+                    );
+                  },
+                ),
+                if (onSpeak != null)
+                  ListTile(
+                    leading: const Icon(Icons.volume_up),
+                    title: const Text('Speak'),
+                    onTap: () { Navigator.pop(context); onSpeak!(); },
+                  ),
+                ListTile(
+                  leading: const Icon(Icons.delete, color: AppColors.error),
+                  title: const Text('Delete', style: TextStyle(color: AppColors.error)),
+                  onTap: () {
+                    Navigator.pop(context);
+                    onDelete();
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+      child: Align(
+        alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
+        child: Container(
+          margin: EdgeInsets.only(
+            top: 4, bottom: 4,
+            left: isUser ? 48 : 0,
+            right: isUser ? 0 : 48,
+          ),
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: isUser ? AppColors.violet600 : AppColors.surfaceLight,
+            borderRadius: BorderRadius.circular(16).copyWith(
+              bottomRight: isUser ? const Radius.circular(4) : null,
+              bottomLeft: !isUser ? const Radius.circular(4) : null,
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              isUser
+                ? Text(message.content, style: const TextStyle(color: Colors.white, fontSize: 14))
+                : MarkdownBody(
+                    data: message.content,
+                    styleSheet: MarkdownStyleSheet(
+                      p: const TextStyle(color: AppColors.textPrimary, fontSize: 14),
+                      code: TextStyle(
+                        color: AppColors.textPrimary,
+                        backgroundColor: AppColors.background,
+                        fontSize: 13,
+                        fontFamily: 'monospace',
+                      ),
+                      codeblockDecoration: BoxDecoration(
+                        color: AppColors.background,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      tableHead: const TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold),
+                      tableBorder: TableBorder.all(color: AppColors.cardBorder),
+                    ),
+                    selectable: true,
+                    onTapLink: (_, href, __) {
+                      if (href != null) Clipboard.setData(ClipboardData(text: href));
+                    },
+                  ),
+              // Timestamp + model
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      DateFormat('HH:mm').format(DateTime.fromMillisecondsSinceEpoch(message.createdAt * 1000)),
+                      style: TextStyle(fontSize: 10, color: isUser ? Colors.white54 : AppColors.textDim),
+                    ),
+                    if (message.model != null) ...[
+                      const SizedBox(width: 6),
+                      Text(message.model!, style: TextStyle(fontSize: 10, color: isUser ? Colors.white38 : AppColors.textDim)),
+                    ],
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
-        child: isUser
-          ? Text(message.content, style: const TextStyle(color: Colors.white, fontSize: 14))
-          : MarkdownBody(
-              data: message.content,
-              styleSheet: MarkdownStyleSheet(
-                p: const TextStyle(color: AppColors.textPrimary, fontSize: 14),
-                code: TextStyle(
-                  color: AppColors.textPrimary,
-                  backgroundColor: AppColors.background,
-                  fontSize: 13,
-                  fontFamily: 'monospace',
-                ),
-                codeblockDecoration: BoxDecoration(
-                  color: AppColors.background,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                tableHead: const TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold),
-                tableBorder: TableBorder.all(color: AppColors.cardBorder),
-              ),
-              selectable: true,
-              onTapLink: (_, href, __) {
-                if (href != null) Clipboard.setData(ClipboardData(text: href));
-              },
-            ),
       ),
     );
   }
@@ -342,6 +807,184 @@ class _StreamingBubble extends StatelessWidget {
                 p: const TextStyle(color: AppColors.textPrimary, fontSize: 14),
               ),
             ),
+      ),
+    );
+  }
+}
+
+class _RoutingBadge extends StatelessWidget {
+  final SseRoutingInfo info;
+  const _RoutingBadge({required this.info});
+
+  static const _tierColors = {
+    'SIMPLE': Color(0xFF4ADE80),
+    'MEDIUM': Color(0xFFFBBF24),
+    'COMPLEX': Color(0xFFFB923C),
+  };
+
+  static const _tierLabels = {
+    'SIMPLE': 'Простой',
+    'MEDIUM': 'Средний',
+    'COMPLEX': 'Сложный',
+  };
+
+  void _showDetails(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (ctx) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const Icon(Icons.auto_awesome, color: AppColors.violet400, size: 20),
+                  const SizedBox(width: 8),
+                  const Text('Smart Router', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+                  const Spacer(),
+                  IconButton(icon: const Icon(Icons.close, size: 18), onPressed: () => Navigator.pop(ctx)),
+                ],
+              ),
+              const SizedBox(height: 16),
+
+              // Model
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: AppColors.surfaceLight,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: AppColors.cardBorder),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 8, height: 8,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: AppColors.providerColor(info.selectedProvider),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(info.selectedProvider.toUpperCase(),
+                      style: TextStyle(color: AppColors.providerColor(info.selectedProvider), fontWeight: FontWeight.w600, fontSize: 13)),
+                    const SizedBox(width: 8),
+                    Expanded(child: Text(info.selectedModel, style: const TextStyle(color: AppColors.textMuted, fontSize: 13))),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
+
+              // Tier
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: (_tierColors[info.tier] ?? AppColors.warning).withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: (_tierColors[info.tier] ?? AppColors.warning).withOpacity(0.3)),
+                ),
+                child: Row(
+                  children: [
+                    Text(_tierLabels[info.tier] ?? info.tier,
+                      style: TextStyle(color: _tierColors[info.tier] ?? AppColors.warning, fontWeight: FontWeight.bold, fontSize: 14)),
+                    const SizedBox(width: 8),
+                    Text('(${info.tier})', style: const TextStyle(color: AppColors.textDim, fontSize: 12)),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
+
+              // Reasoning
+              const Text('Обоснование', style: TextStyle(color: AppColors.textSecondary, fontWeight: FontWeight.w600, fontSize: 12)),
+              const SizedBox(height: 4),
+              Text(info.reasoning, style: const TextStyle(color: AppColors.textMuted, fontSize: 13)),
+              const SizedBox(height: 16),
+
+              // Stats row
+              Row(
+                children: [
+                  _StatChip('Уверенность', '${(info.confidence * 100).round()}%', AppColors.violet400),
+                  const SizedBox(width: 8),
+                  if (info.savings > 0) _StatChip('Экономия', '-${info.savings}%', AppColors.success),
+                  const SizedBox(width: 8),
+                  _StatChip('Сложность', '${info.score}', AppColors.textMuted),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final color = _tierColors[info.tier] ?? AppColors.warning;
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: GestureDetector(
+        onTap: () => _showDetails(context),
+        child: Container(
+          margin: const EdgeInsets.only(left: 0, bottom: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+          decoration: BoxDecoration(
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: AppColors.cardBorder),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.auto_awesome, size: 10, color: AppColors.violet400),
+              const SizedBox(width: 4),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+                decoration: BoxDecoration(
+                  color: color.withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: color.withOpacity(0.3)),
+                ),
+                child: Text(info.tier, style: TextStyle(color: color, fontSize: 9, fontWeight: FontWeight.bold)),
+              ),
+              const SizedBox(width: 6),
+              Text(info.selectedModel, style: const TextStyle(color: AppColors.textMuted, fontSize: 10)),
+              if (info.savings > 0) ...[
+                const SizedBox(width: 4),
+                Text('-${info.savings}%', style: const TextStyle(color: AppColors.success, fontSize: 10, fontWeight: FontWeight.w600)),
+              ],
+              const SizedBox(width: 4),
+              const Text('подробнее', style: TextStyle(color: AppColors.textDim, fontSize: 9)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _StatChip extends StatelessWidget {
+  final String label;
+  final String value;
+  final Color color;
+  const _StatChip(this.label, this.value, this.color);
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        decoration: BoxDecoration(
+          color: AppColors.surfaceLight,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          children: [
+            Text(value, style: TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: 16)),
+            Text(label, style: const TextStyle(color: AppColors.textDim, fontSize: 10)),
+          ],
+        ),
       ),
     );
   }

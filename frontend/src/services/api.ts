@@ -16,6 +16,7 @@ export async function streamChat(params: {
   onTokens: (count: number) => void;
   onDone: (messageId: string, fullContent: string, balanceAfter?: number | null) => void;
   onError: (error: string) => void;
+  onRoutingInfo?: (info: unknown) => void;
 }) {
   const token = api.defaults.headers.common['Authorization'] as string | undefined;
   const response = await fetch('/api/chat/stream', {
@@ -59,6 +60,7 @@ export async function streamChat(params: {
           else if (data.type === 'tokens') params.onTokens(data.count);
           else if (data.type === 'done') params.onDone(data.message_id, data.full_content, data.balance_after);
           else if (data.type === 'error') params.onError(data.error);
+          else if (data.type === 'routing_info') params.onRoutingInfo?.(data);
         } catch {}
       }
     }

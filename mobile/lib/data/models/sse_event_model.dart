@@ -18,6 +18,18 @@ sealed class SseEvent {
           fullContent: json['full_content'] as String,
           balanceAfter: (json['balance_after'] as num?)?.toDouble(),
         );
+      case 'routing_info':
+        return SseRoutingInfo(
+          selectedModel: json['selectedModel'] as String? ?? '',
+          selectedModelId: json['selectedModelId'] as String? ?? '',
+          selectedProvider: json['selectedProvider'] as String? ?? '',
+          tier: json['tier'] as String? ?? 'MEDIUM',
+          confidence: (json['confidence'] as num?)?.toDouble() ?? 0,
+          reasoning: json['reasoning'] as String? ?? '',
+          costPer1k: (json['costPer1k'] as num?)?.toDouble() ?? 0,
+          savings: (json['savings'] as num?)?.toInt() ?? 0,
+          score: (json['score'] as num?)?.toDouble() ?? 0,
+        );
       case 'error':
         return SseError(error: json['error'] as String);
       default:
@@ -51,6 +63,42 @@ class SseDone extends SseEvent {
   final String fullContent;
   final double? balanceAfter;
   const SseDone({required this.messageId, required this.fullContent, this.balanceAfter});
+}
+
+class SseRoutingInfo extends SseEvent {
+  final String selectedModel;
+  final String selectedModelId;
+  final String selectedProvider;
+  final String tier;
+  final double confidence;
+  final String reasoning;
+  final double costPer1k;
+  final int savings;
+  final double score;
+
+  const SseRoutingInfo({
+    required this.selectedModel,
+    required this.selectedModelId,
+    required this.selectedProvider,
+    required this.tier,
+    required this.confidence,
+    required this.reasoning,
+    required this.costPer1k,
+    required this.savings,
+    required this.score,
+  });
+
+  Map<String, dynamic> toJson() => {
+    'selectedModel': selectedModel,
+    'selectedModelId': selectedModelId,
+    'selectedProvider': selectedProvider,
+    'tier': tier,
+    'confidence': confidence,
+    'reasoning': reasoning,
+    'costPer1k': costPer1k,
+    'savings': savings,
+    'score': score,
+  };
 }
 
 class SseError extends SseEvent {

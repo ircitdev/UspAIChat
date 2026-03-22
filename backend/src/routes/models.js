@@ -5,6 +5,9 @@ import { requireAuth } from '../middleware/auth.js';
 const router = Router();
 
 const MODELS = {
+  auto: [
+    { id: 'auto', name: 'Авто (Smart Router)', context: 0, description: 'Автоматически выбирает лучшую модель на основе сложности запроса' },
+  ],
   anthropic: [
     { id: 'claude-opus-4-6', name: 'Claude Opus 4.6', context: 200000 },
     { id: 'claude-sonnet-4-6', name: 'Claude Sonnet 4.6', context: 200000 },

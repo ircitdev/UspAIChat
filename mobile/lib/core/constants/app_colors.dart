@@ -34,6 +34,7 @@ class AppColors {
 
   static Color providerColor(String provider) {
     switch (provider) {
+      case 'auto': return violet400;
       case 'anthropic': return anthropic;
       case 'openai': return openai;
       case 'gemini': return gemini;
