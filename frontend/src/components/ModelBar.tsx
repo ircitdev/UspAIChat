@@ -65,7 +65,7 @@ export default memo(function ModelBar() {
   };
 
   return (
-    <div className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-2 border-b border-[#e2e8f0] dark:border-[#1e1e2e] bg-white dark:bg-[#111122] transition-colors overflow-x-auto">
+    <div className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-2 border-b border-[#e2e8f0] dark:border-[#1e1e2e] bg-white dark:bg-[#111122] transition-colors relative">
       {/* Provider selector */}
       <div className="relative">
         <button
@@ -82,8 +82,11 @@ export default memo(function ModelBar() {
           <div className="absolute top-full left-0 mt-1 bg-white dark:bg-[#1e1e2e] border border-[#d1d8e4] dark:border-[#2d2d3f] rounded-lg shadow-xl z-50 overflow-hidden min-w-[130px]">
             {(['auto', 'anthropic', 'openai', 'gemini', 'deepseek', 'kimi'] as Provider[]).map(p => (
               <button key={p} onClick={() => handleProviderChange(p)}
-                className={clsx('w-full text-left px-3 py-2 text-xs hover:bg-[#f1f5f9] dark:hover:bg-[#2d2d3f] transition-colors', PROVIDER_COLORS[p])}>
-                {PROVIDER_LABELS[p]}
+                className={clsx('w-full text-left px-3 py-2 text-xs hover:bg-[#f1f5f9] dark:hover:bg-[#2d2d3f] transition-colors',
+                  p === 'auto' ? 'text-violet-500 dark:text-violet-400 font-semibold' : PROVIDER_COLORS[p],
+                  p === selectedProvider && 'bg-[#f1f5f9] dark:bg-[#2d2d3f]'
+                )}>
+                {p === 'auto' && '⚡ '}{PROVIDER_LABELS[p]}
               </button>
             ))}
           </div>
