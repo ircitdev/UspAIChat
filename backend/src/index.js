@@ -13,6 +13,12 @@ import modelRoutes from './routes/models.js';
 import fileRoutes from './routes/files.js';
 import settingsRoutes from './routes/settings.js';
 import authOAuthRoutes from './routes/authOAuth.js';
+import folderRoutes from './routes/folders.js';
+import promptTemplateRoutes from './routes/promptTemplates.js';
+import shareRoutes from './routes/share.js';
+import paymentRoutes from './routes/payments.js';
+import promoRoutes from './routes/promo.js';
+import referralRoutes from './routes/referral.js';
 
 dotenv.config();
 
@@ -38,8 +44,27 @@ app.use('/api/conversations', conversationRoutes);
 app.use('/api/models', modelRoutes);
 app.use('/api/files', fileRoutes);
 app.use('/api/settings', settingsRoutes);
+app.use('/api/folders', folderRoutes);
+app.use('/api/prompt-templates', promptTemplateRoutes);
+app.use('/api/share', shareRoutes);
+app.use('/api/payments', paymentRoutes);
+app.use('/api/promo', promoRoutes);
+app.use('/api/referral', referralRoutes);
 
 app.get('/health', (req, res) => res.json({ status: 'ok', timestamp: Date.now() }));
+
+// Serve frontend (production)
+import { existsSync } from 'fs';
+const frontendDist = join(__dirname, '../../frontend/dist');
+if (existsSync(frontendDist)) {
+  app.use(express.static(frontendDist));
+  // SPA fallback: serve index.html for client-side routes
+  app.get('/shared/*', (req, res) => res.sendFile(join(frontendDist, 'index.html')));
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api') || req.path.startsWith('/uploads')) return next();
+    res.sendFile(join(frontendDist, 'index.html'));
+  });
+}
 
 app.listen(PORT, () => {
   console.log(`UspAIChat backend running on http://localhost:${PORT}`);

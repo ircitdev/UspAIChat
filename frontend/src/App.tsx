@@ -1,29 +1,47 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, lazy, Suspense } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
-import { Bot } from 'lucide-react';
 import Sidebar from './components/Sidebar';
 import ChatWindow from './components/ChatWindow';
-import SettingsModal from './components/SettingsModal';
-import SearchModal from './components/SearchModal';
 import AuthScreen from './components/AuthScreen';
 import useAppStore from './store/appStore';
 import useAuthStore from './store/authStore';
 import './store/themeStore'; // ensure theme is initialized
+
+const SettingsModal = lazy(() => import('./components/SettingsModal'));
+const SearchModal = lazy(() => import('./components/SearchModal'));
+const SharedView = lazy(() => import('./components/SharedView'));
 
 export default function App() {
   const { user, restoreSession } = useAuthStore();
   const [sessionChecked, setSessionChecked] = useState(false);
 
   const {
-    loadConversations, loadModels, loadApiKeyStatus,
+    loadConversations, loadModels, loadApiKeyStatus, loadFolders, loadPromptTemplates,
     sidebarOpen, setSidebarOpen,
     settingsOpen, setSettingsOpen,
     searchOpen, setSearchOpen,
     createConversation
   } = useAppStore();
 
+  // Check if this is a shared link
+  const shareMatch = window.location.pathname.match(/^\/shared\/([a-zA-Z0-9]+)$/);
+  const isPaymentReturn = window.location.pathname === '/payment-success';
+
+  // Store referral code from URL
   useEffect(() => {
-    restoreSession().finally(() => setSessionChecked(true));
+    const params = new URLSearchParams(window.location.search);
+    const ref = params.get('ref');
+    if (ref) {
+      localStorage.setItem('referral_code', ref);
+      // Clean URL
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!shareMatch) {
+      restoreSession().finally(() => setSessionChecked(true));
+    }
   }, []);
 
   useEffect(() => {
@@ -31,6 +49,8 @@ export default function App() {
       loadConversations();
       loadModels();
       loadApiKeyStatus();
+      loadFolders();
+      loadPromptTemplates();
     }
   }, [user]);
 
@@ -39,6 +59,19 @@ export default function App() {
   useHotkeys('ctrl+comma,meta+comma', (e) => { e.preventDefault(); setSettingsOpen(true); }, []);
   useHotkeys('ctrl+b,meta+b', (e) => { e.preventDefault(); setSidebarOpen(!sidebarOpen); }, [sidebarOpen]);
   useHotkeys('escape', () => { setSearchOpen(false); setSettingsOpen(false); }, []);
+
+  // Render shared view for public links
+  if (shareMatch) {
+    return (
+      <Suspense fallback={
+        <div className="min-h-screen bg-[#f8f9fc] dark:bg-[#0d0d1a] flex items-center justify-center">
+          <div className="w-5 h-5 border-2 border-violet-400 border-t-transparent rounded-full animate-spin" />
+        </div>
+      }>
+        <SharedView shareId={shareMatch[1]} />
+      </Suspense>
+    );
+  }
 
   if (!sessionChecked) {
     return (
@@ -53,16 +86,25 @@ export default function App() {
     );
   }
 
+  // Payment return — redirect to main page with success message
+  if (isPaymentReturn && user) {
+    window.history.replaceState({}, '', '/');
+    // Balance will auto-update via /auth/me
+    restoreSession();
+  }
+
   if (!user) return <AuthScreen />;
 
   return (
     <div className="flex h-screen bg-[#f8f9fc] dark:bg-[#0d0d1a] text-slate-800 dark:text-slate-100 overflow-hidden transition-colors">
       <Sidebar />
-      <main className="flex-1 flex flex-col overflow-hidden">
+      <main className="flex-1 flex flex-col overflow-hidden relative">
         <ChatWindow />
       </main>
-      {settingsOpen && <SettingsModal />}
-      {searchOpen && <SearchModal />}
+      <Suspense fallback={null}>
+        {settingsOpen && <SettingsModal />}
+        {searchOpen && <SearchModal />}
+      </Suspense>
     </div>
   );
 }

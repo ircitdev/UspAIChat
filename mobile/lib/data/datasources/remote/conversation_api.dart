@@ -48,4 +48,17 @@ class ConversationApi {
     final response = await _dio.get(ApiConstants.searchMessages, queryParameters: {'q': query});
     return (response.data as List).cast<Map<String, dynamic>>();
   }
+
+  Future<void> deleteMessage(String convId, String msgId) async {
+    await _dio.delete(ApiConstants.deleteMessage(convId, msgId));
+  }
+
+  Future<String> exportConversation(String convId, {String format = 'md'}) async {
+    final response = await _dio.get(
+      ApiConstants.exportConversation(convId),
+      queryParameters: {'format': format},
+      options: Options(responseType: ResponseType.plain),
+    );
+    return response.data as String;
+  }
 }

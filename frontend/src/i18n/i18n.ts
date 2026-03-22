@@ -31,6 +31,14 @@ const resources = {
       shortcuts: 'Shortcuts',
       copyCode: 'Copy',
       copied: 'Copied!',
+      export: 'Export',
+      folders: 'Folders',
+      newFolder: 'New folder',
+      promptTemplates: 'Prompt Templates',
+      today: 'Today',
+      yesterday: 'Yesterday',
+      scrollToBottom: 'Scroll to bottom',
+      deleteMessage: 'Delete message',
     }
   },
   ru: {
@@ -62,6 +70,14 @@ const resources = {
       shortcuts: 'Горячие клавиши',
       copyCode: 'Копировать',
       copied: 'Скопировано!',
+      export: 'Экспорт',
+      folders: 'Папки',
+      newFolder: 'Новая папка',
+      promptTemplates: 'Шаблоны промптов',
+      today: 'Сегодня',
+      yesterday: 'Вчера',
+      scrollToBottom: 'Вниз',
+      deleteMessage: 'Удалить сообщение',
     }
   },
   zh: {

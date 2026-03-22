@@ -1,9 +1,11 @@
-import { useRef, useState, KeyboardEvent, useCallback } from 'react';
+import { useRef, useState, useEffect, KeyboardEvent, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import TextareaAutosize from 'react-textarea-autosize';
-import { Send, Paperclip, X, FileText } from 'lucide-react';
+import { Send, Paperclip, X, FileText, Sparkles, Mic, MicOff } from 'lucide-react';
 import api from '../services/api';
 import useAppStore from '../store/appStore';
+import { useVoiceChat } from '../hooks/useVoiceChat';
+import { PromptTemplate } from '../types';
 import clsx from 'clsx';
 
 interface UploadedFile {
@@ -23,17 +25,82 @@ interface Props {
 
 export default function ChatInput({ onSend, disabled }: Props) {
   const { t } = useTranslation();
-  const { activeConversationId } = useAppStore();
+  const { activeConversationId, promptTemplates, loadPromptTemplates } = useAppStore();
   const [text, setText] = useState('');
   const [files, setFiles] = useState<UploadedFile[]>([]);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Voice input
+  const voice = useVoiceChat({
+    lang: 'ru-RU',
+    onTranscript: (finalText) => {
+      setText(prev => prev ? prev + ' ' + finalText : finalText);
+    }
+  });
+
+  // Prompt templates popup
+  const [showTemplates, setShowTemplates] = useState(false);
+  const [templateFilter, setTemplateFilter] = useState('');
+  const [selectedTemplateIdx, setSelectedTemplateIdx] = useState(0);
+
+  useEffect(() => {
+    loadPromptTemplates();
+  }, []);
+
+  const filteredTemplates = promptTemplates.filter(t =>
+    t.name.toLowerCase().includes(templateFilter.toLowerCase()) ||
+    t.content.toLowerCase().includes(templateFilter.toLowerCase())
+  );
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+    // Template navigation
+    if (showTemplates) {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        setSelectedTemplateIdx(i => Math.min(i + 1, filteredTemplates.length - 1));
+        return;
+      }
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        setSelectedTemplateIdx(i => Math.max(i - 1, 0));
+        return;
+      }
+      if (e.key === 'Enter' && !e.shiftKey && filteredTemplates.length > 0) {
+        e.preventDefault();
+        insertTemplate(filteredTemplates[selectedTemplateIdx]);
+        return;
+      }
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        setShowTemplates(false);
+        return;
+      }
+    }
+
     if (e.key === 'Enter' && !e.shiftKey && !e.ctrlKey) {
       e.preventDefault();
       handleSend();
     }
+  };
+
+  const handleTextChange = (value: string) => {
+    setText(value);
+    // Show templates on / at start of line
+    if (value === '/' || (value.startsWith('/') && !value.includes(' ') && value.length < 30)) {
+      setShowTemplates(true);
+      setTemplateFilter(value.slice(1));
+      setSelectedTemplateIdx(0);
+    } else {
+      setShowTemplates(false);
+    }
+  };
+
+  const insertTemplate = (template: PromptTemplate) => {
+    setText(template.content);
+    setShowTemplates(false);
+    textareaRef.current?.focus();
   };
 
   const handleSend = () => {
@@ -41,6 +108,7 @@ export default function ChatInput({ onSend, disabled }: Props) {
     onSend(text, files);
     setText('');
     setFiles([]);
+    setShowTemplates(false);
   };
 
   const uploadFiles = async (fileList: File[]) => {
@@ -66,7 +134,6 @@ export default function ChatInput({ onSend, disabled }: Props) {
     await uploadFiles(Array.from(e.target.files || []));
   };
 
-  // Paste image from clipboard
   const handlePaste = useCallback(async (e: React.ClipboardEvent) => {
     const items = Array.from(e.clipboardData.items);
     const imageItems = items.filter(item => item.type.startsWith('image/'));
@@ -79,7 +146,37 @@ export default function ChatInput({ onSend, disabled }: Props) {
   }, [activeConversationId]);
 
   return (
-    <div className="px-4 pb-4">
+    <div className="px-2 sm:px-4 pb-3 sm:pb-4 relative">
+      {/* Prompt templates popup */}
+      {showTemplates && filteredTemplates.length > 0 && (
+        <div className="absolute bottom-full left-4 right-4 mb-2 bg-white dark:bg-[#1e1e2e] border border-[#d1d8e4] dark:border-[#2d2d3f] rounded-xl shadow-xl max-h-64 overflow-y-auto z-30">
+          <div className="px-3 py-2 border-b border-[#e2e8f0] dark:border-[#1e1e2e] flex items-center gap-2">
+            <Sparkles size={12} className="text-violet-500" />
+            <span className="text-xs text-slate-400 dark:text-slate-500">Prompt templates — use arrows and Enter</span>
+          </div>
+          {filteredTemplates.map((tpl, idx) => (
+            <button
+              key={tpl.id}
+              onClick={() => insertTemplate(tpl)}
+              className={clsx(
+                'w-full text-left px-3 py-2 text-sm transition-colors border-b border-[#e2e8f0]/50 dark:border-[#1e1e2e]/50 last:border-0',
+                idx === selectedTemplateIdx
+                  ? 'bg-violet-50 dark:bg-violet-900/20 text-violet-600 dark:text-violet-300'
+                  : 'hover:bg-[#f1f5f9] dark:hover:bg-[#1e1e2e] text-slate-600 dark:text-slate-300'
+              )}
+            >
+              <div className="flex items-center gap-2">
+                <span className="font-medium text-xs">{tpl.name}</span>
+                {tpl.category !== 'general' && (
+                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-400">{tpl.category}</span>
+                )}
+              </div>
+              <p className="text-xs text-slate-400 dark:text-slate-500 truncate mt-0.5">{tpl.content.slice(0, 80)}...</p>
+            </button>
+          ))}
+        </div>
+      )}
+
       {/* File / image previews */}
       {files.length > 0 && (
         <div className="flex flex-wrap gap-2 mb-2">
@@ -127,12 +224,29 @@ export default function ChatInput({ onSend, disabled }: Props) {
         <input ref={fileInputRef} type="file" multiple className="hidden" onChange={handleFileInput}
           accept="image/*,.pdf,.docx,.txt,.md,.js,.ts,.py,.json,.csv,.xml,.html,.css" />
 
+        {voice.supported && (
+          <button
+            onClick={voice.toggleListening}
+            disabled={disabled}
+            className={clsx(
+              'p-1.5 transition-all shrink-0 mb-0.5 rounded-lg',
+              voice.isListening
+                ? 'text-red-500 bg-red-500/10 animate-pulse'
+                : 'text-slate-400 dark:text-slate-500 hover:text-violet-500 dark:hover:text-violet-400'
+            )}
+            title={voice.isListening ? 'Stop recording' : 'Voice input'}
+          >
+            {voice.isListening ? <MicOff size={16} /> : <Mic size={16} />}
+          </button>
+        )}
+
         <TextareaAutosize
+          ref={textareaRef}
           value={text}
-          onChange={e => setText(e.target.value)}
+          onChange={e => handleTextChange(e.target.value)}
           onKeyDown={handleKeyDown}
           onPaste={handlePaste}
-          placeholder={uploading ? 'Загрузка...' : t('typeMessage')}
+          placeholder={uploading ? 'Загрузка...' : `${t('typeMessage')} (/ for templates)`}
           disabled={disabled}
           minRows={1}
           maxRows={8}
@@ -152,7 +266,7 @@ export default function ChatInput({ onSend, disabled }: Props) {
           <Send size={15} />
         </button>
       </div>
-      <p className="text-center text-xs text-slate-400 dark:text-slate-700 mt-1">Enter -- send / Shift+Enter -- new line / Ctrl+V -- paste image</p>
+      <p className="text-center text-xs text-slate-400 dark:text-slate-700 mt-1 hidden sm:block">Enter -- send / Shift+Enter -- new line / Ctrl+V -- paste / type / for templates</p>
     </div>
   );
 }

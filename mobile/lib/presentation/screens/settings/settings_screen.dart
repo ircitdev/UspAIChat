@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../data/datasources/remote/model_api.dart';
 import '../../../providers/auth_provider.dart';
@@ -20,7 +21,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with SingleTick
   @override
   void initState() {
     super.initState();
-    _tabCtrl = TabController(length: 2, vsync: this);
+    final isAdmin = ref.read(authProvider).user?.isAdmin == true;
+    _tabCtrl = TabController(length: isAdmin ? 3 : 2, vsync: this);
     _loadKeys();
     for (final p in _providers) {
       _keyControllers[p] = TextEditingController();
@@ -52,6 +54,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with SingleTick
 
   @override
   Widget build(BuildContext context) {
+    final isAdmin = ref.watch(authProvider).user?.isAdmin == true;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -61,17 +65,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with SingleTick
           indicatorColor: AppColors.violet600,
           labelColor: AppColors.textPrimary,
           unselectedLabelColor: AppColors.textMuted,
-          tabs: const [
-            Tab(text: 'API Keys'),
-            Tab(text: 'Language'),
+          tabs: [
+            if (isAdmin) const Tab(text: 'API Keys'),
+            const Tab(text: 'Language'),
+            const Tab(text: 'About'),
           ],
         ),
       ),
       body: TabBarView(
         controller: _tabCtrl,
         children: [
-          // API Keys tab
-          ListView(
+          // API Keys tab (admin only)
+          if (isAdmin) ListView(
             padding: const EdgeInsets.all(16),
             children: _providers.map((p) {
               final configured = (_keyStatus[p] as Map?)?['configured'] == true;
@@ -129,6 +134,73 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with SingleTick
               _langTile('Russian', 'ru'),
               _langTile('English', 'en'),
               _langTile('Chinese', 'zh'),
+              const Divider(height: 32),
+              ListTile(
+                leading: const Icon(Icons.auto_awesome, color: AppColors.violet400),
+                title: const Text('Prompt Templates', style: TextStyle(color: AppColors.textPrimary)),
+                subtitle: const Text('Manage your prompt templates', style: TextStyle(color: AppColors.textDim, fontSize: 12)),
+                trailing: const Icon(Icons.chevron_right, color: AppColors.textDim),
+                onTap: () => context.go('/prompt-templates'),
+              ),
+            ],
+          ),
+
+          // About tab
+          ListView(
+            padding: const EdgeInsets.all(16),
+            children: [
+              const SizedBox(height: 24),
+              Center(
+                child: Container(
+                  width: 64, height: 64,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    gradient: const LinearGradient(colors: [AppColors.violet600, AppColors.purple800]),
+                  ),
+                  child: const Icon(Icons.smart_toy, color: Colors.white, size: 32),
+                ),
+              ),
+              const SizedBox(height: 16),
+              const Center(child: Text('UspAIChat', style: TextStyle(
+                color: AppColors.textPrimary, fontSize: 22, fontWeight: FontWeight.bold,
+              ))),
+              const SizedBox(height: 4),
+              const Center(child: Text('v1.0.0', style: TextStyle(color: AppColors.textMuted, fontSize: 13))),
+              const SizedBox(height: 24),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text('Multi-provider AI Chat', style: TextStyle(color: AppColors.textPrimary, fontSize: 14, fontWeight: FontWeight.w600)),
+                      SizedBox(height: 8),
+                      Text('Self-hosted AI chat platform with support for Anthropic Claude, OpenAI, Google Gemini, DeepSeek and Kimi.',
+                        style: TextStyle(color: AppColors.textSecondary, fontSize: 13)),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              Card(
+                child: Column(
+                  children: [
+                    ListTile(
+                      dense: true,
+                      leading: const Icon(Icons.code, size: 18, color: AppColors.violet400),
+                      title: const Text('Developer', style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+                      subtitle: const Text('IRCit Dev', style: TextStyle(color: AppColors.textPrimary, fontSize: 14)),
+                    ),
+                    const Divider(height: 1, color: AppColors.cardBorder),
+                    ListTile(
+                      dense: true,
+                      leading: const Icon(Icons.language, size: 18, color: AppColors.violet400),
+                      title: const Text('Website', style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+                      subtitle: const Text('app.aifuturenow.ru', style: TextStyle(color: AppColors.textPrimary, fontSize: 14)),
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ],

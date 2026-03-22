@@ -12,6 +12,7 @@ import '../../presentation/screens/profile/profile_screen.dart';
 import '../../presentation/screens/search/search_screen.dart';
 import '../../presentation/screens/system_prompt/system_prompt_screen.dart';
 import '../../presentation/screens/admin/admin_screen.dart';
+import '../../presentation/screens/settings/prompt_templates_screen.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authProvider);
@@ -43,6 +44,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           GoRoute(path: 'search', builder: (_, __) => const SearchScreen()),
           GoRoute(path: 'system-prompt', builder: (_, __) => const SystemPromptScreen()),
           GoRoute(path: 'admin', builder: (_, __) => const AdminScreen()),
+          GoRoute(path: 'prompt-templates', builder: (_, __) => const PromptTemplatesScreen()),
         ],
       ),
     ],

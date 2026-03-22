@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Conversation, Message, Provider, ModelsMap, ApiKeyStatus } from '../types';
+import { Conversation, Message, Provider, ModelsMap, ApiKeyStatus, Folder, PromptTemplate, RoutingInfo } from '../types';
 import api from '../services/api';
 
 interface AppState {
@@ -8,6 +8,13 @@ interface AppState {
   activeConversationId: string | null;
   activeConversation: Conversation | null;
   messages: Message[];
+  messagesLoading: boolean;
+
+  // Folders
+  folders: Folder[];
+
+  // Prompt templates
+  promptTemplates: PromptTemplate[];
 
   // UI
   sidebarOpen: boolean;
@@ -17,6 +24,7 @@ interface AppState {
   streaming: boolean;
   streamingContent: string;
   tokenCount: number;
+  streamingRoutingInfo: RoutingInfo | null;
 
   // Models
   models: ModelsMap | null;
@@ -32,9 +40,11 @@ interface AppState {
   updateConversation: (id: string, data: Partial<Conversation>) => Promise<void>;
   loadMessages: (convId: string) => Promise<void>;
   addMessage: (msg: Message) => void;
+  deleteMessage: (convId: string, msgId: string) => Promise<void>;
   setStreamingContent: (content: string) => void;
   setStreaming: (val: boolean) => void;
   setTokenCount: (n: number) => void;
+  setStreamingRoutingInfo: (info: RoutingInfo | null) => void;
   setSidebarOpen: (val: boolean) => void;
   setSettingsOpen: (val: boolean) => void;
   setSearchOpen: (val: boolean) => void;
@@ -43,6 +53,17 @@ interface AppState {
   setSelectedModel: (m: string) => void;
   loadModels: () => Promise<void>;
   loadApiKeyStatus: () => Promise<void>;
+
+  // Folders
+  loadFolders: () => Promise<void>;
+  createFolder: (name: string, color?: string) => Promise<void>;
+  updateFolder: (id: string, data: Partial<Folder>) => Promise<void>;
+  deleteFolder: (id: string) => Promise<void>;
+
+  // Prompt templates
+  loadPromptTemplates: () => Promise<void>;
+  createPromptTemplate: (data: { name: string; content: string; category?: string; is_global?: boolean }) => Promise<void>;
+  deletePromptTemplate: (id: string) => Promise<void>;
 }
 
 const useAppStore = create<AppState>((set, get) => ({
@@ -50,6 +71,9 @@ const useAppStore = create<AppState>((set, get) => ({
   activeConversationId: null,
   activeConversation: null,
   messages: [],
+  messagesLoading: false,
+  folders: [],
+  promptTemplates: [],
   sidebarOpen: true,
   settingsOpen: false,
   searchOpen: false,
@@ -59,8 +83,9 @@ const useAppStore = create<AppState>((set, get) => ({
   tokenCount: 0,
   models: null,
   apiKeyStatus: {},
-  selectedProvider: 'openai',
-  selectedModel: 'gpt-4o',
+  selectedProvider: 'auto',
+  selectedModel: 'auto',
+  streamingRoutingInfo: null,
 
   loadConversations: async () => {
     const { data } = await api.get('/conversations');
@@ -86,8 +111,10 @@ const useAppStore = create<AppState>((set, get) => ({
       activeConversation: conv || null,
       selectedProvider: (conv?.provider as Provider) || get().selectedProvider,
       selectedModel: conv?.model || get().selectedModel,
+      messagesLoading: true,
     });
     await get().loadMessages(id);
+    set({ messagesLoading: false });
   },
 
   deleteConversation: async (id: string) => {
@@ -121,9 +148,15 @@ const useAppStore = create<AppState>((set, get) => ({
     set(s => ({ messages: [...s.messages, msg] }));
   },
 
+  deleteMessage: async (convId: string, msgId: string) => {
+    await api.delete(`/conversations/${convId}/messages/${msgId}`);
+    set(s => ({ messages: s.messages.filter(m => m.id !== msgId) }));
+  },
+
   setStreamingContent: (content: string) => set({ streamingContent: content }),
-  setStreaming: (val: boolean) => set({ streaming: val, streamingContent: val ? '' : '' }),
+  setStreaming: (val: boolean) => set({ streaming: val, streamingContent: val ? '' : '', streamingRoutingInfo: val ? null : get().streamingRoutingInfo }),
   setTokenCount: (n: number) => set({ tokenCount: n }),
+  setStreamingRoutingInfo: (info: RoutingInfo | null) => set({ streamingRoutingInfo: info }),
   setSidebarOpen: (val: boolean) => set({ sidebarOpen: val }),
   setSettingsOpen: (val: boolean) => set({ settingsOpen: val }),
   setSearchOpen: (val: boolean) => set({ searchOpen: val }),
@@ -139,6 +172,44 @@ const useAppStore = create<AppState>((set, get) => ({
   loadApiKeyStatus: async () => {
     const { data } = await api.get('/models/keys');
     set({ apiKeyStatus: data });
+  },
+
+  // Folders
+  loadFolders: async () => {
+    const { data } = await api.get('/folders');
+    set({ folders: data });
+  },
+
+  createFolder: async (name: string, color?: string) => {
+    const { data } = await api.post('/folders', { name, color });
+    set(s => ({ folders: [...s.folders, data] }));
+  },
+
+  updateFolder: async (id: string, data: Partial<Folder>) => {
+    const { data: updated } = await api.put(`/folders/${id}`, data);
+    set(s => ({ folders: s.folders.map(f => f.id === id ? { ...f, ...updated } : f) }));
+  },
+
+  deleteFolder: async (id: string) => {
+    await api.delete(`/folders/${id}`);
+    set(s => ({ folders: s.folders.filter(f => f.id !== id) }));
+    await get().loadConversations();
+  },
+
+  // Prompt templates
+  loadPromptTemplates: async () => {
+    const { data } = await api.get('/prompt-templates');
+    set({ promptTemplates: data });
+  },
+
+  createPromptTemplate: async (tplData) => {
+    const { data } = await api.post('/prompt-templates', tplData);
+    set(s => ({ promptTemplates: [...s.promptTemplates, data] }));
+  },
+
+  deletePromptTemplate: async (id: string) => {
+    await api.delete(`/prompt-templates/${id}`);
+    set(s => ({ promptTemplates: s.promptTemplates.filter(t => t.id !== id) }));
   }
 }));
 

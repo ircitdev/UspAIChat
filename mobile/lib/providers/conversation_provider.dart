@@ -58,8 +58,8 @@ class ConversationNotifier extends StateNotifier<ConversationState> {
   }
 
   Future<Conversation> createConversation({
-    String provider = 'openai',
-    String model = 'gpt-4o',
+    String provider = 'auto',
+    String model = 'auto',
   }) async {
     final conv = await _api.createConversation(provider: provider, model: model);
     state = ConversationState(
@@ -123,6 +123,19 @@ class ConversationNotifier extends StateNotifier<ConversationState> {
       activeId: null,
       messages: [],
     );
+  }
+
+  Future<void> deleteMessage(String convId, String msgId) async {
+    await _api.deleteMessage(convId, msgId);
+    state = ConversationState(
+      conversations: state.conversations,
+      activeId: state.activeId,
+      messages: state.messages.where((m) => m.id != msgId).toList(),
+    );
+  }
+
+  Future<void> moveToFolder(String convId, String? folderId) async {
+    await updateConversation(convId, {'folder_id': folderId});
   }
 
   Future<void> reloadMessages() async {

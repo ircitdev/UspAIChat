@@ -8,6 +8,7 @@ class Conversation {
   final int updatedAt;
   final int tokenCount;
   final int isPinned;
+  final String? folderId;
   final String? lastMessage;
   final int? messageCount;
 
@@ -21,6 +22,7 @@ class Conversation {
     required this.updatedAt,
     this.tokenCount = 0,
     this.isPinned = 0,
+    this.folderId,
     this.lastMessage,
     this.messageCount,
   });
@@ -37,6 +39,7 @@ class Conversation {
     updatedAt: json['updated_at'] as int,
     tokenCount: json['token_count'] as int? ?? 0,
     isPinned: json['is_pinned'] as int? ?? 0,
+    folderId: json['folder_id'] as String?,
     lastMessage: json['last_message'] as String?,
     messageCount: json['message_count'] as int?,
   );

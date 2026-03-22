@@ -53,4 +53,23 @@ class ApiConstants {
   static const String adminTopup = '/admin/balance/topup';
   static const String adminTransactions = '/admin/balance/transactions';
   static const String adminPricing = '/admin/pricing';
+
+  // Folders
+  static const String folders = '/folders';
+  static String folder(String id) => '/folders/$id';
+
+  // Prompt Templates
+  static const String promptTemplates = '/prompt-templates';
+  static String promptTemplate(String id) => '/prompt-templates/$id';
+
+  // Sharing
+  static String shareConversation(String convId) => '/share/$convId';
+  static String shareStatus(String convId) => '/share/status/$convId';
+  static String sharePublic(String shareId) => '/share/public/$shareId';
+
+  // Export
+  static String exportConversation(String convId) => '/conversations/$convId/export';
+
+  // Message delete
+  static String deleteMessage(String convId, String msgId) => '/conversations/$convId/messages/$msgId';
 }

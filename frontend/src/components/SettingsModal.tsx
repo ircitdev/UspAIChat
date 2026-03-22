@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { X, Key, Check, Eye, EyeOff, Globe, Keyboard, Trash2, Info } from 'lucide-react';
+import { X, Key, Check, Eye, EyeOff, Globe, Keyboard, Trash2, Info, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import useAppStore from '../store/appStore';
 import useAuthStore from '../store/authStore';
@@ -8,6 +8,7 @@ import api from '../services/api';
 import i18n from '../i18n/i18n';
 import clsx from 'clsx';
 import { Provider } from '../types';
+import PromptTemplatesManager from './PromptTemplatesManager';
 
 const PROVIDERS: { id: Provider; name: string; color: string; placeholder: string }[] = [
   { id: 'anthropic', name: 'Anthropic Claude', color: 'text-orange-400', placeholder: 'sk-ant-api...' },
@@ -37,7 +38,7 @@ export default function SettingsModal() {
   const { t } = useTranslation();
   const { setSettingsOpen, apiKeyStatus, loadApiKeyStatus } = useAppStore();
   const isAdmin = useAuthStore(s => s.user?.role === 'admin');
-  const [tab, setTab] = useState<'keys' | 'language' | 'shortcuts' | 'about'>(isAdmin ? 'keys' : 'language');
+  const [tab, setTab] = useState<'keys' | 'language' | 'shortcuts' | 'prompts' | 'about'>(isAdmin ? 'keys' : 'language');
   const [keys, setKeys] = useState<Record<string, string>>({});
   const [baseUrls, setBaseUrls] = useState<Record<string, string>>({});
   const [show, setShow] = useState<Record<string, boolean>>({});
@@ -88,10 +89,11 @@ export default function SettingsModal() {
           {[
             ...(isAdmin ? [{ id: 'keys', icon: Key, label: 'API Keys' }] : []),
             { id: 'language', icon: Globe, label: t('language') },
+            { id: 'prompts', icon: Sparkles, label: 'Промпты' },
             { id: 'shortcuts', icon: Keyboard, label: t('shortcuts') },
             { id: 'about', icon: Info, label: 'О приложении' }
           ].map(tab_ => (
-            <button key={tab_.id} onClick={() => setTab(tab_.id as 'keys' | 'language' | 'shortcuts' | 'about')}
+            <button key={tab_.id} onClick={() => setTab(tab_.id as 'keys' | 'language' | 'shortcuts' | 'prompts' | 'about')}
               className={clsx('flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs transition-colors',
                 tab === tab_.id ? 'bg-violet-600 text-white' : 'text-slate-500 dark:text-slate-400 hover:bg-[#f1f5f9] dark:hover:bg-[#1e1e2e]')}>
               <tab_.icon size={12} />
@@ -162,6 +164,8 @@ export default function SettingsModal() {
               ))}
             </div>
           )}
+
+          {tab === 'prompts' && <PromptTemplatesManager />}
 
           {tab === 'shortcuts' && (
             <div className="space-y-2">
