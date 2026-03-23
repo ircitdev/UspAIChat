@@ -102,8 +102,8 @@ class _StatsTab extends StatelessWidget {
         _StatCard('Admins', '${stats['adminUsers'] ?? 0}', Icons.admin_panel_settings),
         _StatCard('Conversations', '${stats['totalConvs'] ?? 0}', Icons.chat),
         _StatCard('Messages', '${stats['totalMessages'] ?? 0}', Icons.message),
-        _StatCard('Top Up', '\$${((stats['totalTopup'] ?? 0) as num).toStringAsFixed(2)}', Icons.arrow_upward, color: AppColors.success),
-        _StatCard('Charged', '\$${((stats['totalCharged'] ?? 0) as num).toStringAsFixed(2)}', Icons.arrow_downward, color: AppColors.error),
+        _StatCard('Top Up', '${((stats['totalTopup'] ?? 0) as num).toStringAsFixed(2)} кр', Icons.arrow_upward, color: AppColors.success),
+        _StatCard('Charged', '${((stats['totalCharged'] ?? 0) as num).toStringAsFixed(2)} кр', Icons.arrow_downward, color: AppColors.error),
       ],
     );
   }
@@ -192,7 +192,7 @@ class _UsersTab extends ConsumerWidget {
         content: TextField(
           controller: amountCtrl,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
-          decoration: const InputDecoration(hintText: 'Amount', prefixText: '\$ '),
+          decoration: const InputDecoration(hintText: 'Amount', suffixText: 'кр'),
           autofocus: true,
         ),
         actions: [
@@ -212,7 +212,7 @@ class _UsersTab extends ConsumerWidget {
     try {
       await dio.post(ApiConstants.adminTopup, data: {'user_id': user['id'], 'amount': amount});
       onRefresh();
-      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Added \$${amount.toStringAsFixed(2)} to ${user['username']}')));
+      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Added ${amount.toStringAsFixed(2)} кр to ${user['username']}')));
     } catch (e) {
       if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
     }
@@ -252,7 +252,7 @@ class _UsersTab extends ConsumerWidget {
                 ),
               ],
             ),
-            subtitle: Text('${u['email'] ?? 'No email'} | Balance: \$${(u['balance'] as num?)?.toStringAsFixed(2) ?? '0.00'}',
+            subtitle: Text('${u['email'] ?? 'No email'} | Balance: ${(u['balance'] as num?)?.toStringAsFixed(2) ?? '0.00'} кр',
               style: const TextStyle(color: AppColors.textDim, fontSize: 11)),
             trailing: PopupMenuButton<String>(
               icon: const Icon(Icons.more_vert, size: 18, color: AppColors.textDim),

@@ -603,7 +603,7 @@ class _ModelBarState extends ConsumerState<_ModelBar> {
                       ),
                   ],
                 ),
-                subtitle: Text('Context: ${m.context}', style: const TextStyle(color: AppColors.textDim, fontSize: 11)),
+                subtitle: Text('Context: ${_formatContext(m.context)}', style: const TextStyle(color: AppColors.textDim, fontSize: 11)),
                 trailing: m.id == conv.model ? const Icon(Icons.check, size: 16, color: AppColors.violet400) : null,
                 onTap: () {
                   ref.read(conversationProvider.notifier).updateConversation(conv.id, {'model': m.id});
@@ -692,6 +692,116 @@ class _ModelBarState extends ConsumerState<_ModelBar> {
   }
 }
 
+String _formatContext(dynamic ctx) {
+  if (ctx == null) return '';
+  final n = ctx is num ? ctx.toInt() : int.tryParse(ctx.toString()) ?? 0;
+  if (n >= 1000000) {
+    final m = n / 1000000;
+    return m == m.roundToDouble() ? '${m.round()}M' : '${m.toStringAsFixed(1)}M';
+  } else if (n >= 1000) {
+    final k = n / 1000;
+    return k == k.roundToDouble() ? '${k.round()}K' : '${k.toStringAsFixed(1)}K';
+  }
+  return n.toString();
+}
+
+class _MarkdownContent extends StatelessWidget {
+  final String content;
+  const _MarkdownContent({required this.content});
+
+  static final _tableRegex = RegExp(r'(\n|^)(\|.+\|[ \t]*\n\|[-| :]+\|[ \t]*\n(\|.+\|[ \t]*\n?)+)', multiLine: true);
+
+  static MarkdownStyleSheet _baseStyle() => MarkdownStyleSheet(
+    p: const TextStyle(color: AppColors.textPrimary, fontSize: 14),
+    code: TextStyle(
+      color: AppColors.textPrimary,
+      backgroundColor: AppColors.background,
+      fontSize: 13,
+      fontFamily: 'monospace',
+    ),
+    codeblockDecoration: BoxDecoration(
+      color: AppColors.background,
+      borderRadius: BorderRadius.circular(8),
+    ),
+    tableHead: const TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold, fontSize: 13),
+    tableBody: const TextStyle(color: AppColors.textPrimary, fontSize: 13),
+    tableBorder: TableBorder.all(color: AppColors.cardBorder),
+    tableColumnWidth: const IntrinsicColumnWidth(),
+    tableCellsPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    // Split content into segments: regular markdown and table blocks
+    final matches = _tableRegex.allMatches(content).toList();
+    if (matches.isEmpty) {
+      return MarkdownBody(
+        data: content,
+        styleSheet: _baseStyle(),
+        selectable: true,
+        onTapLink: (_, href, __) {
+          if (href != null) Clipboard.setData(ClipboardData(text: href));
+        },
+      );
+    }
+
+    // Build segments: text, scrollable table, text, scrollable table, ...
+    final segments = <Widget>[];
+    int lastEnd = 0;
+
+    for (final match in matches) {
+      // Text before the table
+      if (match.start > lastEnd) {
+        final before = content.substring(lastEnd, match.start).trim();
+        if (before.isNotEmpty) {
+          segments.add(MarkdownBody(
+            data: before,
+            styleSheet: _baseStyle(),
+            selectable: true,
+            onTapLink: (_, href, __) {
+              if (href != null) Clipboard.setData(ClipboardData(text: href));
+            },
+          ));
+        }
+      }
+
+      // Table in horizontal scroll
+      final tableText = match.group(0)!.trim();
+      segments.add(SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: MarkdownBody(
+          data: tableText,
+          styleSheet: _baseStyle(),
+          selectable: true,
+          fitContent: true,
+        ),
+      ));
+
+      lastEnd = match.end;
+    }
+
+    // Remaining text after last table
+    if (lastEnd < content.length) {
+      final after = content.substring(lastEnd).trim();
+      if (after.isNotEmpty) {
+        segments.add(MarkdownBody(
+          data: after,
+          styleSheet: _baseStyle(),
+          selectable: true,
+          onTapLink: (_, href, __) {
+            if (href != null) Clipboard.setData(ClipboardData(text: href));
+          },
+        ));
+      }
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: segments,
+    );
+  }
+}
+
 class _MessageBubble extends StatelessWidget {
   final Message message;
   final VoidCallback onDelete;
@@ -761,28 +871,7 @@ class _MessageBubble extends StatelessWidget {
             children: [
               isUser
                 ? Text(message.content, style: const TextStyle(color: Colors.white, fontSize: 14))
-                : MarkdownBody(
-                    data: message.content,
-                    styleSheet: MarkdownStyleSheet(
-                      p: const TextStyle(color: AppColors.textPrimary, fontSize: 14),
-                      code: TextStyle(
-                        color: AppColors.textPrimary,
-                        backgroundColor: AppColors.background,
-                        fontSize: 13,
-                        fontFamily: 'monospace',
-                      ),
-                      codeblockDecoration: BoxDecoration(
-                        color: AppColors.background,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      tableHead: const TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold),
-                      tableBorder: TableBorder.all(color: AppColors.cardBorder),
-                    ),
-                    selectable: true,
-                    onTapLink: (_, href, __) {
-                      if (href != null) Clipboard.setData(ClipboardData(text: href));
-                    },
-                  ),
+                : _MarkdownContent(content: message.content),
               // Timestamp + model
               Padding(
                 padding: const EdgeInsets.only(top: 4),

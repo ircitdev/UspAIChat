@@ -60,9 +60,11 @@ class _SystemPromptScreenState extends ConsumerState<SystemPromptScreen> {
           Wrap(
             spacing: 8, runSpacing: 8,
             children: _presets.entries.map((e) => ActionChip(
-              label: Text(e.key, style: const TextStyle(fontSize: 12)),
-              backgroundColor: AppColors.surfaceBorder,
-              side: const BorderSide(color: AppColors.cardBorder),
+              label: Text(e.key, style: const TextStyle(fontSize: 12, color: AppColors.textPrimary)),
+              backgroundColor: AppColors.surfaceLight,
+              side: const BorderSide(color: AppColors.violet600, width: 0.5),
+              elevation: 0,
+              pressElevation: 2,
               onPressed: () => setState(() => _ctrl.text = e.value),
             )).toList(),
           ),
@@ -71,9 +73,24 @@ class _SystemPromptScreenState extends ConsumerState<SystemPromptScreen> {
             controller: _ctrl,
             maxLines: 10,
             style: const TextStyle(color: AppColors.textPrimary, fontSize: 14),
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               hintText: 'Enter system prompt...',
+              hintStyle: const TextStyle(color: AppColors.textDim),
               alignLabelWithHint: true,
+              filled: true,
+              fillColor: AppColors.surfaceLight,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(color: AppColors.cardBorder),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(color: AppColors.cardBorder),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(color: AppColors.violet600),
+              ),
             ),
           ),
           const SizedBox(height: 12),
