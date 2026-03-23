@@ -35,10 +35,20 @@ jobs:
 
       - name: Remove alpha from icons
         run: |
+          echo "Removing alpha channel from app icons..."
           for f in ios/Runner/Assets.xcassets/AppIcon.appiconset/*.png; do
+            echo "Processing: $f"
+            # Get dimensions
+            W=$(sips -g pixelWidth "$f" | tail -1 | awk '{print $2}')
+            H=$(sips -g pixelHeight "$f" | tail -1 | awk '{print $2}')
+            # Convert to BMP (removes alpha) then back to PNG
             sips -s format bmp "$f" --out /tmp/icon_tmp.bmp >/dev/null 2>&1
             sips -s format png /tmp/icon_tmp.bmp --out "$f" >/dev/null 2>&1
+            # Ensure correct size after conversion
+            sips -z $H $W "$f" >/dev/null 2>&1
+            echo "  Done: ${W}x${H}"
           done
+          echo "All icons processed."
 
       - name: Install Apple certificate
         env:
