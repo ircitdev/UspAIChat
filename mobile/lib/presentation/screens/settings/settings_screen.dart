@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../data/datasources/remote/model_api.dart';
 import '../../../providers/auth_provider.dart';
+import '../../../providers/theme_provider.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -67,7 +68,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with SingleTick
           unselectedLabelColor: AppColors.textMuted,
           tabs: [
             if (isAdmin) const Tab(text: 'API Keys'),
-            const Tab(text: 'Language'),
+            const Tab(text: 'Appearance'),
             const Tab(text: 'About'),
           ],
         ),
@@ -127,10 +128,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with SingleTick
             }).toList(),
           ),
 
-          // Language tab
+          // Appearance tab
           ListView(
             padding: const EdgeInsets.all(16),
             children: [
+              const Text('Theme', style: TextStyle(color: AppColors.textSecondary, fontSize: 12, fontWeight: FontWeight.w600)),
+              const SizedBox(height: 8),
+              _themeTile('System', Icons.settings_brightness, AppThemeMode.system),
+              _themeTile('Light', Icons.light_mode, AppThemeMode.light),
+              _themeTile('Dark', Icons.dark_mode, AppThemeMode.dark),
+              const Divider(height: 32),
+              const Text('Language', style: TextStyle(color: AppColors.textSecondary, fontSize: 12, fontWeight: FontWeight.w600)),
+              const SizedBox(height: 8),
               _langTile('Russian', 'ru'),
               _langTile('English', 'en'),
               _langTile('Chinese', 'zh'),
@@ -205,6 +214,21 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with SingleTick
           ),
         ],
       ),
+    );
+  }
+
+  Widget _themeTile(String name, IconData icon, AppThemeMode mode) {
+    final current = ref.watch(themeProvider);
+    final selected = current == mode;
+    return ListTile(
+      leading: Icon(icon, color: selected ? AppColors.violet600 : AppColors.textDim, size: 20),
+      title: Text(name, style: TextStyle(
+        color: selected ? AppColors.textPrimary : AppColors.textSecondary,
+        fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
+      )),
+      trailing: selected ? const Icon(Icons.check, color: AppColors.violet600, size: 18) : null,
+      onTap: () => ref.read(themeProvider.notifier).setTheme(mode),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     );
   }
 

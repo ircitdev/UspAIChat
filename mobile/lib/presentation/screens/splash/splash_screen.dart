@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../../core/constants/app_colors.dart';
 import '../../../providers/auth_provider.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
@@ -32,37 +31,45 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final splashImage = isDark
+        ? 'assets/images/splash_dark.png'
+        : 'assets/images/splash_light.png';
+
     return Scaffold(
-      backgroundColor: AppColors.background,
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 64,
-              height: 64,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(18),
-                gradient: const LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [AppColors.violet600, AppColors.purple800],
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          Image.asset(
+            splashImage,
+            fit: BoxFit.cover,
+          ),
+          Positioned(
+            bottom: 80,
+            left: 0,
+            right: 0,
+            child: Column(
+              children: [
+                Text('UspAIChat',
+                  style: TextStyle(
+                    color: isDark ? Colors.white : const Color(0xFF1E1B2E),
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              child: const Icon(Icons.smart_toy, color: Colors.white, size: 30),
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: const Color(0xFF7C3AED),
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 16),
-            const Text('UspAIChat',
-              style: TextStyle(color: AppColors.textPrimary, fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 24),
-            const SizedBox(
-              width: 24,
-              height: 24,
-              child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.violet600),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

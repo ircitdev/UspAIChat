@@ -80,3 +80,18 @@ flutter_launcher_icons:
   image_path: "assets/images/logo.png"
   adaptive_icon_background: "#0D0D1A"
   adaptive_icon_foreground: "assets/images/logo.png"
+
+flutter_native_splash:
+  image: assets/images/splash_dark.png
+  color: "#0D0D1A"
+  android_12:
+    image: assets/images/splash_dark.png
+    color: "#0D0D1A"
+  ios: true
+  android: true
+
+  image_dark: assets/images/splash_dark.png
+  color_dark: "#0D0D1A"
+  android_12_dark:
+    image: assets/images/splash_dark.png
+    color: "#0D0D1A"

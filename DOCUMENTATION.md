@@ -1,6 +1,6 @@
 # UspAIChat — Полная документация
 
-> Версия: 1.0.0 | Последнее обновление: 2026-03-22
+> Версия: 1.1.0 | Последнее обновление: 2026-03-23
 
 ---
 
@@ -15,6 +15,7 @@
 7. [Развёртывание](#7-развёртывание)
 8. [Smart Router — подробный разбор](#8-smart-router--подробный-разбор)
 9. [Планы развития](#9-планы-развития)
+10. [Приложение: мобильные зависимости](#10-приложение-мобильные-зависимости-flutter)
 
 ---
 
@@ -583,10 +584,10 @@ data: {"type":"done","message_id":"xyz-456","full_content":"Привет! Как
     { "id": "o1-mini", "name": "o1 Mini", "context": 128000 }
   ],
   "gemini": [
-    { "id": "gemini-1.5-flash-latest", "name": "Gemini 1.5 Flash", "context": 1048576 },
-    { "id": "gemini-1.5-pro-latest", "name": "Gemini 1.5 Pro", "context": 2097152 },
-    { "id": "gemini-1.5-flash-8b-latest", "name": "Gemini 1.5 Flash 8B", "context": 1048576 },
-    { "id": "gemini-2.0-flash-exp", "name": "Gemini 2.0 Flash (exp)", "context": 1048576 }
+    { "id": "gemini-2.5-flash-preview-05-20", "name": "Gemini 2.5 Flash", "context": 1048576 },
+    { "id": "gemini-2.5-pro-preview-05-06", "name": "Gemini 2.5 Pro", "context": 1048576 },
+    { "id": "gemini-2.0-flash", "name": "Gemini 2.0 Flash", "context": 1048576 },
+    { "id": "gemini-2.0-flash-lite", "name": "Gemini 2.0 Flash Lite", "context": 1048576 }
   ],
   "deepseek": [
     { "id": "deepseek-chat", "name": "DeepSeek V3", "context": 64000 },
@@ -1180,6 +1181,34 @@ Flutter-приложение с полной функциональностью 
 - **Панель рефералов** — в профиле пользователя: код, ссылка, список приглашённых, статистика заработка
 - **Deep-link** — поддержка через Telegram-бот
 
+### 6.19 Нативные сплэш-скрины и темы
+
+**Сплэш-скрины:**
+
+- Тёмный (`splash_dark.png`) — нейронная сетка с логотипом на тёмном фоне `#0D0D1A`
+- Светлый (`splash_light.png`) — нейронная сетка с логотипом на лавандовом фоне `#F8F7FF`
+- Android: ресурсы в 5 плотностях (mdpi — xxxhdpi), отдельные `launch_background.xml` для `drawable` и `drawable-night`
+- iOS: через `flutter_native_splash` конфигурацию
+- Flutter: `SplashScreen` автоматически выбирает изображение по текущей теме
+
+**Темы приложения:**
+
+- Светлая тема (`AppTheme.light`) — `AppColorsLight` палитра
+- Тёмная тема (`AppTheme.dark`) — `AppColors` палитра
+- `ThemeProvider` — переключение система/светлая/тёмная с сохранением в `SharedPreferences`
+- `MaterialApp` использует `theme` + `darkTheme` + `themeMode`
+- Вкладка «Appearance» в настройках: выбор темы + язык
+
+**Конфигурация `pubspec.yaml`:**
+
+```yaml
+flutter_native_splash:
+  image: assets/images/splash_dark.png
+  color: "#0D0D1A"
+  image_dark: assets/images/splash_dark.png
+  color_dark: "#0D0D1A"
+```
+
 ---
 
 ## 7. Развёртывание
@@ -1514,3 +1543,37 @@ confidence = min(0.5 + score, 1.0)
 ### 9.4 Smart Router (реализовано)
 
 Автоматический выбор AI-модели на основе 14-мерного анализа промпта. Подробнее: [раздел 8](#8-smart-router--подробный-разбор) и [`PLAN_CLAWROUTER.md`](PLAN_CLAWROUTER.md)
+
+### 9.5 Нативные сплэш-скрины (реализовано)
+
+Подробнее: [раздел 6.19](#619-нативные-сплэш-скрины-и-темы).
+
+### 9.6 Светлая тема (реализовано)
+
+Подробнее: [раздел 6.19](#619-нативные-сплэш-скрины-и-темы).
+
+---
+
+## 10. Приложение: мобильные зависимости (Flutter)
+
+| Пакет | Назначение |
+|-------|-----------|
+| `flutter_riverpod` | Управление состоянием |
+| `go_router` | Навигация/маршрутизация |
+| `dio` | HTTP-клиент |
+| `google_sign_in` | Авторизация через Google |
+| `sign_in_with_apple` | Авторизация через Apple |
+| `flutter_secure_storage` | Безопасное хранение токенов |
+| `url_launcher` | Открытие URL |
+| `flutter_markdown` | Рендеринг Markdown |
+| `flutter_highlight` | Подсветка кода |
+| `cached_network_image` | Кэширование изображений |
+| `shimmer` | Скелетон-лоадеры |
+| `speech_to_text` | Голосовой ввод |
+| `flutter_tts` | Озвучка ответов |
+| `image_picker` / `file_picker` | Загрузка файлов |
+| `shared_preferences` | Локальное хранение настроек (тема, язык) |
+| `share_plus` | Системный шеринг |
+| `connectivity_plus` | Проверка соединения |
+| `flutter_native_splash` | Нативные сплэш-скрины |
+| `flutter_launcher_icons` | Генерация иконок приложения |
