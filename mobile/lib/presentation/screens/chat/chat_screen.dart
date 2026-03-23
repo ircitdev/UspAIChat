@@ -396,12 +396,12 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                         children: [
                           ListTile(
                             leading: const Icon(Icons.image),
-                            title: const Text('Photo'),
+                            title: const Text('Фото'),
                             onTap: () { Navigator.pop(context); _pickImage(); },
                           ),
                           ListTile(
                             leading: const Icon(Icons.insert_drive_file),
-                            title: const Text('File'),
+                            title: const Text('Файл'),
                             onTap: () { Navigator.pop(context); _pickFile(); },
                           ),
                         ],
@@ -428,7 +428,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     onChanged: _onTextChanged,
                     style: const TextStyle(color: AppColors.textPrimary, fontSize: 14),
                     decoration: InputDecoration(
-                      hintText: _isListening ? 'Говорите...' : 'Type a message... (/ for templates)',
+                      hintText: _isListening ? 'Говорите...' : 'Введите сообщение... (/ для шаблонов)',
                       border: InputBorder.none,
                       contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                     ),
@@ -530,7 +530,7 @@ class _ModelBarState extends ConsumerState<_ModelBar> {
           children: [
             const Padding(
               padding: EdgeInsets.all(16),
-              child: Text('Select provider', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              child: Text('Выберите провайдера', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
             ),
             ...providers.map((p) => ListTile(
               leading: p == 'auto'
@@ -581,7 +581,7 @@ class _ModelBarState extends ConsumerState<_ModelBar> {
           children: [
             Padding(
               padding: const EdgeInsets.all(16),
-              child: Text('${conv.provider.toUpperCase()} models',
+              child: Text('Модели ${conv.provider.toUpperCase()}',
                 style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
             ),
             ...models.map((m) {
@@ -603,7 +603,7 @@ class _ModelBarState extends ConsumerState<_ModelBar> {
                       ),
                   ],
                 ),
-                subtitle: Text('Context: ${_formatContext(m.context)}', style: const TextStyle(color: AppColors.textDim, fontSize: 11)),
+                subtitle: Text('Контекст: ${_formatContext(m.context)}', style: const TextStyle(color: AppColors.textDim, fontSize: 11)),
                 trailing: m.id == conv.model ? const Icon(Icons.check, size: 16, color: AppColors.violet400) : null,
                 onTap: () {
                   ref.read(conversationProvider.notifier).updateConversation(conv.id, {'model': m.id});
@@ -614,7 +614,7 @@ class _ModelBarState extends ConsumerState<_ModelBar> {
             if (models.isEmpty)
               const Padding(
                 padding: EdgeInsets.all(16),
-                child: Text('No models available', style: TextStyle(color: AppColors.textDim)),
+                child: Text('Нет доступных моделей', style: TextStyle(color: AppColors.textDim)),
               ),
           ],
         ),
@@ -636,47 +636,55 @@ class _ModelBarState extends ConsumerState<_ModelBar> {
       ),
       child: Row(
         children: [
-          GestureDetector(
-            onTap: _showProviderPicker,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-              decoration: BoxDecoration(
-                color: isAuto ? AppColors.violet600.withOpacity(0.15) : AppColors.providerColor(conv.provider).withOpacity(0.15),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(mainAxisSize: MainAxisSize.min, children: [
-                if (isAuto) ...[
-                  const Icon(Icons.auto_awesome, size: 12, color: AppColors.violet400),
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(8),
+              onTap: _showProviderPicker,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: isAuto ? AppColors.violet600.withOpacity(0.15) : AppColors.providerColor(conv.provider).withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(mainAxisSize: MainAxisSize.min, children: [
+                  if (isAuto) ...[
+                    const Icon(Icons.auto_awesome, size: 12, color: AppColors.violet400),
+                    const SizedBox(width: 4),
+                    const Text('АВТО',
+                      style: TextStyle(color: AppColors.violet400, fontSize: 11, fontWeight: FontWeight.w600),
+                    ),
+                  ] else ...[
+                    Text(conv.provider.toUpperCase(),
+                      style: TextStyle(color: AppColors.providerColor(conv.provider), fontSize: 11, fontWeight: FontWeight.w600),
+                    ),
+                  ],
                   const SizedBox(width: 4),
-                  const Text('АВТО',
-                    style: TextStyle(color: AppColors.violet400, fontSize: 11, fontWeight: FontWeight.w600),
-                  ),
-                ] else ...[
-                  Text(conv.provider.toUpperCase(),
-                    style: TextStyle(color: AppColors.providerColor(conv.provider), fontSize: 11, fontWeight: FontWeight.w600),
-                  ),
-                ],
-                const SizedBox(width: 4),
-                Icon(Icons.unfold_more, size: 12, color: isAuto ? AppColors.violet400 : AppColors.providerColor(conv.provider)),
-              ]),
+                  Icon(Icons.unfold_more, size: 12, color: isAuto ? AppColors.violet400 : AppColors.providerColor(conv.provider)),
+                ]),
+              ),
             ),
           ),
           const SizedBox(width: 8),
           Expanded(
             child: isAuto
               ? const Text('Smart Router', style: TextStyle(color: AppColors.textMuted, fontSize: 12))
-              : GestureDetector(
-                  onTap: _showModelPicker,
-                  child: Row(children: [
-                    Flexible(
-                      child: Text(conv.model,
-                        style: const TextStyle(color: AppColors.textMuted, fontSize: 12),
-                        overflow: TextOverflow.ellipsis,
+              : Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(8),
+                    onTap: _showModelPicker,
+                    child: Row(children: [
+                      Flexible(
+                        child: Text(conv.model,
+                          style: const TextStyle(color: AppColors.textMuted, fontSize: 12),
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 4),
-                    const Icon(Icons.unfold_more, size: 12, color: AppColors.textDim),
-                  ]),
+                      const SizedBox(width: 4),
+                      const Icon(Icons.unfold_more, size: 12, color: AppColors.textDim),
+                    ]),
+                  ),
                 ),
           ),
           IconButton(
@@ -684,7 +692,7 @@ class _ModelBarState extends ConsumerState<_ModelBar> {
               color: conv.systemPrompt.isNotEmpty ? AppColors.violet400 : AppColors.textDim),
             onPressed: () => context.go('/system-prompt'),
             padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(),
+            constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
           ),
         ],
       ),
@@ -822,24 +830,24 @@ class _MessageBubble extends StatelessWidget {
               children: [
                 ListTile(
                   leading: const Icon(Icons.copy),
-                  title: const Text('Copy'),
+                  title: const Text('Копировать'),
                   onTap: () {
                     Clipboard.setData(ClipboardData(text: message.content));
                     Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Copied'), duration: Duration(seconds: 1)),
+                      const SnackBar(content: Text('Скопировано'), duration: Duration(seconds: 1)),
                     );
                   },
                 ),
                 if (onSpeak != null)
                   ListTile(
                     leading: const Icon(Icons.volume_up),
-                    title: const Text('Speak'),
+                    title: const Text('Озвучить'),
                     onTap: () { Navigator.pop(context); onSpeak!(); },
                   ),
                 ListTile(
                   leading: const Icon(Icons.delete, color: AppColors.error),
-                  title: const Text('Delete', style: TextStyle(color: AppColors.error)),
+                  title: const Text('Удалить', style: TextStyle(color: AppColors.error)),
                   onTap: () {
                     Navigator.pop(context);
                     onDelete();
@@ -890,7 +898,7 @@ class _MessageBubble extends StatelessWidget {
                       const SizedBox(width: 6),
                       Text(
                         '−${message.cost! < 0.01 ? message.cost!.toStringAsFixed(4) : message.cost!.toStringAsFixed(2)} кр',
-                        style: TextStyle(fontSize: 9, color: Colors.amber.withOpacity(0.6), fontFamily: 'monospace'),
+                        style: const TextStyle(fontSize: 9, color: Colors.amber, fontFamily: 'monospace'),
                       ),
                     ],
                   ],
@@ -924,7 +932,7 @@ class _StreamingBubble extends StatelessWidget {
               SizedBox(width: 14, height: 14,
                 child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.violet400)),
               const SizedBox(width: 8),
-              const Text('Thinking...', style: TextStyle(color: AppColors.textMuted, fontSize: 13)),
+              const Text('Думаю...', style: TextStyle(color: AppColors.textMuted, fontSize: 13)),
             ])
           : MarkdownBody(
               data: '$content\u258C',

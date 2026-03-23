@@ -59,12 +59,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               }
             },
             itemBuilder: (_) => [
-              const PopupMenuItem(value: 'settings', child: Text('Settings')),
-              const PopupMenuItem(value: 'profile', child: Text('Profile')),
+              const PopupMenuItem(value: 'settings', child: Text('Настройки')),
+              const PopupMenuItem(value: 'profile', child: Text('Профиль')),
               if (user?.isAdmin == true)
-                const PopupMenuItem(value: 'admin', child: Text('Admin Panel')),
+                const PopupMenuItem(value: 'admin', child: Text('Панель управления')),
               const PopupMenuDivider(),
-              const PopupMenuItem(value: 'logout', child: Text('Logout', style: TextStyle(color: AppColors.error))),
+              const PopupMenuItem(value: 'logout', child: Text('Выйти', style: TextStyle(color: AppColors.error))),
             ],
           ),
         ],
@@ -96,9 +96,9 @@ class _EmptyState extends StatelessWidget {
             child: const Icon(Icons.smart_toy, color: Colors.white, size: 28),
           ),
           const SizedBox(height: 16),
-          const Text('Start a new chat', style: TextStyle(color: AppColors.textMuted, fontSize: 16)),
+          const Text('Начните новый чат', style: TextStyle(color: AppColors.textMuted, fontSize: 16)),
           const SizedBox(height: 8),
-          const Text('Swipe right or tap + to begin', style: TextStyle(color: AppColors.textDim, fontSize: 13)),
+          const Text('Свайпните вправо или нажмите +', style: TextStyle(color: AppColors.textDim, fontSize: 13)),
         ],
       ),
     );

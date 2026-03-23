@@ -246,8 +246,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
   Future<void> _savePassword() async {
     final user = ref.read(authProvider).user;
-    if (_newPwCtrl.text.length < 6) { setState(() => _pwError = 'Min 6 characters'); return; }
-    if (_newPwCtrl.text != _confirmPwCtrl.text) { setState(() => _pwError = 'Passwords do not match'); return; }
+    if (_newPwCtrl.text.length < 6) { setState(() => _pwError = 'Минимум 6 символов'); return; }
+    if (_newPwCtrl.text != _confirmPwCtrl.text) { setState(() => _pwError = 'Пароли не совпадают'); return; }
 
     setState(() { _saving = true; _pwError = null; });
     try {
@@ -260,9 +260,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       _newPwCtrl.clear();
       _confirmPwCtrl.clear();
       setState(() => _showPasswordForm = false);
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Password saved')));
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Пароль сохранён')));
     } catch (e) {
-      setState(() => _pwError = 'Error saving password');
+      setState(() => _pwError = 'Ошибка сохранения пароля');
     } finally {
       setState(() => _saving = false);
     }
@@ -348,7 +348,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBar(title: const Text('Profile', style: TextStyle(fontSize: 16))),
+      appBar: AppBar(title: const Text('Профиль', style: TextStyle(fontSize: 16))),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -367,7 +367,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(user.username, style: const TextStyle(color: AppColors.textPrimary, fontSize: 16, fontWeight: FontWeight.w600)),
-                  Text(user.isAdmin ? 'Admin' : 'User', style: const TextStyle(color: AppColors.textMuted, fontSize: 12)),
+                  Text(user.isAdmin ? 'Администратор' : 'Пользователь', style: const TextStyle(color: AppColors.textMuted, fontSize: 12)),
                 ],
               )),
             ]),
@@ -390,7 +390,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 Row(children: [
                   const Icon(Icons.lock_outline, size: 16, color: AppColors.textSecondary),
                   const SizedBox(width: 8),
-                  const Text('Password', style: TextStyle(color: AppColors.textPrimary, fontSize: 14, fontWeight: FontWeight.w500)),
+                  const Text('Пароль', style: TextStyle(color: AppColors.textPrimary, fontSize: 14, fontWeight: FontWeight.w500)),
                   const Spacer(),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
@@ -399,7 +399,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      user.hasPassword == true ? 'Set' : 'Not set',
+                      user.hasPassword == true ? 'Установлен' : 'Не установлен',
                       style: TextStyle(color: user.hasPassword == true ? AppColors.success : AppColors.warning, fontSize: 11),
                     ),
                   ),
@@ -409,7 +409,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   SizedBox(width: double.infinity, child: OutlinedButton(
                     onPressed: () => setState(() => _showPasswordForm = true),
                     style: OutlinedButton.styleFrom(side: const BorderSide(color: AppColors.cardBorder)),
-                    child: Text(user.hasPassword == true ? 'Change password' : 'Set password'),
+                    child: Text(user.hasPassword == true ? 'Изменить пароль' : 'Установить пароль'),
                   ))
                 else ...[
                   if (user.hasPassword == true)
@@ -417,21 +417,21 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       controller: _currentPwCtrl,
                       obscureText: true,
                       style: const TextStyle(fontSize: 13, color: AppColors.textPrimary),
-                      decoration: const InputDecoration(hintText: 'Current password', isDense: true),
+                      decoration: const InputDecoration(hintText: 'Текущий пароль', isDense: true),
                     ),
                   const SizedBox(height: 8),
                   TextField(
                     controller: _newPwCtrl,
                     obscureText: true,
                     style: const TextStyle(fontSize: 13, color: AppColors.textPrimary),
-                    decoration: const InputDecoration(hintText: 'New password', isDense: true),
+                    decoration: const InputDecoration(hintText: 'Новый пароль', isDense: true),
                   ),
                   const SizedBox(height: 8),
                   TextField(
                     controller: _confirmPwCtrl,
                     obscureText: true,
                     style: const TextStyle(fontSize: 13, color: AppColors.textPrimary),
-                    decoration: const InputDecoration(hintText: 'Confirm password', isDense: true),
+                    decoration: const InputDecoration(hintText: 'Подтвердите пароль', isDense: true),
                   ),
                   if (_pwError != null) ...[
                     const SizedBox(height: 8),
@@ -443,12 +443,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       onPressed: _saving ? null : _savePassword,
                       child: _saving
                         ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                        : const Text('Save'),
+                        : const Text('Сохранить'),
                     )),
                     const SizedBox(width: 8),
                     TextButton(
                       onPressed: () => setState(() { _showPasswordForm = false; _pwError = null; }),
-                      child: const Text('Cancel'),
+                      child: const Text('Отмена'),
                     ),
                   ]),
                 ],
@@ -620,7 +620,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Ссылка скопирована')));
                         },
                         padding: EdgeInsets.zero,
-                        constraints: const BoxConstraints(),
+                        constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
                       ),
                       const SizedBox(width: 8),
                       IconButton(
@@ -629,7 +629,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           'Привет! Присоединяйся к UspAIChat — AI чат с множеством моделей. Регистрируйся и получи бонус!\nhttps://t.me/UspAIChatbot?start=ref_${user.referralCode}',
                         ),
                         padding: EdgeInsets.zero,
-                        constraints: const BoxConstraints(),
+                        constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
                       ),
                     ]),
                   ),
@@ -660,7 +660,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      user.telegramId != null ? 'Linked' : 'Not linked',
+                      user.telegramId != null ? 'Привязан' : 'Не привязан',
                       style: TextStyle(color: user.telegramId != null ? AppColors.success : AppColors.textMuted, fontSize: 11),
                     ),
                   ),
@@ -670,7 +670,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   Text(user.telegramUsername != null ? '@${user.telegramUsername}' : 'ID ${user.telegramId}',
                     style: const TextStyle(color: AppColors.textSecondary, fontSize: 13))
                 else
-                  const Text('Link Telegram to sign in with it',
+                  const Text('Привяжите Telegram для входа',
                     style: TextStyle(color: AppColors.textDim, fontSize: 12)),
               ],
             ),
@@ -696,7 +696,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      user.googleId != null ? 'Linked' : 'Not linked',
+                      user.googleId != null ? 'Привязан' : 'Не привязан',
                       style: TextStyle(color: user.googleId != null ? AppColors.success : AppColors.textMuted, fontSize: 11),
                     ),
                   ),
@@ -753,7 +753,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
-                        user.appleId != null ? 'Linked' : 'Not linked',
+                        user.appleId != null ? 'Привязан' : 'Не привязан',
                         style: TextStyle(color: user.appleId != null ? AppColors.success : AppColors.textMuted, fontSize: 11),
                       ),
                     ),

@@ -43,7 +43,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with SingleTick
     await api.saveKey(provider, key);
     _keyControllers[provider]!.clear();
     _loadKeys();
-    if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Key saved')));
+    if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Ключ сохранён')));
   }
 
   @override
@@ -60,16 +60,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with SingleTick
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: const Text('Settings', style: TextStyle(fontSize: 16)),
+        title: const Text('Настройки', style: TextStyle(fontSize: 16)),
         bottom: TabBar(
           controller: _tabCtrl,
           indicatorColor: AppColors.violet600,
           labelColor: AppColors.textPrimary,
           unselectedLabelColor: AppColors.textMuted,
           tabs: [
-            if (isAdmin) const Tab(text: 'API Keys'),
-            const Tab(text: 'Appearance'),
-            const Tab(text: 'About'),
+            if (isAdmin) const Tab(text: 'API ключи'),
+            const Tab(text: 'Внешний вид'),
+            const Tab(text: 'О приложении'),
           ],
         ),
       ),
@@ -105,7 +105,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with SingleTick
                         ),
                         const Spacer(),
                         if (configured)
-                          const Text('Configured', style: TextStyle(color: AppColors.success, fontSize: 11)),
+                          const Text('Настроен', style: TextStyle(color: AppColors.success, fontSize: 11)),
                       ]),
                       const SizedBox(height: 12),
                       TextField(
@@ -113,7 +113,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with SingleTick
                         obscureText: true,
                         style: const TextStyle(fontSize: 13, color: AppColors.textPrimary),
                         decoration: InputDecoration(
-                          hintText: 'Enter API key...',
+                          hintText: 'Введите API ключ...',
                           isDense: true,
                           suffixIcon: IconButton(
                             icon: const Icon(Icons.save, size: 18, color: AppColors.violet400),
@@ -132,22 +132,22 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with SingleTick
           ListView(
             padding: const EdgeInsets.all(16),
             children: [
-              const Text('Theme', style: TextStyle(color: AppColors.textSecondary, fontSize: 12, fontWeight: FontWeight.w600)),
+              const Text('Тема', style: TextStyle(color: AppColors.textSecondary, fontSize: 12, fontWeight: FontWeight.w600)),
               const SizedBox(height: 8),
-              _themeTile('System', Icons.settings_brightness, AppThemeMode.system),
-              _themeTile('Light', Icons.light_mode, AppThemeMode.light),
-              _themeTile('Dark', Icons.dark_mode, AppThemeMode.dark),
+              _themeTile('Системная', Icons.settings_brightness, AppThemeMode.system),
+              _themeTile('Светлая', Icons.light_mode, AppThemeMode.light),
+              _themeTile('Тёмная', Icons.dark_mode, AppThemeMode.dark),
               const Divider(height: 32),
-              const Text('Language', style: TextStyle(color: AppColors.textSecondary, fontSize: 12, fontWeight: FontWeight.w600)),
+              const Text('Язык', style: TextStyle(color: AppColors.textSecondary, fontSize: 12, fontWeight: FontWeight.w600)),
               const SizedBox(height: 8),
-              _langTile('Russian', 'ru'),
+              _langTile('Русский', 'ru'),
               _langTile('English', 'en'),
-              _langTile('Chinese', 'zh'),
+              _langTile('Китайский', 'zh'),
               const Divider(height: 32),
               ListTile(
                 leading: const Icon(Icons.auto_awesome, color: AppColors.violet400),
-                title: const Text('Prompt Templates', style: TextStyle(color: AppColors.textPrimary)),
-                subtitle: const Text('Manage your prompt templates', style: TextStyle(color: AppColors.textDim, fontSize: 12)),
+                title: const Text('Шаблоны промптов', style: TextStyle(color: AppColors.textPrimary)),
+                subtitle: const Text('Управление шаблонами промптов', style: TextStyle(color: AppColors.textDim, fontSize: 12)),
                 trailing: const Icon(Icons.chevron_right, color: AppColors.textDim),
                 onTap: () => context.go('/prompt-templates'),
               ),
@@ -182,9 +182,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with SingleTick
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: const [
-                      Text('Multi-provider AI Chat', style: TextStyle(color: AppColors.textPrimary, fontSize: 14, fontWeight: FontWeight.w600)),
+                      Text('Мультипровайдерный AI чат', style: TextStyle(color: AppColors.textPrimary, fontSize: 14, fontWeight: FontWeight.w600)),
                       SizedBox(height: 8),
-                      Text('Self-hosted AI chat platform with support for Anthropic Claude, OpenAI, Google Gemini, DeepSeek and Kimi.',
+                      Text('Собственная платформа AI чата с поддержкой Anthropic Claude, OpenAI, Google Gemini, DeepSeek и Kimi.',
                         style: TextStyle(color: AppColors.textSecondary, fontSize: 13)),
                     ],
                   ),
@@ -197,14 +197,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with SingleTick
                     ListTile(
                       dense: true,
                       leading: const Icon(Icons.code, size: 18, color: AppColors.violet400),
-                      title: const Text('Developer', style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+                      title: const Text('Разработчик', style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
                       subtitle: const Text('IRCit Dev', style: TextStyle(color: AppColors.textPrimary, fontSize: 14)),
                     ),
                     const Divider(height: 1, color: AppColors.cardBorder),
                     ListTile(
                       dense: true,
                       leading: const Icon(Icons.language, size: 18, color: AppColors.violet400),
-                      title: const Text('Website', style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+                      title: const Text('Сайт', style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
                       subtitle: const Text('app.aifuturenow.ru', style: TextStyle(color: AppColors.textPrimary, fontSize: 14)),
                     ),
                   ],
@@ -238,7 +238,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with SingleTick
       trailing: const Icon(Icons.chevron_right, color: AppColors.textDim),
       onTap: () {
         // TODO: implement locale change
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Language: $name')));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Язык: $name')));
       },
     );
   }

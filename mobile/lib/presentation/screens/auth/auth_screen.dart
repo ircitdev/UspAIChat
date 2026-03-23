@@ -40,7 +40,7 @@ class AuthScreen extends ConsumerWidget {
                   style: TextStyle(color: AppColors.textPrimary, fontSize: 24, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 4),
-                const Text('Welcome!',
+                const Text('Добро пожаловать!',
                   style: TextStyle(color: AppColors.textMuted, fontSize: 14),
                 ),
                 const SizedBox(height: 32),
@@ -59,7 +59,7 @@ class AuthScreen extends ConsumerWidget {
                       _OAuthButton(
                         onPressed: auth.loading ? null : () => ref.read(authProvider.notifier).loginWithGoogle(),
                         icon: Icons.g_mobiledata,
-                        label: 'Continue with Google',
+                        label: 'Войти через Google',
                         backgroundColor: Colors.white,
                         textColor: Colors.black87,
                       ),
@@ -69,7 +69,7 @@ class AuthScreen extends ConsumerWidget {
                       _OAuthButton(
                         onPressed: auth.loading ? null : () => ref.read(authProvider.notifier).loginWithApple(),
                         icon: Icons.apple,
-                        label: 'Continue with Apple',
+                        label: 'Войти через Apple',
                         backgroundColor: Colors.white,
                         textColor: Colors.black87,
                       ),
@@ -79,7 +79,7 @@ class AuthScreen extends ConsumerWidget {
                       _OAuthButton(
                         onPressed: auth.loading ? null : () => context.go('/auth/telegram'),
                         icon: Icons.telegram,
-                        label: 'Continue with Telegram',
+                        label: 'Войти через Telegram',
                         backgroundColor: AppColors.telegram,
                         textColor: Colors.white,
                       ),
@@ -90,7 +90,7 @@ class AuthScreen extends ConsumerWidget {
                         const Expanded(child: Divider(color: AppColors.cardBorder)),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 12),
-                          child: Text('or', style: TextStyle(color: AppColors.textDim, fontSize: 12)),
+                          child: Text('или', style: TextStyle(color: AppColors.textDim, fontSize: 12)),
                         ),
                         const Expanded(child: Divider(color: AppColors.cardBorder)),
                       ]),
@@ -100,7 +100,7 @@ class AuthScreen extends ConsumerWidget {
                       _OAuthButton(
                         onPressed: () => context.go('/auth/email'),
                         icon: Icons.email_outlined,
-                        label: 'Sign in with email',
+                        label: 'Войти по email',
                         backgroundColor: AppColors.surfaceBorder,
                         textColor: AppColors.textSecondary,
                         borderColor: AppColors.cardBorder,
@@ -129,7 +129,7 @@ class AuthScreen extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
-                const Text('Data syncs across devices',
+                const Text('Данные синхронизируются между устройствами',
                   style: TextStyle(color: AppColors.textDim, fontSize: 12),
                 ),
               ],

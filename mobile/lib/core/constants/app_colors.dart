@@ -23,7 +23,7 @@ class AppColors {
   static const textPrimary = Color(0xFFF1F5F9);
   static const textSecondary = Color(0xFF94A3B8);
   static const textMuted = Color(0xFF64748B);
-  static const textDim = Color(0xFF475569);
+  static const textDim = Color(0xFF6B7A8D);
 
   static const violet600 = Color(0xFF7C3AED);
   static const violet700 = Color(0xFF6D28D9);

@@ -59,13 +59,13 @@ class _PromptTemplatesScreenState extends ConsumerState<PromptTemplatesScreen> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(_editingId != null ? 'Edit template' : 'New template',
+            Text(_editingId != null ? 'Редактировать шаблон' : 'Новый шаблон',
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             const SizedBox(height: 12),
             TextField(
               controller: _nameCtrl,
               decoration: const InputDecoration(
-                labelText: 'Name', isDense: true,
+                labelText: 'Название', isDense: true,
                 border: OutlineInputBorder(),
               ),
             ),
@@ -74,14 +74,14 @@ class _PromptTemplatesScreenState extends ConsumerState<PromptTemplatesScreen> {
               controller: _contentCtrl,
               maxLines: 4,
               decoration: const InputDecoration(
-                labelText: 'Prompt content', isDense: true,
+                labelText: 'Содержимое промпта', isDense: true,
                 border: OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 12),
             DropdownButtonFormField<String>(
               value: _category,
-              decoration: const InputDecoration(labelText: 'Category', isDense: true, border: OutlineInputBorder()),
+              decoration: const InputDecoration(labelText: 'Категория', isDense: true, border: OutlineInputBorder()),
               items: _categories.map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
               onChanged: (v) => setSheetState(() => _category = v!),
             ),
@@ -91,7 +91,7 @@ class _PromptTemplatesScreenState extends ConsumerState<PromptTemplatesScreen> {
                 Expanded(
                   child: OutlinedButton(
                     onPressed: () { _resetForm(); Navigator.pop(ctx); },
-                    child: const Text('Cancel'),
+                    child: const Text('Отмена'),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -117,7 +117,7 @@ class _PromptTemplatesScreenState extends ConsumerState<PromptTemplatesScreen> {
                       if (ctx.mounted) Navigator.pop(ctx);
                     },
                     style: ElevatedButton.styleFrom(backgroundColor: AppColors.violet600),
-                    child: Text(_editingId != null ? 'Save' : 'Create'),
+                    child: Text(_editingId != null ? 'Сохранить' : 'Создать'),
                   ),
                 ),
               ],
@@ -134,7 +134,7 @@ class _PromptTemplatesScreenState extends ConsumerState<PromptTemplatesScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Prompt Templates'),
+        title: const Text('Шаблоны промптов'),
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
@@ -143,7 +143,7 @@ class _PromptTemplatesScreenState extends ConsumerState<PromptTemplatesScreen> {
         ],
       ),
       body: templates.isEmpty
-        ? const Center(child: Text('No templates yet.\nTap + to create one.',
+        ? const Center(child: Text('Нет шаблонов.\nНажмите + чтобы создать.',
             textAlign: TextAlign.center, style: TextStyle(color: AppColors.textDim)))
         : ListView.builder(
             padding: const EdgeInsets.all(12),
@@ -177,8 +177,8 @@ class _PromptTemplatesScreenState extends ConsumerState<PromptTemplatesScreen> {
                       if (action == 'delete') ref.read(promptTemplateProvider.notifier).deleteTemplate(tpl.id);
                     },
                     itemBuilder: (_) => [
-                      const PopupMenuItem(value: 'edit', child: Text('Edit')),
-                      const PopupMenuItem(value: 'delete', child: Text('Delete', style: TextStyle(color: AppColors.error))),
+                      const PopupMenuItem(value: 'edit', child: Text('Редактировать')),
+                      const PopupMenuItem(value: 'delete', child: Text('Удалить', style: TextStyle(color: AppColors.error))),
                     ],
                   ),
                 ),

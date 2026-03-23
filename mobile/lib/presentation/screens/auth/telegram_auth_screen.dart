@@ -68,12 +68,12 @@ class _TelegramAuthScreenState extends ConsumerState<TelegramAuthScreen> {
           } else if (poll['status'] == 'expired' || poll['status'] == 'not_found') {
             _pollTimer?.cancel();
             _countdownTimer?.cancel();
-            setState(() { _status = 'expired'; _error = 'Code expired'; });
+            setState(() { _status = 'expired'; _error = 'Код истёк'; });
           }
         } catch (_) {}
       });
     } catch (e) {
-      setState(() { _status = 'error'; _error = 'Failed to connect to bot'; });
+      setState(() { _status = 'error'; _error = 'Не удалось подключиться к боту'; });
     }
   }
 
@@ -109,7 +109,7 @@ class _TelegramAuthScreenState extends ConsumerState<TelegramAuthScreen> {
                     const CircularProgressIndicator(color: AppColors.telegram),
 
                   if (_status == 'waiting' && _code != null) ...[
-                    Text('Send this code to @$_botUsername',
+                    Text('Отправьте этот код боту @$_botUsername',
                       textAlign: TextAlign.center,
                       style: const TextStyle(color: AppColors.textSecondary, fontSize: 14),
                     ),
@@ -118,7 +118,7 @@ class _TelegramAuthScreenState extends ConsumerState<TelegramAuthScreen> {
                       onTap: () {
                         Clipboard.setData(ClipboardData(text: _code!));
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Code copied'), duration: Duration(seconds: 1)),
+                          const SnackBar(content: Text('Код скопирован'), duration: Duration(seconds: 1)),
                         );
                       },
                       child: Container(
@@ -150,7 +150,7 @@ class _TelegramAuthScreenState extends ConsumerState<TelegramAuthScreen> {
                         child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.telegram),
                       ),
                       const SizedBox(width: 8),
-                      const Text('Waiting...', style: TextStyle(color: AppColors.textMuted, fontSize: 13)),
+                      const Text('Ожидание...', style: TextStyle(color: AppColors.textMuted, fontSize: 13)),
                     ]),
                     const SizedBox(height: 20),
                     SizedBox(
@@ -161,7 +161,7 @@ class _TelegramAuthScreenState extends ConsumerState<TelegramAuthScreen> {
                           mode: LaunchMode.externalApplication,
                         ),
                         icon: const Icon(Icons.telegram, size: 18),
-                        label: Text('Open @$_botUsername'),
+                        label: Text('Открыть @$_botUsername'),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.telegram,
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -171,12 +171,12 @@ class _TelegramAuthScreenState extends ConsumerState<TelegramAuthScreen> {
                   ],
 
                   if (_status == 'expired' || _status == 'error') ...[
-                    Text(_error ?? 'Code expired', style: const TextStyle(color: AppColors.error, fontSize: 14)),
+                    Text(_error ?? 'Код истёк', style: const TextStyle(color: AppColors.error, fontSize: 14)),
                     const SizedBox(height: 16),
                     ElevatedButton.icon(
                       onPressed: _initTelegram,
                       icon: const Icon(Icons.refresh, size: 16),
-                      label: const Text('Get new code'),
+                      label: const Text('Получить новый код'),
                       style: ElevatedButton.styleFrom(backgroundColor: AppColors.surfaceBorder),
                     ),
                   ],

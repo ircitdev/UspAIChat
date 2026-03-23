@@ -46,16 +46,16 @@ class _SystemPromptScreenState extends ConsumerState<SystemPromptScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: const Text('System Prompt', style: TextStyle(fontSize: 16)),
+        title: const Text('Системный промпт', style: TextStyle(fontSize: 16)),
         actions: [
-          TextButton(onPressed: _save, child: const Text('Save')),
+          TextButton(onPressed: _save, child: const Text('Сохранить')),
         ],
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
           // Presets
-          const Text('Presets', style: TextStyle(color: AppColors.textMuted, fontSize: 12, fontWeight: FontWeight.w600)),
+          const Text('Пресеты', style: TextStyle(color: AppColors.textMuted, fontSize: 12, fontWeight: FontWeight.w600)),
           const SizedBox(height: 8),
           Wrap(
             spacing: 8, runSpacing: 8,
@@ -74,7 +74,7 @@ class _SystemPromptScreenState extends ConsumerState<SystemPromptScreen> {
             maxLines: 10,
             style: const TextStyle(color: AppColors.textPrimary, fontSize: 14),
             decoration: InputDecoration(
-              hintText: 'Enter system prompt...',
+              hintText: 'Введите системный промпт...',
               hintStyle: const TextStyle(color: AppColors.textDim),
               alignLabelWithHint: true,
               filled: true,
@@ -97,7 +97,7 @@ class _SystemPromptScreenState extends ConsumerState<SystemPromptScreen> {
           if (_ctrl.text.isNotEmpty)
             TextButton(
               onPressed: () => setState(() => _ctrl.clear()),
-              child: const Text('Clear', style: TextStyle(color: AppColors.error)),
+              child: const Text('Очистить', style: TextStyle(color: AppColors.error)),
             ),
         ],
       ),

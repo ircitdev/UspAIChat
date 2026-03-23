@@ -56,7 +56,7 @@ class _EmailLoginScreenState extends ConsumerState<EmailLoginScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('Sign in with email',
+                  Text('Вход по email',
                     style: TextStyle(color: colors.onSurface, fontSize: 18, fontWeight: FontWeight.w600),
                   ),
                   const SizedBox(height: 20),
@@ -75,7 +75,7 @@ class _EmailLoginScreenState extends ConsumerState<EmailLoginScreen> {
                     obscureText: _obscure,
                     style: TextStyle(color: colors.onSurface, fontSize: 14),
                     decoration: InputDecoration(
-                      hintText: 'Password',
+                      hintText: 'Пароль',
                       prefixIcon: Icon(Icons.lock_outline, size: 18, color: theme.hintColor),
                       suffixIcon: IconButton(
                         icon: Icon(_obscure ? Icons.visibility_off : Icons.visibility,
@@ -106,11 +106,11 @@ class _EmailLoginScreenState extends ConsumerState<EmailLoginScreen> {
                       child: auth.loading
                         ? const SizedBox(width: 18, height: 18,
                             child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                        : const Text('Sign in'),
+                        : const Text('Войти'),
                     ),
                   ),
                   const SizedBox(height: 12),
-                  Text('Set your password in profile after signing in with Google or Apple',
+                  Text('Установите пароль в профиле после входа через Google или Apple',
                     textAlign: TextAlign.center,
                     style: TextStyle(color: theme.hintColor, fontSize: 11),
                   ),

@@ -73,7 +73,7 @@ class _ConversationsListState extends ConsumerState<ConversationsList> {
       await Share.share(content, subject: '$title.$format');
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Export error: $e')));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Ошибка экспорта: $e')));
       }
     }
   }
@@ -92,13 +92,13 @@ class _ConversationsListState extends ConsumerState<ConversationsList> {
         showDialog(
           context: context,
           builder: (ctx) => AlertDialog(
-            title: const Text('Shared link'),
+            title: const Text('Ссылка для доступа'),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 SelectableText(url, style: const TextStyle(fontSize: 13)),
                 const SizedBox(height: 8),
-                Text('Views: ${status['views'] ?? 0}', style: const TextStyle(fontSize: 12, color: AppColors.textDim)),
+                Text('Просмотров: ${status['views'] ?? 0}', style: const TextStyle(fontSize: 12, color: AppColors.textDim)),
               ],
             ),
             actions: [
@@ -106,17 +106,17 @@ class _ConversationsListState extends ConsumerState<ConversationsList> {
                 onPressed: () {
                   Clipboard.setData(ClipboardData(text: url));
                   Navigator.pop(ctx);
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Link copied')));
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Ссылка скопирована')));
                 },
-                child: const Text('Copy link'),
+                child: const Text('Скопировать ссылку'),
               ),
               TextButton(
                 onPressed: () async {
                   await shareApi.unshareConversation(convId);
                   if (ctx.mounted) Navigator.pop(ctx);
-                  if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Share disabled')));
+                  if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Доступ отключён')));
                 },
-                child: const Text('Disable', style: TextStyle(color: AppColors.error)),
+                child: const Text('Отключить', style: TextStyle(color: AppColors.error)),
               ),
             ],
           ),
@@ -135,18 +135,18 @@ class _ConversationsListState extends ConsumerState<ConversationsList> {
                 CheckboxListTile(
                   value: usePassword,
                   onChanged: (v) => setDialogState(() => usePassword = v!),
-                  title: const Text('Protect with password', style: TextStyle(fontSize: 14)),
+                  title: const Text('Защитить паролем', style: TextStyle(fontSize: 14)),
                   contentPadding: EdgeInsets.zero,
                 ),
                 if (usePassword)
                   TextField(
                     controller: passwordCtrl,
-                    decoration: const InputDecoration(hintText: 'Password', isDense: true),
+                    decoration: const InputDecoration(hintText: 'Пароль', isDense: true),
                   ),
               ],
             ),
             actions: [
-              TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+              TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Отмена')),
               ElevatedButton(
                 onPressed: () async {
                   final result = await shareApi.shareConversation(
@@ -156,17 +156,17 @@ class _ConversationsListState extends ConsumerState<ConversationsList> {
                   final url = 'https://app.aifuturenow.ru/shared/${result['share_id']}';
                   if (ctx.mounted) Navigator.pop(ctx);
                   Clipboard.setData(ClipboardData(text: url));
-                  if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Link copied!')));
+                  if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Ссылка скопирована!')));
                 },
                 style: ElevatedButton.styleFrom(backgroundColor: AppColors.violet600),
-                child: const Text('Create link'),
+                child: const Text('Создать ссылку'),
               ),
             ],
           )),
         );
       }
     } catch (e) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Ошибка: $e')));
     }
   }
 
@@ -175,14 +175,14 @@ class _ConversationsListState extends ConsumerState<ConversationsList> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('New folder'),
+        title: const Text('Новая папка'),
         content: TextField(
           controller: _folderNameCtrl,
           autofocus: true,
-          decoration: const InputDecoration(hintText: 'Folder name'),
+          decoration: const InputDecoration(hintText: 'Название папки'),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Отмена')),
           ElevatedButton(
             onPressed: () {
               if (_folderNameCtrl.text.trim().isNotEmpty) {
@@ -191,7 +191,7 @@ class _ConversationsListState extends ConsumerState<ConversationsList> {
               }
             },
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.violet600),
-            child: const Text('Create'),
+            child: const Text('Создать'),
           ),
         ],
       ),
@@ -266,7 +266,7 @@ class _ConversationsListState extends ConsumerState<ConversationsList> {
                   if (pinned.isNotEmpty) ...[
                     const Padding(
                       padding: EdgeInsets.fromLTRB(16, 8, 16, 4),
-                      child: Text('Pinned', style: TextStyle(color: AppColors.textDim, fontSize: 11, fontWeight: FontWeight.w600)),
+                      child: Text('Закреплённые', style: TextStyle(color: AppColors.textDim, fontSize: 11, fontWeight: FontWeight.w600)),
                     ),
                     ...pinned.map((c) => _ConvTile(
                       conv: c, isActive: c.id == state.activeId,
@@ -286,7 +286,26 @@ class _ConversationsListState extends ConsumerState<ConversationsList> {
                         style: const TextStyle(color: AppColors.textMuted, fontSize: 12)),
                       trailing: IconButton(
                         icon: const Icon(Icons.delete, size: 14, color: AppColors.textDim),
-                        onPressed: () => ref.read(folderProvider.notifier).deleteFolder(folder.id),
+                        constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                              title: const Text('Удалить папку?'),
+                              content: const Text('Беседы не будут удалены'),
+                              actions: [
+                                TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Отмена')),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(ctx);
+                                    ref.read(folderProvider.notifier).deleteFolder(folder.id);
+                                  },
+                                  child: const Text('Удалить', style: TextStyle(color: Colors.red)),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
                       ),
                       childrenPadding: EdgeInsets.zero,
                       children: folderConvs.map((c) => _ConvTile(
@@ -309,7 +328,7 @@ class _ConversationsListState extends ConsumerState<ConversationsList> {
                   if (state.conversations.isEmpty)
                     const Padding(
                       padding: EdgeInsets.all(32),
-                      child: Text('No conversations yet', textAlign: TextAlign.center,
+                      child: Text('Нет бесед', textAlign: TextAlign.center,
                         style: TextStyle(color: AppColors.textDim, fontSize: 13)),
                     ),
 
@@ -319,7 +338,7 @@ class _ConversationsListState extends ConsumerState<ConversationsList> {
                     child: OutlinedButton.icon(
                       onPressed: _showCreateFolder,
                       icon: const Icon(Icons.create_new_folder, size: 16),
-                      label: const Text('New folder', style: TextStyle(fontSize: 12)),
+                      label: const Text('Новая папка', style: TextStyle(fontSize: 12)),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: AppColors.textMuted,
                         side: const BorderSide(color: AppColors.cardBorder),
@@ -351,7 +370,7 @@ class _ConversationsListState extends ConsumerState<ConversationsList> {
                       children: [
                         Text(user.username, style: const TextStyle(color: AppColors.textPrimary, fontSize: 13)),
                         Text(
-                          user.isAdmin ? 'Admin' : '${user.balance.toStringAsFixed(2)} credits',
+                          user.isAdmin ? 'Администратор' : '${user.balance.toStringAsFixed(2)} кр.',
                           style: const TextStyle(color: AppColors.textDim, fontSize: 11),
                         ),
                       ],
@@ -420,12 +439,12 @@ class _ConvTileState extends ConsumerState<_ConvTile> {
           children: [
             const Padding(
               padding: EdgeInsets.all(16),
-              child: Text('Move to folder', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              child: Text('Переместить в папку', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
             ),
             if (widget.conv.folderId != null)
               ListTile(
                 leading: const Icon(Icons.folder_off, size: 20),
-                title: const Text('Remove from folder'),
+                title: const Text('Убрать из папки'),
                 onTap: () {
                   ref.read(conversationProvider.notifier).moveToFolder(widget.conv.id, null);
                   Navigator.pop(ctx);
@@ -446,7 +465,7 @@ class _ConvTileState extends ConsumerState<_ConvTile> {
             if (folders.isEmpty)
               const Padding(
                 padding: EdgeInsets.all(16),
-                child: Text('No folders yet. Create one first.',
+                child: Text('Нет папок. Сначала создайте папку.',
                   style: TextStyle(color: AppColors.textDim, fontSize: 13)),
               ),
           ],
@@ -473,12 +492,12 @@ class _ConvTileState extends ConsumerState<_ConvTile> {
         return await showDialog<bool>(
           context: context,
           builder: (ctx) => AlertDialog(
-            title: const Text('Delete conversation?'),
+            title: const Text('Удалить беседу?'),
             actions: [
-              TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
+              TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Отмена')),
               TextButton(
                 onPressed: () => Navigator.pop(ctx, true),
-                child: const Text('Delete', style: TextStyle(color: AppColors.error)),
+                child: const Text('Удалить', style: TextStyle(color: AppColors.error)),
               ),
             ],
           ),
@@ -522,14 +541,14 @@ class _ConvTileState extends ConsumerState<_ConvTile> {
                 icon: const Icon(Icons.check, size: 16, color: AppColors.success),
                 onPressed: _saveRename,
                 padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(),
+                constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
               ),
               const SizedBox(width: 8),
               IconButton(
                 icon: const Icon(Icons.close, size: 16, color: AppColors.textDim),
                 onPressed: () => setState(() => _editing = false),
                 padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(),
+                constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
               ),
             ])
           : PopupMenuButton<String>(
@@ -554,27 +573,27 @@ class _ConvTileState extends ConsumerState<_ConvTile> {
                 PopupMenuItem(value: 'pin', child: Row(children: [
                   Icon(conv.pinned ? Icons.push_pin_outlined : Icons.push_pin, size: 16, color: AppColors.textMuted),
                   const SizedBox(width: 8),
-                  Text(conv.pinned ? 'Unpin' : 'Pin'),
+                  Text(conv.pinned ? 'Открепить' : 'Закрепить'),
                 ])),
                 const PopupMenuItem(value: 'rename', child: Row(children: [
                   Icon(Icons.edit, size: 16, color: AppColors.textMuted),
                   SizedBox(width: 8),
-                  Text('Rename'),
+                  Text('Переименовать'),
                 ])),
                 const PopupMenuItem(value: 'folder', child: Row(children: [
                   Icon(Icons.folder_open, size: 16, color: AppColors.textMuted),
                   SizedBox(width: 8),
-                  Text('Move to folder'),
+                  Text('Переместить в папку'),
                 ])),
                 const PopupMenuItem(value: 'export', child: Row(children: [
                   Icon(Icons.download, size: 16, color: AppColors.textMuted),
                   SizedBox(width: 8),
-                  Text('Export'),
+                  Text('Экспорт'),
                 ])),
                 const PopupMenuItem(value: 'share', child: Row(children: [
                   Icon(Icons.share, size: 16, color: AppColors.textMuted),
                   SizedBox(width: 8),
-                  Text('Share'),
+                  Text('Поделиться'),
                 ])),
               ],
             ),

@@ -42,8 +42,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       final api = ConversationApi(ref.read(apiClientProvider));
       final results = await api.searchMessages(query);
       setState(() { _results = results; _loading = false; });
-    } catch (_) {
-      setState(() => _loading = false);
+    } catch (e) {
+      if (mounted) setState(() { _results = []; _loading = false; });
     }
   }
 
@@ -56,7 +56,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     final today = DateTime(now.year, now.month, now.day);
     final msgDay = DateTime(date.year, date.month, date.day);
     if (msgDay == today) return DateFormat('HH:mm').format(date);
-    if (msgDay == today.subtract(const Duration(days: 1))) return 'Yesterday';
+    if (msgDay == today.subtract(const Duration(days: 1))) return 'Вчера';
     return DateFormat('d MMM yyyy').format(date);
   }
 
@@ -72,7 +72,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           onChanged: _onChanged,
           style: const TextStyle(color: AppColors.textPrimary, fontSize: 14),
           decoration: InputDecoration(
-            hintText: 'Search messages...',
+            hintText: 'Поиск по сообщениям...',
             hintStyle: const TextStyle(color: AppColors.textDim, fontSize: 14),
             border: InputBorder.none,
             suffixIcon: _ctrl.text.isNotEmpty
@@ -100,7 +100,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  _ctrl.text.isEmpty ? 'Type to search messages' : 'No results found',
+                  _ctrl.text.isEmpty ? 'Введите текст для поиска' : 'Ничего не найдено',
                   style: const TextStyle(color: AppColors.textDim, fontSize: 14),
                 ),
               ],

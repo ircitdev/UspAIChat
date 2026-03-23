@@ -42,8 +42,13 @@ class _AdminScreenState extends ConsumerState<AdminScreen> with SingleTickerProv
         _transactions = results[2].data;
         _loading = false;
       });
-    } catch (_) {
+    } catch (e) {
       setState(() => _loading = false);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Ошибка загрузки: ${e.toString()}')),
+        );
+      }
     }
   }
 
@@ -58,16 +63,16 @@ class _AdminScreenState extends ConsumerState<AdminScreen> with SingleTickerProv
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: const Text('Admin Panel', style: TextStyle(fontSize: 16)),
+        title: const Text('Панель управления', style: TextStyle(fontSize: 16)),
         bottom: TabBar(
           controller: _tabCtrl,
           indicatorColor: AppColors.violet600,
           labelColor: AppColors.textPrimary,
           unselectedLabelColor: AppColors.textMuted,
           tabs: const [
-            Tab(text: 'Stats'),
-            Tab(text: 'Users'),
-            Tab(text: 'Balance'),
+            Tab(text: 'Статистика'),
+            Tab(text: 'Пользователи'),
+            Tab(text: 'Баланс'),
           ],
         ),
       ),
@@ -98,12 +103,12 @@ class _StatsTab extends StatelessWidget {
       crossAxisSpacing: 12,
       childAspectRatio: 1.6,
       children: [
-        _StatCard('Users', '${stats['totalUsers'] ?? 0}', Icons.people),
-        _StatCard('Admins', '${stats['adminUsers'] ?? 0}', Icons.admin_panel_settings),
-        _StatCard('Conversations', '${stats['totalConvs'] ?? 0}', Icons.chat),
-        _StatCard('Messages', '${stats['totalMessages'] ?? 0}', Icons.message),
-        _StatCard('Top Up', '${((stats['totalTopup'] ?? 0) as num).toStringAsFixed(2)} кр', Icons.arrow_upward, color: AppColors.success),
-        _StatCard('Charged', '${((stats['totalCharged'] ?? 0) as num).toStringAsFixed(2)} кр', Icons.arrow_downward, color: AppColors.error),
+        _StatCard('Пользователи', '${stats['totalUsers'] ?? 0}', Icons.people),
+        _StatCard('Админы', '${stats['adminUsers'] ?? 0}', Icons.admin_panel_settings),
+        _StatCard('Диалоги', '${stats['totalConvs'] ?? 0}', Icons.chat),
+        _StatCard('Сообщения', '${stats['totalMessages'] ?? 0}', Icons.message),
+        _StatCard('Пополнения', '${((stats['totalTopup'] ?? 0) as num).toStringAsFixed(2)} кр', Icons.arrow_upward, color: AppColors.success),
+        _StatCard('Списано', '${((stats['totalCharged'] ?? 0) as num).toStringAsFixed(2)} кр', Icons.arrow_downward, color: AppColors.error),
       ],
     );
   }
@@ -145,7 +150,7 @@ class _UsersTab extends ConsumerWidget {
       await dio.patch(ApiConstants.adminUserBlock(user['id']), data: {'is_blocked': isBlocked ? 0 : 1});
       onRefresh();
     } catch (e) {
-      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Ошибка: $e')));
     }
   }
 
@@ -155,7 +160,7 @@ class _UsersTab extends ConsumerWidget {
       await dio.patch(ApiConstants.adminUserRole(user['id']), data: {'role': newRole});
       onRefresh();
     } catch (e) {
-      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Ошибка: $e')));
     }
   }
 
@@ -163,13 +168,13 @@ class _UsersTab extends ConsumerWidget {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('Delete ${user['username']}?'),
-        content: const Text('This action cannot be undone.'),
+        title: Text('Удалить ${user['username']}?'),
+        content: const Text('Это действие нельзя отменить.'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Отмена')),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Delete', style: TextStyle(color: AppColors.error)),
+            child: const Text('Удалить', style: TextStyle(color: AppColors.error)),
           ),
         ],
       ),
@@ -179,7 +184,7 @@ class _UsersTab extends ConsumerWidget {
       await dio.delete(ApiConstants.adminUserDelete(user['id']));
       onRefresh();
     } catch (e) {
-      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Ошибка: $e')));
     }
   }
 
@@ -188,22 +193,22 @@ class _UsersTab extends ConsumerWidget {
     final amount = await showDialog<double>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('Top up ${user['username']}'),
+        title: Text('Пополнить ${user['username']}'),
         content: TextField(
           controller: amountCtrl,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
-          decoration: const InputDecoration(hintText: 'Amount', suffixText: 'кр'),
+          decoration: const InputDecoration(hintText: 'Сумма', suffixText: 'кр'),
           autofocus: true,
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Отмена')),
           ElevatedButton(
             onPressed: () {
               final val = double.tryParse(amountCtrl.text);
               if (val != null && val > 0) Navigator.pop(ctx, val);
             },
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.violet600),
-            child: const Text('Top up'),
+            child: const Text('Пополнить'),
           ),
         ],
       ),
@@ -212,9 +217,9 @@ class _UsersTab extends ConsumerWidget {
     try {
       await dio.post(ApiConstants.adminTopup, data: {'user_id': user['id'], 'amount': amount});
       onRefresh();
-      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Added ${amount.toStringAsFixed(2)} кр to ${user['username']}')));
+      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Добавлено ${amount.toStringAsFixed(2)} кр для ${user['username']}')));
     } catch (e) {
-      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Ошибка: $e')));
     }
   }
 
@@ -252,7 +257,7 @@ class _UsersTab extends ConsumerWidget {
                 ),
               ],
             ),
-            subtitle: Text('${u['email'] ?? 'No email'} | Balance: ${(u['balance'] as num?)?.toStringAsFixed(2) ?? '0.00'} кр',
+            subtitle: Text('${u['email'] ?? 'Нет email'} | Баланс: ${(u['balance'] as num?)?.toStringAsFixed(2) ?? '0.00'} кр',
               style: const TextStyle(color: AppColors.textDim, fontSize: 11)),
             trailing: PopupMenuButton<String>(
               icon: const Icon(Icons.more_vert, size: 18, color: AppColors.textDim),
@@ -268,24 +273,24 @@ class _UsersTab extends ConsumerWidget {
                 const PopupMenuItem(value: 'topup', child: Row(children: [
                   Icon(Icons.add_circle, size: 16, color: AppColors.success),
                   SizedBox(width: 8),
-                  Text('Top up balance'),
+                  Text('Пополнить баланс'),
                 ])),
                 PopupMenuItem(value: 'block', child: Row(children: [
                   Icon(isBlocked ? Icons.check_circle : Icons.block, size: 16,
                     color: isBlocked ? AppColors.success : AppColors.warning),
                   const SizedBox(width: 8),
-                  Text(isBlocked ? 'Unblock' : 'Block'),
+                  Text(isBlocked ? 'Разблокировать' : 'Заблокировать'),
                 ])),
                 PopupMenuItem(value: 'role', child: Row(children: [
                   Icon(isAdmin ? Icons.person : Icons.admin_panel_settings, size: 16, color: AppColors.violet400),
                   const SizedBox(width: 8),
-                  Text(isAdmin ? 'Demote to user' : 'Promote to admin'),
+                  Text(isAdmin ? 'Убрать из админов' : 'Сделать админом'),
                 ])),
                 const PopupMenuDivider(),
                 const PopupMenuItem(value: 'delete', child: Row(children: [
                   Icon(Icons.delete_forever, size: 16, color: AppColors.error),
                   SizedBox(width: 8),
-                  Text('Delete user', style: TextStyle(color: AppColors.error)),
+                  Text('Удалить пользователя', style: TextStyle(color: AppColors.error)),
                 ])),
               ],
             ),
@@ -317,7 +322,7 @@ class _BalanceTab extends StatelessWidget {
           ),
           title: Text('${t['username'] ?? ''} — ${t['description'] ?? t['type']}',
             style: const TextStyle(color: AppColors.textPrimary, fontSize: 13)),
-          subtitle: Text('Balance after: ${(t['balance_after'] as num?)?.toStringAsFixed(4) ?? '0'}',
+          subtitle: Text('Баланс после: ${(t['balance_after'] as num?)?.toStringAsFixed(4) ?? '0'}',
             style: const TextStyle(color: AppColors.textDim, fontSize: 11)),
           trailing: Text(
             '${isTopup ? '+' : ''}${(t['amount'] as num?)?.toStringAsFixed(4) ?? '0'}',
