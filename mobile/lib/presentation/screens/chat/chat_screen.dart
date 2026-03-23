@@ -938,6 +938,27 @@ class _RoutingBadge extends StatelessWidget {
               Text(info.reasoning, style: const TextStyle(color: AppColors.textMuted, fontSize: 13)),
               const SizedBox(height: 16),
 
+              // Cost per 1K
+              if (info.costPer1k > 0) ...[
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: AppColors.surfaceLight,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: AppColors.cardBorder),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.paid, size: 16, color: AppColors.warning),
+                      const SizedBox(width: 8),
+                      Text('${info.costPer1k} кр/1K токенов',
+                        style: const TextStyle(color: AppColors.textPrimary, fontSize: 13, fontWeight: FontWeight.w500)),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 12),
+              ],
+
               // Stats row
               Row(
                 children: [
@@ -986,6 +1007,10 @@ class _RoutingBadge extends StatelessWidget {
               ),
               const SizedBox(width: 6),
               Text(info.selectedModel, style: const TextStyle(color: AppColors.textMuted, fontSize: 10)),
+              if (info.costPer1k > 0) ...[
+                const SizedBox(width: 4),
+                Text('${info.costPer1k} кр/1K', style: const TextStyle(color: AppColors.textDim, fontSize: 9)),
+              ],
               if (info.savings > 0) ...[
                 const SizedBox(width: 4),
                 Text('-${info.savings}%', style: const TextStyle(color: AppColors.success, fontSize: 10, fontWeight: FontWeight.w600)),

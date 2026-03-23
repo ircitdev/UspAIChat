@@ -14,6 +14,12 @@ class ApiConstants {
   static const String oauthGoogle = '/auth/oauth/google';
   static const String oauthApple = '/auth/oauth/apple';
 
+  // OAuth link/unlink
+  static const String oauthGoogleLink = '/auth/oauth/google/link';
+  static const String oauthGoogleUnlink = '/auth/oauth/google/unlink';
+  static const String oauthAppleLink = '/auth/oauth/apple/link';
+  static const String oauthAppleUnlink = '/auth/oauth/apple/unlink';
+
   // Telegram
   static const String telegramInit = '/auth/telegram/init';
   static String telegramPoll(String code) => '/auth/telegram/poll/$code';
@@ -73,4 +79,18 @@ class ApiConstants {
 
   // Message delete
   static String deleteMessage(String convId, String msgId) => '/conversations/$convId/messages/$msgId';
+
+  // Payments
+  static const String payments = '/payments';
+  static const String paymentCreate = '/payments/create';
+  static const String paymentPackages = '/payments/packages';
+  static const String paymentHistory = '/payments/history';
+  static String paymentStatus(String id) => '/payments/$id/status';
+
+  // Referral
+  static const String referralInfo = '/referral/info';
+  static const String referralWithdraw = '/referral/withdraw';
+
+  // Promo
+  static String promoCheck(String code) => '/promo/check/$code';
 }

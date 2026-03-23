@@ -54,7 +54,7 @@ class User {
     referralEarnings: (json['referral_earnings'] as num?)?.toDouble() ?? 0,
   );
 
-  User copyWith({double? balance, int? telegramId, String? telegramUsername, bool? hasPassword, double? referralEarnings}) => User(
+  User copyWith({double? balance, int? telegramId, String? telegramUsername, bool? hasPassword, double? referralEarnings, String? googleId, bool clearGoogleId = false, String? appleId, bool clearAppleId = false}) => User(
     id: id,
     email: email,
     username: username,
@@ -64,8 +64,8 @@ class User {
     avatar: avatar,
     telegramId: telegramId ?? this.telegramId,
     telegramUsername: telegramUsername ?? this.telegramUsername,
-    googleId: googleId,
-    appleId: appleId,
+    googleId: clearGoogleId ? null : (googleId ?? this.googleId),
+    appleId: clearAppleId ? null : (appleId ?? this.appleId),
     createdAt: createdAt,
     hasPassword: hasPassword ?? this.hasPassword,
     referralCode: referralCode,

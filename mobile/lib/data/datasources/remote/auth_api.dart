@@ -107,4 +107,26 @@ class AuthApi {
   Future<void> telegramUnlink() async {
     await _dio.delete(ApiConstants.telegramUnlink);
   }
+
+  // Google link/unlink
+  Future<User> linkGoogle(String credential) async {
+    final response = await _dio.post(ApiConstants.oauthGoogleLink, data: {'credential': credential});
+    return User.fromJson(response.data['user']);
+  }
+
+  Future<User> unlinkGoogle() async {
+    final response = await _dio.delete(ApiConstants.oauthGoogleUnlink);
+    return User.fromJson(response.data['user']);
+  }
+
+  // Apple link/unlink
+  Future<User> linkApple(String idToken) async {
+    final response = await _dio.post(ApiConstants.oauthAppleLink, data: {'id_token': idToken});
+    return User.fromJson(response.data['user']);
+  }
+
+  Future<User> unlinkApple() async {
+    final response = await _dio.delete(ApiConstants.oauthAppleUnlink);
+    return User.fromJson(response.data['user']);
+  }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../data/datasources/remote/share_api.dart';
@@ -230,6 +231,14 @@ class _ConversationsListState extends ConsumerState<ConversationsList> {
                   color: AppColors.textPrimary, fontSize: 16, fontWeight: FontWeight.bold,
                 )),
                 const Spacer(),
+                IconButton(
+                  icon: const Icon(Icons.search, color: AppColors.textMuted, size: 20),
+                  onPressed: () {
+                    final router = GoRouter.of(context);
+                    Navigator.of(context).pop();
+                    router.push('/search');
+                  },
+                ),
                 IconButton(
                   icon: const Icon(Icons.add, color: AppColors.textMuted, size: 20),
                   onPressed: () {
