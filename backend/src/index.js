@@ -56,6 +56,10 @@ app.get('/health', (req, res) => res.json({ status: 'ok', timestamp: Date.now() 
 // Serve frontend (production)
 import { existsSync } from 'fs';
 const frontendDist = join(__dirname, '../../frontend/dist');
+// Privacy policy page
+app.get('/privacy', (req, res) => res.sendFile(join(__dirname, '../../frontend/public/privacy.html')));
+app.get('/terms', (req, res) => res.sendFile(join(__dirname, '../../frontend/public/privacy.html')));
+
 if (existsSync(frontendDist)) {
   app.use(express.static(frontendDist));
   // SPA fallback: serve index.html for client-side routes
