@@ -292,6 +292,38 @@ export default function PaymentModal({ onClose }: { onClose: () => void }) {
                 </p>
               </div>
 
+              {/* Smart Router savings */}
+              <div className="bg-gradient-to-r from-violet-500/10 to-purple-500/10 border border-violet-500/20 rounded-xl p-4 space-y-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm">⚡</span>
+                  <div className="text-sm font-semibold text-violet-600 dark:text-violet-400">Режим «Авто» экономит кредиты</div>
+                </div>
+                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                  <strong>Smart Router</strong> анализирует каждый запрос по 14 параметрам и подбирает оптимальную модель.
+                  Простой вопрос → быстрая дешёвая модель. Сложная задача → мощная модель. Вы всегда видите, какая модель выбрана и почему.
+                </p>
+                <div className="grid grid-cols-3 gap-2 text-xs">
+                  <div className="bg-white/50 dark:bg-[#1a1a2e] rounded-lg p-2 text-center border border-green-500/20">
+                    <div className="font-bold text-green-500">SIMPLE</div>
+                    <div className="text-slate-500 dark:text-slate-400">от 0.2 кр/1K</div>
+                    <div className="text-[10px] text-slate-400">Gemini Flash Lite</div>
+                  </div>
+                  <div className="bg-white/50 dark:bg-[#1a1a2e] rounded-lg p-2 text-center border border-amber-500/20">
+                    <div className="font-bold text-amber-500">MEDIUM</div>
+                    <div className="text-slate-500 dark:text-slate-400">от 0.5 кр/1K</div>
+                    <div className="text-[10px] text-slate-400">Gemini 2.5 Flash</div>
+                  </div>
+                  <div className="bg-white/50 dark:bg-[#1a1a2e] rounded-lg p-2 text-center border border-orange-500/20">
+                    <div className="font-bold text-orange-500">COMPLEX</div>
+                    <div className="text-slate-500 dark:text-slate-400">от 3.5 кр/1K</div>
+                    <div className="text-[10px] text-slate-400">Gemini 2.5 Pro</div>
+                  </div>
+                </div>
+                <p className="text-[11px] text-violet-500 dark:text-violet-400 font-medium">
+                  💡 В среднем экономия до 70% по сравнению с постоянным использованием топовых моделей
+                </p>
+              </div>
+
               {/* How many tokens is a message */}
               <div className="bg-[#f8fafc] dark:bg-[#0d0d1a] rounded-xl p-4 space-y-2">
                 <div className="text-xs font-semibold text-slate-700 dark:text-slate-300">Сколько токенов в сообщении?</div>
