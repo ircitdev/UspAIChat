@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 enum AppThemeMode { system, light, dark }
 
 class ThemeNotifier extends StateNotifier<AppThemeMode> {
-  ThemeNotifier() : super(AppThemeMode.system) {
+  ThemeNotifier() : super(AppThemeMode.dark) {
     _load();
   }
 
