@@ -1,10 +1,29 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Mail, User, Copy, Check, RefreshCw, Lock, Eye, EyeOff, Sun, Moon, Monitor } from 'lucide-react';
+import { X, Mail, User, Copy, Check, RefreshCw, Lock, Eye, EyeOff, Sun, Moon, Monitor, Loader2 } from 'lucide-react';
 import useAuthStore from '../store/authStore';
 import useThemeStore from '../store/themeStore';
 import api from '../services/api';
 import clsx from 'clsx';
+
+declare global {
+  interface Window {
+    google?: {
+      accounts: {
+        id: {
+          initialize: (config: { client_id: string; callback: (response: { credential: string }) => void; auto_select?: boolean }) => void;
+          renderButton: (element: HTMLElement, config: { theme?: string; size?: string; width?: number; shape?: string; text?: string; locale?: string }) => void;
+        };
+      };
+    };
+    AppleID?: {
+      auth: {
+        init: (config: { clientId: string; scope: string; redirectURI: string; usePopup: boolean }) => void;
+        signIn: () => Promise<{ authorization: { id_token: string }; user?: { name?: { firstName?: string; lastName?: string }; email?: string } }>;
+      };
+    };
+  }
+}
 
 function TelegramIcon({ size = 16 }: { size?: number }) {
   return (
@@ -48,11 +67,110 @@ export default function ProfileModal({ onClose }: { onClose: () => void }) {
   const [showNewPw, setShowNewPw] = useState(false);
   const [hasPassword, setHasPassword] = useState(false);
 
+  // Google/Apple linking
+  const [googleClientId, setGoogleClientId] = useState<string | null>(null);
+  const [appleClientId, setAppleClientId] = useState<string | null>(null);
+  const [oauthLinking, setOauthLinking] = useState<'google' | 'apple' | null>(null);
+  const [unlinkingGoogle, setUnlinkingGoogle] = useState(false);
+  const [unlinkingApple, setUnlinkingApple] = useState(false);
+  const googleLinkBtnRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     api.get('/auth/me').then(({ data }) => {
       setHasPassword(!!data.user.has_password);
     }).catch(() => {});
+    api.get('/auth/oauth/config').then(({ data }) => {
+      if (data.google_client_id) setGoogleClientId(data.google_client_id);
+      if (data.apple_client_id) setAppleClientId(data.apple_client_id);
+    }).catch(() => {});
   }, []);
+
+  // Google Sign-In button for linking
+  const initGoogleLinkBtn = useCallback(() => {
+    if (!window.google || !googleClientId || !googleLinkBtnRef.current || user?.google_id) return;
+    window.google.accounts.id.initialize({
+      client_id: googleClientId,
+      callback: async (response) => {
+        setOauthLinking('google');
+        setError('');
+        try {
+          const { data } = await api.post('/auth/oauth/google/link', { credential: response.credential });
+          useAuthStore.setState({ user: data.user });
+        } catch (err: unknown) {
+          const msg = (err as { response?: { data?: { error?: string } } })?.response?.data?.error || 'Ошибка привязки Google';
+          setError(msg);
+        } finally {
+          setOauthLinking(null);
+        }
+      },
+    });
+    googleLinkBtnRef.current.innerHTML = '';
+    window.google.accounts.id.renderButton(googleLinkBtnRef.current, {
+      theme: 'filled_black',
+      size: 'large',
+      width: 280,
+      shape: 'pill',
+      text: 'continue_with',
+      locale: 'ru',
+    });
+  }, [googleClientId, user?.google_id]);
+
+  useEffect(() => {
+    if (user?.google_id) return;
+    initGoogleLinkBtn();
+    const check = setInterval(() => {
+      if (window.google) { initGoogleLinkBtn(); clearInterval(check); }
+    }, 300);
+    return () => clearInterval(check);
+  }, [initGoogleLinkBtn, user?.google_id]);
+
+  const handleUnlinkGoogle = async () => {
+    if (!confirm('Отвязать Google от аккаунта?')) return;
+    setUnlinkingGoogle(true);
+    try {
+      const { data } = await api.delete('/auth/oauth/google/unlink');
+      useAuthStore.setState({ user: data.user });
+    } catch {
+      setError('Ошибка отвязки Google');
+    } finally {
+      setUnlinkingGoogle(false);
+    }
+  };
+
+  const handleAppleLink = async () => {
+    if (!window.AppleID || !appleClientId) return;
+    setOauthLinking('apple');
+    setError('');
+    try {
+      window.AppleID.auth.init({
+        clientId: appleClientId,
+        scope: 'name email',
+        redirectURI: window.location.origin,
+        usePopup: true,
+      });
+      const res = await window.AppleID.auth.signIn();
+      const { data } = await api.post('/auth/oauth/apple/link', { id_token: res.authorization.id_token });
+      useAuthStore.setState({ user: data.user });
+    } catch (err: unknown) {
+      const msg = (err as { response?: { data?: { error?: string } } })?.response?.data?.error;
+      if (msg) setError(msg);
+    } finally {
+      setOauthLinking(null);
+    }
+  };
+
+  const handleUnlinkApple = async () => {
+    if (!confirm('Отвязать Apple от аккаунта?')) return;
+    setUnlinkingApple(true);
+    try {
+      const { data } = await api.delete('/auth/oauth/apple/unlink');
+      useAuthStore.setState({ user: data.user });
+    } catch {
+      setError('Ошибка отвязки Apple');
+    } finally {
+      setUnlinkingApple(false);
+    }
+  };
 
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -300,14 +418,29 @@ export default function ProfileModal({ onClose }: { onClose: () => void }) {
               <span className="text-sm font-medium text-slate-600 dark:text-slate-300">Google</span>
               <span className={clsx('ml-auto text-xs px-2 py-0.5 rounded-full',
                 user?.google_id ? 'bg-green-500/15 text-green-600 dark:text-green-400' : 'bg-slate-200 dark:bg-slate-700/50 text-slate-500')}>
-                {user?.google_id ? 'Linked' : 'Not linked'}
+                {user?.google_id ? 'Привязан' : 'Не привязан'}
               </span>
             </div>
-            <div className="px-4 py-3">
+            <div className="px-4 py-3 space-y-2">
               {user?.google_id ? (
-                <p className="text-xs text-slate-400 dark:text-slate-500">Google account linked to profile</p>
+                <>
+                  <p className="text-xs text-slate-400 dark:text-slate-500">Google аккаунт привязан к профилю</p>
+                  <button onClick={handleUnlinkGoogle} disabled={unlinkingGoogle}
+                    className="text-xs text-red-400 hover:text-red-300 transition-colors disabled:opacity-50">
+                    {unlinkingGoogle ? 'Отвязка...' : 'Отвязать Google'}
+                  </button>
+                </>
+              ) : googleClientId ? (
+                <>
+                  {oauthLinking === 'google' && (
+                    <div className="flex items-center justify-center gap-2 py-2 text-xs text-slate-400">
+                      <Loader2 size={14} className="animate-spin" /> Привязка...
+                    </div>
+                  )}
+                  <div ref={googleLinkBtnRef} className="flex justify-center [&>div]:!w-full" />
+                </>
               ) : (
-                <p className="text-xs text-slate-400 dark:text-slate-500">Sign in with Google on login screen to link</p>
+                <p className="text-xs text-slate-400 dark:text-slate-500">Google Sign-In не настроен на сервере</p>
               )}
             </div>
           </div>
@@ -321,14 +454,30 @@ export default function ProfileModal({ onClose }: { onClose: () => void }) {
               <span className="text-sm font-medium text-slate-600 dark:text-slate-300">Apple</span>
               <span className={clsx('ml-auto text-xs px-2 py-0.5 rounded-full',
                 user?.apple_id ? 'bg-green-500/15 text-green-600 dark:text-green-400' : 'bg-slate-200 dark:bg-slate-700/50 text-slate-500')}>
-                {user?.apple_id ? 'Linked' : 'Not linked'}
+                {user?.apple_id ? 'Привязан' : 'Не привязан'}
               </span>
             </div>
-            <div className="px-4 py-3">
+            <div className="px-4 py-3 space-y-2">
               {user?.apple_id ? (
-                <p className="text-xs text-slate-400 dark:text-slate-500">Apple account linked to profile</p>
+                <>
+                  <p className="text-xs text-slate-400 dark:text-slate-500">Apple аккаунт привязан к профилю</p>
+                  <button onClick={handleUnlinkApple} disabled={unlinkingApple}
+                    className="text-xs text-red-400 hover:text-red-300 transition-colors disabled:opacity-50">
+                    {unlinkingApple ? 'Отвязка...' : 'Отвязать Apple'}
+                  </button>
+                </>
+              ) : appleClientId ? (
+                <button onClick={handleAppleLink} disabled={oauthLinking === 'apple'}
+                  className="w-full py-2 rounded-lg bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-black text-sm font-semibold transition-all flex items-center justify-center gap-2 disabled:opacity-60">
+                  {oauthLinking === 'apple' ? <Loader2 size={14} className="animate-spin" /> : (
+                    <svg width={14} height={14} viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
+                    </svg>
+                  )}
+                  Привязать Apple
+                </button>
               ) : (
-                <p className="text-xs text-slate-400 dark:text-slate-500">Sign in with Apple on login screen to link</p>
+                <p className="text-xs text-slate-400 dark:text-slate-500">Apple Sign-In не настроен на сервере</p>
               )}
             </div>
           </div>
@@ -340,7 +489,7 @@ export default function ProfileModal({ onClose }: { onClose: () => void }) {
               <span className="text-sm font-medium text-slate-600 dark:text-slate-300">Telegram</span>
               <span className={clsx('ml-auto text-xs px-2 py-0.5 rounded-full',
                 isLinked ? 'bg-green-500/15 text-green-600 dark:text-green-400' : 'bg-slate-200 dark:bg-slate-700/50 text-slate-500')}>
-                {isLinked ? 'Linked' : 'Not linked'}
+                {isLinked ? 'Привязан' : 'Не привязан'}
               </span>
             </div>
 
@@ -348,11 +497,11 @@ export default function ProfileModal({ onClose }: { onClose: () => void }) {
               {isLinked ? (
                 <>
                   <p className="text-sm text-slate-500 dark:text-slate-400">
-                    Account: {user?.telegram_username ? `@${user.telegram_username}` : `ID ${user?.telegram_id}`}
+                    Аккаунт: {user?.telegram_username ? `@${user.telegram_username}` : `ID ${user?.telegram_id}`}
                   </p>
                   <button onClick={handleUnlink} disabled={unlinking}
                     className="text-xs text-red-400 hover:text-red-300 transition-colors disabled:opacity-50">
-                    {unlinking ? 'Unlinking...' : 'Unlink Telegram'}
+                    {unlinking ? 'Отвязка...' : 'Отвязать Telegram'}
                   </button>
                 </>
               ) : (
@@ -361,14 +510,14 @@ export default function ProfileModal({ onClose }: { onClose: () => void }) {
                     <button onClick={initLink}
                       className="w-full flex items-center justify-center gap-2 py-2 rounded-lg bg-[#2AABEE] hover:bg-[#229ED9] text-white text-sm font-semibold transition-colors">
                       <TelegramIcon size={15} />
-                      Link Telegram
+                      Привязать Telegram
                     </button>
                   )}
 
                   {linkStatus === 'waiting' && linkState && (
                     <div className="space-y-3">
                       <p className="text-xs text-slate-500 dark:text-slate-400 text-center">
-                        Send this code to bot{' '}
+                        Отправьте этот код боту{' '}
                         <a href={`https://t.me/${linkState.botUsername}`} target="_blank" rel="noopener noreferrer"
                           className="text-[#2AABEE] hover:underline">@{linkState.botUsername}</a>
                       </p>
@@ -381,23 +530,23 @@ export default function ProfileModal({ onClose }: { onClose: () => void }) {
                         </button>
                       </div>
                       <p className={clsx('text-xs text-center font-mono', timeLeft < 60 ? 'text-red-400' : 'text-slate-400 dark:text-slate-500')}>
-                        Expires in {formatTime(timeLeft)}
+                        Истекает через {formatTime(timeLeft)}
                       </p>
                       <div className="flex items-center justify-center gap-2 text-xs text-slate-400 dark:text-slate-500">
                         <div className="w-3 h-3 border-2 border-[#2AABEE] border-t-transparent rounded-full animate-spin" />
-                        Waiting for confirmation...
+                        Ожидаю подтверждения...
                       </div>
                       <a href={`https://t.me/${linkState.botUsername}?start=${linkState.code}`}
                         target="_blank" rel="noopener noreferrer"
                         className="flex items-center justify-center gap-2 w-full py-2 rounded-lg bg-[#2AABEE] hover:bg-[#229ED9] text-white text-xs font-semibold transition-colors">
                         <TelegramIcon size={14} />
-                        Open @{linkState.botUsername}
+                        Открыть @{linkState.botUsername}
                       </a>
                     </div>
                   )}
 
                   {linkStatus === 'confirmed' && (
-                    <p className="text-sm text-green-500 dark:text-green-400 text-center py-1">Telegram linked successfully!</p>
+                    <p className="text-sm text-green-500 dark:text-green-400 text-center py-1">Telegram успешно привязан!</p>
                   )}
 
                   {linkStatus === 'expired' && (
@@ -405,7 +554,7 @@ export default function ProfileModal({ onClose }: { onClose: () => void }) {
                       <p className="text-xs text-red-400">{error}</p>
                       <button onClick={initLink}
                         className="flex items-center gap-1.5 mx-auto px-3 py-1.5 bg-[#e8ecf2] dark:bg-[#1e1e2e] hover:bg-[#d1d8e4] dark:hover:bg-[#2d2d3f] rounded-lg text-xs text-slate-600 dark:text-slate-300 transition-colors">
-                        <RefreshCw size={12} /> Get new code
+                        <RefreshCw size={12} /> Получить новый код
                       </button>
                     </div>
                   )}
