@@ -311,11 +311,12 @@ export default function PaymentModal({ onClose }: { onClose: () => void }) {
               <div className="bg-[#f8fafc] dark:bg-[#0d0d1a] rounded-xl p-4 space-y-2">
                 <div className="text-xs font-semibold text-slate-700 dark:text-slate-300">Примеры расхода</div>
                 <div className="text-xs text-slate-500 dark:text-slate-400 space-y-1.5">
-                  <div className="flex justify-between"><span>Простой вопрос (Claude Sonnet)</span><span className="font-mono text-amber-500">~0.3−0.9 кр</span></div>
-                  <div className="flex justify-between"><span>Развёрнутый ответ (Claude Sonnet)</span><span className="font-mono text-amber-500">~1.5−4.5 кр</span></div>
-                  <div className="flex justify-between"><span>Простой вопрос (GPT-4o mini)</span><span className="font-mono text-amber-500">~0.06−0.18 кр</span></div>
-                  <div className="flex justify-between"><span>Длинный код (Claude Opus)</span><span className="font-mono text-amber-500">~15−45 кр</span></div>
-                  <div className="flex justify-between"><span>Быстрый ответ (Gemini Flash)</span><span className="font-mono text-amber-500">~0.04−0.12 кр</span></div>
+                  <div className="flex justify-between"><span>Простой вопрос (Claude Sonnet)</span><span className="font-mono text-amber-500">~0.5−1.5 кр</span></div>
+                  <div className="flex justify-between"><span>Развёрнутый ответ (Claude Sonnet)</span><span className="font-mono text-amber-500">~2.5−7.5 кр</span></div>
+                  <div className="flex justify-between"><span>Простой вопрос (GPT-4o mini)</span><span className="font-mono text-amber-500">~0.03−0.09 кр</span></div>
+                  <div className="flex justify-between"><span>Длинный код (Claude Opus)</span><span className="font-mono text-amber-500">~25−75 кр</span></div>
+                  <div className="flex justify-between"><span>Быстрый ответ (Gemini Flash)</span><span className="font-mono text-amber-500">~0.02−0.05 кр</span></div>
+                  <div className="flex justify-between"><span>DeepSeek V3 (обычный запрос)</span><span className="font-mono text-amber-500">~0.04−0.12 кр</span></div>
                 </div>
               </div>
 

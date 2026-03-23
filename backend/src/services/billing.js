@@ -1,30 +1,51 @@
 import { getDB } from '../db/database.js';
 import { v4 as uuid } from 'uuid';
 
-// Cost per 1000 output tokens in "credits" (1 credit = $0.001 by default)
-// Admin can override via settings key "price_{provider}_{model}" or "price_{provider}"
+// ══════════════════════════════════════════════════════════════════════
+// Pricing: credits per 1K OUTPUT tokens
+// 1 кредит = 1 рубль (при пополнении)
+//
+// Цена включает стоимость input-токенов (заложена в наценку).
+// Расчёт: (API output ₽ + API input ₽ × 2.5) × наценка ~2.5x
+// Курс: 90 ₽/$
+//
+// Admin может переопределить через settings: price_{provider}_{model}
+// ══════════════════════════════════════════════════════════════════════
 export const DEFAULT_PRICES = {
   anthropic: {
-    'claude-opus-4-6':            15.0,
-    'claude-sonnet-4-6':           3.0,
-    'claude-haiku-4-5-20251001':   0.25,
-    'claude-3-5-sonnet-20241022':  3.0,
-    'claude-3-5-haiku-20241022':   0.8,
-    _default:                      3.0,
+    //                            API out/1K   API in/1K   Effective₽   Price   Markup
+    'claude-opus-4-6':            25.0,   // $0.075       $0.015       10.13    25.0    x2.5
+    'claude-sonnet-4-6':           5.0,   // $0.015       $0.003        2.03     5.0    x2.5
+    'claude-haiku-4-5-20251001':   1.5,   // $0.005       $0.001        0.68     1.5    x2.2
+    'claude-3-5-sonnet-20241022':  5.0,   // $0.015       $0.003        2.03     5.0    x2.5
+    'claude-3-5-haiku-20241022':   1.2,   // $0.004       $0.0008       0.54     1.2    x2.2
+    _default:                      5.0,
   },
   openai: {
-    'gpt-4o':      5.0,
-    'gpt-4o-mini': 0.6,
-    'gpt-4-turbo': 10.0,
-    'o1':          60.0,
-    'o1-mini':     3.0,
-    _default:       5.0,
+    'gpt-4o':       4.0,   // $0.010       $0.0025       1.46     4.0    x2.7
+    'gpt-4o-mini':  0.3,   // $0.0006      $0.00015      0.09     0.3    x3.3
+    'gpt-4-turbo': 12.0,   // $0.030       $0.010        4.95    12.0    x2.4
+    'o1':          22.0,   // $0.060       $0.015        8.78    22.0    x2.5
+    'o1-mini':      4.5,   // $0.012       $0.003        1.76     4.5    x2.6
+    _default:       4.0,
   },
   gemini: {
-    'gemini-2.0-flash': 0.4,
-    'gemini-1.5-pro':   3.5,
-    'gemini-1.5-flash': 0.35,
-    _default:            1.0,
+    'gemini-2.5-flash-preview-05-20': 0.3,  // $0.0006  $0.00015   0.09   0.3   x3.3
+    'gemini-2.5-pro-preview-05-06':   3.0,  // $0.010   $0.00125   1.18   3.0   x2.5
+    'gemini-2.0-flash':               0.15, // $0.0004  $0.0001    0.06   0.15  x2.5
+    'gemini-2.0-flash-lite':          0.12, // $0.0003  $0.000075  0.05   0.12  x2.4
+    _default:                         0.3,
+  },
+  deepseek: {
+    'deepseek-chat':      0.4,   // $0.0011      $0.00027      0.16     0.4    x2.5
+    'deepseek-reasoner':  0.8,   // $0.0022      $0.00055      0.32     0.8    x2.5
+    _default:             0.4,
+  },
+  kimi: {
+    'moonshot-v1-8k':    1.3,   // ¥12/1M in+out               0.53     1.3    x2.5
+    'moonshot-v1-32k':   2.5,   // ¥24/1M in+out               1.05     2.5    x2.4
+    'moonshot-v1-128k':  6.5,   // ¥60/1M in+out               2.63     6.5    x2.5
+    _default:            1.3,
   },
 };
 
