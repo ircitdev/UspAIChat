@@ -1,6 +1,6 @@
 # UspAIChat — Полная документация
 
-> Версия: 1.1.0 | Последнее обновление: 2026-03-23
+> Версия: 1.2.0 | Последнее обновление: 2026-03-23
 
 ---
 
@@ -418,7 +418,7 @@ data: {"type":"done","message_id":"xyz-456","full_content":"Привет! Как
 | `start` | Начало генерации, ID сообщения пользователя |
 | `chunk` | Фрагмент текста ответа |
 | `tokens` | Количество выходных токенов |
-| `done` | Генерация завершена: ID сообщения, полный текст, баланс |
+| `done` | Генерация завершена: ID сообщения, полный текст, баланс, стоимость ответа (cost) |
 | `error` | Ошибка |
 
 ---
@@ -469,6 +469,10 @@ data: {"type":"done","message_id":"xyz-456","full_content":"Привет! Как
 | `GET` | `/auth/oauth/config` | Нет | Получить client ID для Google и Apple |
 | `POST` | `/auth/oauth/google` | Нет | Вход через Google (credential: ID token) |
 | `POST` | `/auth/oauth/apple` | Нет | Вход через Apple (id_token: JWT, user?: объект) |
+| `POST` | `/auth/oauth/google/link` | Да | Привязать Google к существующему аккаунту |
+| `DELETE` | `/auth/oauth/google/unlink` | Да | Отвязать Google |
+| `POST` | `/auth/oauth/apple/link` | Да | Привязать Apple к существующему аккаунту |
+| `DELETE` | `/auth/oauth/apple/unlink` | Да | Отвязать Apple |
 
 **GET /auth/oauth/config**
 ```json
@@ -561,6 +565,7 @@ data: {"type":"done","message_id":"xyz-456","full_content":"Привет! Как
 | Метод | Путь | Auth | Описание |
 |-------|------|:----:|----------|
 | `GET` | `/models` | Нет | Список всех моделей по провайдерам |
+| `GET` | `/models/pricing` | Нет | Цены за 1K токенов по всем моделям |
 | `GET` | `/models/keys` | Да | Статус API-ключей пользователя |
 | `POST` | `/models/keys` | Да | Сохранить API-ключ |
 | `DELETE` | `/models/keys/:provider` | Да | Удалить API-ключ |
@@ -806,6 +811,7 @@ SQLite файл: `data/uspaichat.db` (WAL mode, foreign keys ON).
 | `model` | TEXT | NULL | Модель (для assistant) |
 | `files` | TEXT | DEFAULT '[]' | JSON-массив прикреплённых файлов |
 | `routing_info` | TEXT | NULL | JSON с информацией авто-роутинга |
+| `cost` | REAL | NULL | Стоимость ответа в кредитах (для assistant) |
 
 ### Таблица `messages_fts` (FTS5)
 
@@ -1070,21 +1076,38 @@ SQLite файл: `data/uspaichat.db` (WAL mode, foreign keys ON).
 4. Перед генерацией проверяется минимальный баланс
 5. **Админы не тарифицируются** — у них бесплатный доступ
 
-Цены по умолчанию (кредитов за 1K выходных токенов):
+Цены по умолчанию (кредитов за 1K выходных токенов). Стоимость input-токенов заложена в наценку (ratio input:output ~2.5:1). Наценка ~x2.5 по всем моделям.
 
-| Провайдер | Модель | Цена/1K |
-|-----------|--------|---------|
-| Anthropic | Claude Opus 4.6 | 15.0 |
-| Anthropic | Claude Sonnet 4.6 | 3.0 |
-| Anthropic | Claude Haiku 4.5 | 0.25 |
-| OpenAI | GPT-4o | 5.0 |
-| OpenAI | GPT-4o Mini | 0.6 |
-| OpenAI | GPT-4 Turbo | 10.0 |
-| OpenAI | o1 | 60.0 |
-| Gemini | Gemini 1.5 Pro | 3.5 |
-| Gemini | Gemini 1.5 Flash | 0.35 |
+| Провайдер | Модель | Цена/1K | Категория |
+|-----------|--------|---------|-----------|
+| Anthropic | Claude Opus 4.6 | 25.0 | Премиум |
+| Anthropic | Claude Sonnet 4.6 | 5.0 | Средняя |
+| Anthropic | Claude Haiku 4.5 | 1.5 | Бюджетная |
+| Anthropic | Claude 3.5 Sonnet | 5.0 | Средняя |
+| Anthropic | Claude 3.5 Haiku | 1.2 | Бюджетная |
+| OpenAI | GPT-4o | 4.0 | Средняя |
+| OpenAI | GPT-4o Mini | 0.3 | Бюджетная |
+| OpenAI | GPT-4 Turbo | 12.0 | Премиум |
+| OpenAI | o1 | 22.0 | Премиум |
+| OpenAI | o1 Mini | 4.5 | Средняя |
+| Gemini | Gemini 2.5 Flash | 0.3 | Бюджетная |
+| Gemini | Gemini 2.5 Pro | 3.0 | Средняя |
+| Gemini | Gemini 2.0 Flash | 0.15 | Бюджетная |
+| Gemini | Gemini 2.0 Flash Lite | 0.12 | Бюджетная |
+| DeepSeek | DeepSeek V3 | 0.4 | Бюджетная |
+| DeepSeek | DeepSeek R1 | 0.8 | Бюджетная |
+| Kimi | Kimi 8K | 1.3 | Средняя |
+| Kimi | Kimi 32K | 2.5 | Средняя |
+| Kimi | Kimi 128K | 6.5 | Премиум |
 
 Админ может переопределить цены через `POST /api/admin/pricing`.
+
+Пользователь видит цены:
+- В выпадающем списке моделей (ModelBar) — цена за 1K токенов рядом с названием
+- Стоимость каждого ответа — отображается под сообщением AI при наведении
+- Вкладка «Тарифы» в модалке оплаты — полная таблица цен + примеры расхода
+
+Подробная финансовая модель: см. [PRICING.md](PRICING.md)
 
 ### 6.10 Голосовой ввод (STT) и озвучка (TTS)
 
@@ -1126,10 +1149,16 @@ SQLite файл: `data/uspaichat.db` (WAL mode, foreign keys ON).
 ### 6.14 Мобильное приложение (Android + iOS)
 
 Flutter-приложение с полной функциональностью веб-версии:
+
 - Все методы авторизации (нативные SDK для Google/Apple)
 - SSE-стриминг через Dio
 - Тёмная тема (цвета совпадают с вебом)
 - Экраны: чат, беседы, поиск, настройки, профиль, админ, системный промпт
+- **Цены моделей** — отображаются в выборе модели с цветовой индикацией
+- **Стоимость ответа** — показывается под каждым сообщением AI
+- **Экран «Тарифы»** — объяснение кредитов, примеры расхода, таблица цен (открывается из профиля)
+- **Привязка аккаунтов** — Google, Apple, Telegram из профиля
+- **Реферальная ссылка** — копирование и шеринг из профиля
 
 ### 6.15 Интеграция оплаты через ЮKassa
 
