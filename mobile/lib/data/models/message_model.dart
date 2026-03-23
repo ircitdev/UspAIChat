@@ -48,6 +48,7 @@ class Message {
   final String? provider;
   final String? model;
   final List<FileAttachment> files;
+  final double? cost;
 
   Message({
     required this.id,
@@ -59,6 +60,7 @@ class Message {
     this.provider,
     this.model,
     this.files = const [],
+    this.cost,
   });
 
   bool get isUser => role == 'user';
@@ -84,6 +86,7 @@ class Message {
       provider: json['provider'] as String?,
       model: json['model'] as String?,
       files: files,
+      cost: (json['cost'] as num?)?.toDouble(),
     );
   }
 }

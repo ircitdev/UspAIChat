@@ -17,6 +17,7 @@ sealed class SseEvent {
           messageId: json['message_id'] as String,
           fullContent: json['full_content'] as String,
           balanceAfter: (json['balance_after'] as num?)?.toDouble(),
+          cost: (json['cost'] as num?)?.toDouble(),
         );
       case 'routing_info':
         return SseRoutingInfo(
@@ -62,7 +63,8 @@ class SseDone extends SseEvent {
   final String messageId;
   final String fullContent;
   final double? balanceAfter;
-  const SseDone({required this.messageId, required this.fullContent, this.balanceAfter});
+  final double? cost;
+  const SseDone({required this.messageId, required this.fullContent, this.balanceAfter, this.cost});
 }
 
 class SseRoutingInfo extends SseEvent {

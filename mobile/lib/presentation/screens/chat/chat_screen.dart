@@ -487,12 +487,24 @@ class _ModelBar extends ConsumerStatefulWidget {
 
 class _ModelBarState extends ConsumerState<_ModelBar> {
   Map<String, List<dynamic>>? _models;
+  Map<String, List<Map<String, dynamic>>>? _pricing;
 
   Future<void> _loadModels() async {
     if (_models != null) return;
     final api = ModelApi(ref.read(apiClientProvider));
     final models = await api.getModels();
+    try { _pricing = await api.getPricing(); } catch (_) {}
     setState(() => _models = models);
+  }
+
+  double? _getPrice(String provider, String modelId) {
+    if (_pricing == null || provider == 'auto') return null;
+    final models = _pricing![provider];
+    if (models == null) return null;
+    for (final m in models) {
+      if (m['id'] == modelId) return (m['pricePer1k'] as num).toDouble();
+    }
+    return null;
   }
 
   static const _providerLabels = {
@@ -572,16 +584,33 @@ class _ModelBarState extends ConsumerState<_ModelBar> {
               child: Text('${conv.provider.toUpperCase()} models',
                 style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
             ),
-            ...models.map((m) => ListTile(
-              dense: true,
-              title: Text(m.name, style: const TextStyle(color: AppColors.textPrimary, fontSize: 13)),
-              subtitle: Text('Context: ${m.context}', style: const TextStyle(color: AppColors.textDim, fontSize: 11)),
-              trailing: m.id == conv.model ? const Icon(Icons.check, size: 16, color: AppColors.violet400) : null,
-              onTap: () {
-                ref.read(conversationProvider.notifier).updateConversation(conv.id, {'model': m.id});
-                Navigator.pop(ctx);
-              },
-            )),
+            ...models.map((m) {
+              final price = _getPrice(conv.provider, m.id);
+              return ListTile(
+                dense: true,
+                title: Row(
+                  children: [
+                    Expanded(child: Text(m.name, style: const TextStyle(color: AppColors.textPrimary, fontSize: 13))),
+                    if (price != null)
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: price <= 0.5 ? Colors.green.withOpacity(0.15) : price <= 3 ? Colors.amber.withOpacity(0.15) : price <= 10 ? Colors.orange.withOpacity(0.15) : Colors.red.withOpacity(0.15),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text('$price кр/1K',
+                          style: TextStyle(fontSize: 10, fontFamily: 'monospace', color: price <= 0.5 ? Colors.green : price <= 3 ? Colors.amber : price <= 10 ? Colors.orange : Colors.red)),
+                      ),
+                  ],
+                ),
+                subtitle: Text('Context: ${m.context}', style: const TextStyle(color: AppColors.textDim, fontSize: 11)),
+                trailing: m.id == conv.model ? const Icon(Icons.check, size: 16, color: AppColors.violet400) : null,
+                onTap: () {
+                  ref.read(conversationProvider.notifier).updateConversation(conv.id, {'model': m.id});
+                  Navigator.pop(ctx);
+                },
+              );
+            }),
             if (models.isEmpty)
               const Padding(
                 padding: EdgeInsets.all(16),
@@ -767,6 +796,13 @@ class _MessageBubble extends StatelessWidget {
                     if (message.model != null) ...[
                       const SizedBox(width: 6),
                       Text(message.model!, style: TextStyle(fontSize: 10, color: isUser ? Colors.white38 : AppColors.textDim)),
+                    ],
+                    if (!isUser && message.cost != null && message.cost! > 0) ...[
+                      const SizedBox(width: 6),
+                      Text(
+                        '−${message.cost! < 0.01 ? message.cost!.toStringAsFixed(4) : message.cost!.toStringAsFixed(2)} кр',
+                        style: TextStyle(fontSize: 9, color: Colors.amber.withOpacity(0.6), fontFamily: 'monospace'),
+                      ),
                     ],
                   ],
                 ),

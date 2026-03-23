@@ -32,6 +32,7 @@ class ApiConstants {
 
   // Models
   static const String models = '/models';
+  static const String modelPricing = '/models/pricing';
   static const String modelKeys = '/models/keys';
   static String modelKey(String provider) => '/models/keys/$provider';
 

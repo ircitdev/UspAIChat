@@ -14,6 +14,12 @@ class ModelApi {
     return parseModelsMap(response.data);
   }
 
+  Future<Map<String, List<Map<String, dynamic>>>> getPricing() async {
+    final response = await _dio.get(ApiConstants.modelPricing);
+    final data = response.data as Map<String, dynamic>;
+    return data.map((k, v) => MapEntry(k, (v as List).map((e) => e as Map<String, dynamic>).toList()));
+  }
+
   Future<Map<String, dynamic>> getKeyStatus() async {
     final response = await _dio.get(ApiConstants.modelKeys);
     return response.data as Map<String, dynamic>;

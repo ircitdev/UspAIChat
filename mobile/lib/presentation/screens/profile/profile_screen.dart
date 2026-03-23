@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../data/datasources/remote/auth_api.dart';
+import '../../../data/datasources/remote/model_api.dart';
 import '../../../providers/auth_provider.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
@@ -28,6 +29,134 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     _newPwCtrl.dispose();
     _confirmPwCtrl.dispose();
     super.dispose();
+  }
+
+  void _showPricingInfo() async {
+    Map<String, List<Map<String, dynamic>>>? pricing;
+    try {
+      final api = ModelApi(ref.read(apiClientProvider));
+      pricing = await api.getPricing();
+    } catch (_) {}
+    if (!mounted || pricing == null) return;
+    final pricingData = pricing!;
+
+    const providerNames = {
+      'anthropic': 'Anthropic (Claude)',
+      'openai': 'OpenAI',
+      'gemini': 'Google (Gemini)',
+      'deepseek': 'DeepSeek',
+      'kimi': 'Kimi',
+    };
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (ctx) => DraggableScrollableSheet(
+        expand: false,
+        initialChildSize: 0.75,
+        maxChildSize: 0.9,
+        builder: (ctx, scrollCtrl) => Container(
+          decoration: const BoxDecoration(
+            color: AppColors.surface,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          child: ListView(
+            controller: scrollCtrl,
+            padding: const EdgeInsets.all(20),
+            children: [
+              Row(children: [
+                const Icon(Icons.info_outline, color: AppColors.violet400, size: 20),
+                const SizedBox(width: 8),
+                const Text('Тарифы и кредиты', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+                const Spacer(),
+                IconButton(icon: const Icon(Icons.close, size: 18), onPressed: () => Navigator.pop(ctx)),
+              ]),
+              const SizedBox(height: 16),
+
+              // What are credits
+              Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: AppColors.violet600.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: AppColors.violet600.withOpacity(0.2)),
+                ),
+                child: const Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text('Что такое кредиты?', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.violet400)),
+                  SizedBox(height: 6),
+                  Text('Кредиты — валюта для оплаты ответов AI. Списание только за выходные токены (текст модели). Ваш запрос — бесплатно.',
+                    style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+                  SizedBox(height: 4),
+                  Text('1 кредит = 1 рубль при пополнении.',
+                    style: TextStyle(fontSize: 12, color: AppColors.textSecondary, fontWeight: FontWeight.w500)),
+                ]),
+              ),
+              const SizedBox(height: 12),
+
+              // Examples
+              Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: AppColors.surfaceLight,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: AppColors.cardBorder),
+                ),
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  const Text('Примеры расхода', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textPrimary)),
+                  const SizedBox(height: 8),
+                  ...[
+                    ('Простой вопрос (Sonnet)', '~0.5−1.5 кр'),
+                    ('Развёрнутый ответ (Sonnet)', '~2.5−7.5 кр'),
+                    ('GPT-4o mini', '~0.03−0.09 кр'),
+                    ('Gemini Flash', '~0.02−0.05 кр'),
+                    ('DeepSeek V3', '~0.04−0.12 кр'),
+                  ].map((e) => Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 2),
+                    child: Row(children: [
+                      Expanded(child: Text(e.$1, style: const TextStyle(fontSize: 11, color: AppColors.textSecondary))),
+                      Text(e.$2, style: const TextStyle(fontSize: 11, color: Colors.amber, fontFamily: 'monospace')),
+                    ]),
+                  )),
+                ]),
+              ),
+              const SizedBox(height: 16),
+
+              // Pricing table
+              const Text('Стоимость моделей (кредитов за 1K токенов)', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textPrimary)),
+              const SizedBox(height: 8),
+              ...pricingData.entries.map((entry) => Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(color: AppColors.surfaceLight, borderRadius: BorderRadius.circular(8)),
+                    child: Text(providerNames[entry.key] ?? entry.key, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.textMuted)),
+                  ),
+                  ...entry.value.map((m) {
+                    final price = (m['pricePer1k'] as num).toDouble();
+                    final color = price <= 0.5 ? Colors.green : price <= 3 ? Colors.amber : price <= 10 ? Colors.orange : Colors.red;
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                      child: Row(children: [
+                        Expanded(child: Text(m['name'] as String, style: const TextStyle(fontSize: 12, color: AppColors.textSecondary))),
+                        Text('$price кр', style: TextStyle(fontSize: 12, fontFamily: 'monospace', color: color)),
+                      ]),
+                    );
+                  }),
+                  const SizedBox(height: 8),
+                ],
+              )),
+
+              const SizedBox(height: 8),
+              const Text('Стоимость = (токены / 1000) × цена модели\nСтоимость каждого ответа видна под сообщением.',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 10, color: AppColors.textDim)),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Future<void> _savePassword() async {
@@ -187,18 +316,30 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       style: TextStyle(color: user.balance < 1 ? AppColors.error : AppColors.success, fontSize: 14, fontWeight: FontWeight.bold)),
                   ]),
                   const SizedBox(height: 12),
-                  SizedBox(width: double.infinity, child: ElevatedButton.icon(
-                    onPressed: () async {
-                      final uri = Uri.parse('https://t.me/UspAIChatbot?start=pay');
-                      if (await canLaunchUrl(uri)) await launchUrl(uri, mode: LaunchMode.externalApplication);
-                    },
-                    icon: const Icon(Icons.telegram, size: 16),
-                    label: const Text('Пополнить через Telegram'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.telegram,
-                      foregroundColor: Colors.white,
+                  Row(children: [
+                    Expanded(child: ElevatedButton.icon(
+                      onPressed: () async {
+                        final uri = Uri.parse('https://t.me/UspAIChatbot?start=pay');
+                        if (await canLaunchUrl(uri)) await launchUrl(uri, mode: LaunchMode.externalApplication);
+                      },
+                      icon: const Icon(Icons.telegram, size: 16),
+                      label: const Text('Пополнить'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.telegram,
+                        foregroundColor: Colors.white,
+                      ),
+                    )),
+                    const SizedBox(width: 8),
+                    OutlinedButton.icon(
+                      onPressed: _showPricingInfo,
+                      icon: const Icon(Icons.info_outline, size: 14),
+                      label: const Text('Тарифы'),
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: AppColors.cardBorder),
+                        foregroundColor: AppColors.violet400,
+                      ),
                     ),
-                  )),
+                  ]),
                 ],
               ),
             )),
