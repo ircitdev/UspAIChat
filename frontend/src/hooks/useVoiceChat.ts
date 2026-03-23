@@ -157,7 +157,7 @@ export function useVoiceChat(options: UseVoiceChatOptions = {}) {
 
     const utterance = new SpeechSynthesisUtterance(cleanText);
     utterance.lang = lang;
-    utterance.rate = 1.5;
+    utterance.rate = 2.0;
     utterance.pitch = 1.0;
 
     // Use selected voice or find best default
