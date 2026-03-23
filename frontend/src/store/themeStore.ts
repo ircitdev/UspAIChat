@@ -19,7 +19,6 @@ export const ACCENT_COLORS: AccentColor[] = [
   { id: 'amber',   name: 'Янтарный',    value: '#d97706', light: '#fbbf24', dark: '#b45309', muted: 'rgba(217,119,6,0.15)' },
   { id: 'cyan',    name: 'Бирюзовый',   value: '#0891b2', light: '#22d3ee', dark: '#0e7490', muted: 'rgba(8,145,178,0.15)' },
   { id: 'indigo',  name: 'Индиго',      value: '#4f46e5', light: '#818cf8', dark: '#4338ca', muted: 'rgba(79,70,229,0.15)' },
-  { id: 'pink',    name: 'Пурпурный',   value: '#c026d3', light: '#e879f9', dark: '#a21caf', muted: 'rgba(192,38,211,0.15)' },
 ];
 
 interface ThemeState {
