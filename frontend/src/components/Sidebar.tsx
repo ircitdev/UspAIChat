@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Plus, Search, Settings, MessageSquare, Pin, Trash2,
-  PencilLine, ChevronLeft, ChevronRight, LogOut, Crown,
+  PencilLine, ChevronLeft, ChevronRight, LogOut, Crown, BookOpen,
   FolderOpen, FolderPlus, Download, ChevronDown, ChevronUp, X, Share2
 } from 'lucide-react';
 import useAppStore from '../store/appStore';
@@ -283,6 +283,15 @@ export default function Sidebar() {
           {t('settings')}
           <span className="ml-auto text-xs opacity-50 hidden sm:inline">Ctrl+,</span>
         </button>
+        {user?.role === 'admin' && (
+          <button
+            onClick={() => useAppStore.getState().setDocsOpen(true)}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-blue-500/10 text-blue-600 dark:text-blue-400 text-sm transition-colors"
+          >
+            <BookOpen size={15} />
+            Документация
+          </button>
+        )}
         {/* User info + balance + logout */}
         <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#f1f5f9] dark:bg-[#0d0d1a]">
           <button onClick={() => setProfileOpen(true)} title="Профиль"

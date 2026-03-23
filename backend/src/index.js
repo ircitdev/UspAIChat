@@ -53,8 +53,19 @@ app.use('/api/referral', referralRoutes);
 
 app.get('/health', (req, res) => res.json({ status: 'ok', timestamp: Date.now() }));
 
+// Serve DOCUMENTATION.md
+import { existsSync, readFileSync } from 'fs';
+app.get('/api/documentation', (req, res) => {
+  const docPath = join(__dirname, '../../DOCUMENTATION.md');
+  if (existsSync(docPath)) {
+    const content = readFileSync(docPath, 'utf-8');
+    res.json({ content });
+  } else {
+    res.status(404).json({ error: 'Documentation not found' });
+  }
+});
+
 // Serve frontend (production)
-import { existsSync } from 'fs';
 const frontendDist = join(__dirname, '../../frontend/dist');
 // Privacy policy page
 app.get('/privacy', (req, res) => res.sendFile(join(__dirname, '../../frontend/public/privacy.html')));

@@ -10,6 +10,7 @@ import './store/themeStore'; // ensure theme is initialized
 const SettingsModal = lazy(() => import('./components/SettingsModal'));
 const SearchModal = lazy(() => import('./components/SearchModal'));
 const SharedView = lazy(() => import('./components/SharedView'));
+const DocumentationModal = lazy(() => import('./components/DocumentationModal'));
 
 export default function App() {
   const { user, restoreSession } = useAuthStore();
@@ -20,6 +21,7 @@ export default function App() {
     sidebarOpen, setSidebarOpen,
     settingsOpen, setSettingsOpen,
     searchOpen, setSearchOpen,
+    docsOpen, setDocsOpen,
     createConversation
   } = useAppStore();
 
@@ -58,7 +60,7 @@ export default function App() {
   useHotkeys('ctrl+k,meta+k', (e) => { e.preventDefault(); setSearchOpen(true); }, []);
   useHotkeys('ctrl+comma,meta+comma', (e) => { e.preventDefault(); setSettingsOpen(true); }, []);
   useHotkeys('ctrl+b,meta+b', (e) => { e.preventDefault(); setSidebarOpen(!sidebarOpen); }, [sidebarOpen]);
-  useHotkeys('escape', () => { setSearchOpen(false); setSettingsOpen(false); }, []);
+  useHotkeys('escape', () => { setSearchOpen(false); setSettingsOpen(false); setDocsOpen(false); }, []);
 
   // Render shared view for public links
   if (shareMatch) {
@@ -104,6 +106,7 @@ export default function App() {
       <Suspense fallback={null}>
         {settingsOpen && <SettingsModal />}
         {searchOpen && <SearchModal />}
+        {docsOpen && <DocumentationModal />}
       </Suspense>
     </div>
   );

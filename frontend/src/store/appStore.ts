@@ -20,11 +20,13 @@ interface AppState {
   sidebarOpen: boolean;
   settingsOpen: boolean;
   searchOpen: boolean;
+  docsOpen: boolean;
   systemPromptOpen: boolean;
   streaming: boolean;
   streamingContent: string;
   tokenCount: number;
   streamingRoutingInfo: RoutingInfo | null;
+  pendingMessage: string | null;
 
   // Models
   models: ModelsMap | null;
@@ -48,9 +50,11 @@ interface AppState {
   setSidebarOpen: (val: boolean) => void;
   setSettingsOpen: (val: boolean) => void;
   setSearchOpen: (val: boolean) => void;
+  setDocsOpen: (val: boolean) => void;
   setSystemPromptOpen: (val: boolean) => void;
   setSelectedProvider: (p: Provider) => void;
   setSelectedModel: (m: string) => void;
+  setPendingMessage: (msg: string | null) => void;
   loadModels: () => Promise<void>;
   loadApiKeyStatus: () => Promise<void>;
 
@@ -77,6 +81,7 @@ const useAppStore = create<AppState>((set, get) => ({
   sidebarOpen: true,
   settingsOpen: false,
   searchOpen: false,
+  docsOpen: false,
   systemPromptOpen: false,
   streaming: false,
   streamingContent: '',
@@ -86,6 +91,7 @@ const useAppStore = create<AppState>((set, get) => ({
   selectedProvider: 'auto',
   selectedModel: 'auto',
   streamingRoutingInfo: null,
+  pendingMessage: null,
 
   loadConversations: async () => {
     const { data } = await api.get('/conversations');
@@ -160,9 +166,11 @@ const useAppStore = create<AppState>((set, get) => ({
   setSidebarOpen: (val: boolean) => set({ sidebarOpen: val }),
   setSettingsOpen: (val: boolean) => set({ settingsOpen: val }),
   setSearchOpen: (val: boolean) => set({ searchOpen: val }),
+  setDocsOpen: (val: boolean) => set({ docsOpen: val }),
   setSystemPromptOpen: (val: boolean) => set({ systemPromptOpen: val }),
   setSelectedProvider: (p: Provider) => set({ selectedProvider: p }),
   setSelectedModel: (m: string) => set({ selectedModel: m }),
+  setPendingMessage: (msg: string | null) => set({ pendingMessage: msg }),
 
   loadModels: async () => {
     const { data } = await api.get('/models');
