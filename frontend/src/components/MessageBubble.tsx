@@ -23,12 +23,30 @@ const TIER_COLORS: Record<string, string> = {
   COMPLEX: 'bg-orange-500/15 text-orange-500 border-orange-500/30',
 };
 
+// Auto-detect code/XML content not wrapped in markdown code fences
+function autoWrapCode(text: string): string {
+  // Already has code fences — leave as is
+  if (text.includes('```')) return text;
+  const trimmed = text.trim();
+  // Detect XML/HTML-like content (starts with < tag and has multiple tags)
+  if (/^<\w[\s\S]*>/.test(trimmed) && (trimmed.match(/<\w/g) || []).length >= 3) {
+    return '```xml\n' + text + '\n```';
+  }
+  // Detect JSON
+  if (/^\s*[\[{]/.test(trimmed) && /[\]}]\s*$/.test(trimmed) && trimmed.length > 50) {
+    try { JSON.parse(trimmed); return '```json\n' + text + '\n```'; } catch {}
+  }
+  return text;
+}
+
 const MessageBubble = memo(function MessageBubble({ message }: Props) {
   const isUser = message.role === 'user';
   const [copied, setCopied] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [showRoutingModal, setShowRoutingModal] = useState(false);
   const { deleteMessage } = useAppStore();
+
+  const displayContent = autoWrapCode(message.content);
 
   const copyMessage = () => {
     navigator.clipboard.writeText(message.content);
@@ -94,7 +112,7 @@ const MessageBubble = memo(function MessageBubble({ message }: Props) {
               p({ children }) { return <p className="whitespace-pre-wrap break-words">{children}</p>; },
             }}
           >
-            {message.content}
+            {displayContent}
           </ReactMarkdown>
         ) : (
           <ReactMarkdown
@@ -153,7 +171,7 @@ const MessageBubble = memo(function MessageBubble({ message }: Props) {
               },
             }}
           >
-            {message.content}
+            {displayContent}
           </ReactMarkdown>
         )}
 
