@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Uspaichat Mobile</string>
+	<string>UspAIChat</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -60,6 +60,10 @@
 	<string>Voice input for AI chat messages</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Microphone access for voice input</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Access to photo library for sending images in chat</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Camera access for taking photos to send in chat</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
