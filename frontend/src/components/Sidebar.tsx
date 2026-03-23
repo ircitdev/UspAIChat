@@ -121,7 +121,7 @@ export default function Sidebar() {
         </div>
         <button
           onClick={() => createConversation()}
-          className="w-full flex items-center gap-2 px-3 py-2 rounded-lg bg-violet-600 hover:bg-violet-700 text-white text-sm font-medium transition-colors"
+          className="w-full flex items-center gap-2 px-3 py-2 rounded-lg bg-accent hover:bg-accent-dark text-white text-sm font-medium transition-colors"
         >
           <Plus size={15} />
           {t('newChat')}
@@ -300,7 +300,7 @@ export default function Sidebar() {
                 </p>
                 <button
                   onClick={(e) => { e.stopPropagation(); setPaymentOpen(true); }}
-                  className="text-[9px] px-1.5 py-0 rounded bg-violet-600 hover:bg-violet-700 text-white transition-colors leading-4"
+                  className="text-[9px] px-1.5 py-0 rounded bg-accent hover:bg-accent-dark text-white transition-colors leading-4"
                   title="Пополнить"
                 >+</button>
               </div>

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mail, User, Copy, Check, RefreshCw, Lock, Eye, EyeOff, Sun, Moon, Monitor, Loader2 } from 'lucide-react';
 import useAuthStore from '../store/authStore';
-import useThemeStore from '../store/themeStore';
+import useThemeStore, { ACCENT_COLORS } from '../store/themeStore';
 import api from '../services/api';
 import clsx from 'clsx';
 
@@ -47,7 +47,7 @@ const THEME_OPTIONS = [
 
 export default function ProfileModal({ onClose }: { onClose: () => void }) {
   const { user } = useAuthStore();
-  const { mode: themeMode, setMode: setThemeMode } = useThemeStore();
+  const { mode: themeMode, setMode: setThemeMode, accentId, setAccent } = useThemeStore();
   const [linkState, setLinkState] = useState<LinkState | null>(null);
   const [linkStatus, setLinkStatus] = useState<'idle' | 'waiting' | 'confirmed' | 'expired'>('idle');
   const [timeLeft, setTimeLeft] = useState(0);
@@ -288,12 +288,37 @@ export default function ProfileModal({ onClose }: { onClose: () => void }) {
                     className={clsx(
                       'flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-medium transition-all',
                       themeMode === opt.value
-                        ? 'bg-violet-600 text-white shadow-md'
+                        ? 'bg-accent text-white shadow-md'
                         : 'bg-[#e8ecf2] dark:bg-[#1e1e2e] hover:bg-[#d1d8e4] dark:hover:bg-[#2d2d3f] text-slate-500 dark:text-slate-400'
                     )}
                   >
                     <opt.icon size={13} />
                     {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Accent color */}
+          <div className="bg-white dark:bg-[#111122] rounded-xl border border-[#e2e8f0] dark:border-[#2d2d3f] overflow-hidden">
+            <div className="px-4 py-2.5 border-b border-[#e2e8f0] dark:border-[#2d2d3f]">
+              <span className="text-sm font-medium text-slate-600 dark:text-slate-300">Accent color</span>
+            </div>
+            <div className="px-4 py-3">
+              <div className="flex flex-wrap gap-2">
+                {ACCENT_COLORS.map(c => (
+                  <button
+                    key={c.id}
+                    onClick={() => setAccent(c.id)}
+                    className={clsx(
+                      'w-9 h-9 rounded-full transition-all flex items-center justify-center',
+                      accentId === c.id ? 'ring-2 ring-offset-2 ring-offset-white dark:ring-offset-[#111122] scale-110' : 'hover:scale-105'
+                    )}
+                    style={{ backgroundColor: c.value, ringColor: c.value } as React.CSSProperties}
+                    title={c.name}
+                  >
+                    {accentId === c.id && <Check size={14} className="text-white" />}
                   </button>
                 ))}
               </div>

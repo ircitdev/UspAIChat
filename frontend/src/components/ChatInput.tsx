@@ -210,7 +210,7 @@ export default function ChatInput({ onSend, disabled }: Props) {
 
       <div className={clsx(
         'flex items-end gap-2 bg-[#f1f5f9] dark:bg-[#1a1a2e] border rounded-2xl px-3 py-2 transition-all',
-        disabled ? 'border-[#e2e8f0] dark:border-[#1e1e2e] opacity-75' : 'border-[#d1d8e4] dark:border-[#2d2d3f] focus-within:border-violet-500'
+        disabled ? 'border-[#e2e8f0] dark:border-[#1e1e2e] opacity-75' : 'border-[#d1d8e4] dark:border-[#2d2d3f] focus-within:border-accent'
       )}>
         <button
           onClick={() => fileInputRef.current?.click()}
@@ -259,7 +259,7 @@ export default function ChatInput({ onSend, disabled }: Props) {
           className={clsx(
             'p-1.5 rounded-xl transition-all shrink-0 mb-0.5',
             (text.trim() || files.length > 0) && !disabled
-              ? 'bg-violet-600 text-white hover:bg-violet-700'
+              ? 'bg-accent text-white hover:bg-accent-dark'
               : 'text-slate-400 dark:text-slate-600 cursor-not-allowed'
           )}
         >

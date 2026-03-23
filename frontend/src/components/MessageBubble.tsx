@@ -80,7 +80,7 @@ const MessageBubble = memo(function MessageBubble({ message }: Props) {
       <div className={clsx(
         'relative flex-1 rounded-2xl px-3 sm:px-4 py-3 text-sm leading-relaxed transition-colors overflow-hidden min-w-0',
         isUser
-          ? 'bg-violet-600 text-white rounded-tr-sm'
+          ? 'bg-accent text-white rounded-tr-sm'
           : 'bg-[#f1f5f9] dark:bg-[#1a1a2e] text-slate-700 dark:text-slate-200 rounded-tl-sm'
       )}>
         {isUser ? (

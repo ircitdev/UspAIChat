@@ -3,9 +3,26 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --accent: #7c3aed;
+  --accent-light: #a78bfa;
+  --accent-dark: #6d28d9;
+  --accent-muted: rgba(124, 58, 237, 0.15);
+}
+
 * {
   box-sizing: border-box;
 }
+
+/* Accent-colored elements */
+.bg-accent { background-color: var(--accent) !important; }
+.bg-accent-muted { background-color: var(--accent-muted) !important; }
+.text-accent { color: var(--accent) !important; }
+.text-accent-light { color: var(--accent-light) !important; }
+.border-accent { border-color: var(--accent) !important; }
+.ring-accent { --tw-ring-color: var(--accent) !important; }
+.hover\:bg-accent-dark:hover { background-color: var(--accent-dark) !important; }
+.focus-within\:border-accent:focus-within { border-color: var(--accent) !important; }
 
 html, body, #root {
   height: 100%;

@@ -15,6 +15,12 @@ export default {
           DEFAULT: '#7c3aed',
           light: '#a855f7',
           dark: '#5b21b6',
+        },
+        accent: {
+          DEFAULT: 'var(--accent)',
+          light: 'var(--accent-light)',
+          dark: 'var(--accent-dark)',
+          muted: 'var(--accent-muted)',
         }
       },
       fontFamily: {
