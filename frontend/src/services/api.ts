@@ -14,7 +14,7 @@ export async function streamChat(params: {
   files?: unknown[];
   onChunk: (chunk: string) => void;
   onTokens: (count: number) => void;
-  onDone: (messageId: string, fullContent: string, balanceAfter?: number | null) => void;
+  onDone: (messageId: string, fullContent: string, balanceAfter?: number | null, cost?: number | null) => void;
   onError: (error: string) => void;
   onRoutingInfo?: (info: unknown) => void;
 }) {
@@ -58,7 +58,7 @@ export async function streamChat(params: {
           const data = JSON.parse(line.slice(6));
           if (data.type === 'chunk') params.onChunk(data.content);
           else if (data.type === 'tokens') params.onTokens(data.count);
-          else if (data.type === 'done') params.onDone(data.message_id, data.full_content, data.balance_after);
+          else if (data.type === 'done') params.onDone(data.message_id, data.full_content, data.balance_after, data.cost);
           else if (data.type === 'error') params.onError(data.error);
           else if (data.type === 'routing_info') params.onRoutingInfo?.(data);
         } catch {}

@@ -1,8 +1,9 @@
 import { useTranslation } from 'react-i18next';
-import { ChevronDown, Zap, BookOpen } from 'lucide-react';
-import { useState, memo } from 'react';
+import { ChevronDown, Zap, BookOpen, Coins } from 'lucide-react';
+import { useState, useEffect, memo } from 'react';
 import useAppStore from '../store/appStore';
 import { Provider } from '../types';
+import api from '../services/api';
 import clsx from 'clsx';
 
 const PROVIDER_COLORS: Record<Provider, string> = {
@@ -43,8 +44,18 @@ export default memo(function ModelBar() {
 
   const [providerOpen, setProviderOpen] = useState(false);
   const [modelOpen, setModelOpen] = useState(false);
+  const [pricing, setPricing] = useState<Record<string, { id: string; name: string; pricePer1k: number }[]>>({});
+
+  useEffect(() => {
+    api.get('/models/pricing').then(r => setPricing(r.data)).catch(() => {});
+  }, []);
 
   const currentModels = models?.[selectedProvider] || [];
+
+  // Get price for current model
+  const currentPrice = selectedProvider !== 'auto'
+    ? pricing[selectedProvider]?.find(m => m.id === selectedModel)?.pricePer1k
+    : null;
 
   const handleProviderChange = (p: Provider) => {
     setSelectedProvider(p);
@@ -105,14 +116,22 @@ export default memo(function ModelBar() {
         </button>
         {modelOpen && (
           <div className="absolute top-full left-0 mt-1 bg-white dark:bg-[#1e1e2e] border border-[#d1d8e4] dark:border-[#2d2d3f] rounded-lg shadow-xl z-50 overflow-hidden min-w-[200px] max-h-64 overflow-y-auto">
-            {currentModels.map(m => (
-              <button key={m.id} onClick={() => handleModelChange(m.id)}
-                className={clsx('w-full text-left px-3 py-2 text-xs hover:bg-[#f1f5f9] dark:hover:bg-[#2d2d3f] transition-colors',
-                  m.id === selectedModel ? 'text-violet-500 dark:text-violet-400' : 'text-slate-600 dark:text-slate-300')}>
-                <div>{m.name}</div>
-                <div className="text-slate-400 dark:text-slate-600 text-[10px]">{(m.context / 1000).toFixed(0)}K context</div>
-              </button>
-            ))}
+            {currentModels.map(m => {
+              const price = pricing[selectedProvider]?.find(p => p.id === m.id)?.pricePer1k;
+              return (
+                <button key={m.id} onClick={() => handleModelChange(m.id)}
+                  className={clsx('w-full text-left px-3 py-2 text-xs hover:bg-[#f1f5f9] dark:hover:bg-[#2d2d3f] transition-colors',
+                    m.id === selectedModel ? 'text-violet-500 dark:text-violet-400' : 'text-slate-600 dark:text-slate-300')}>
+                  <div className="flex items-center justify-between">
+                    <span>{m.name}</span>
+                    {price != null && (
+                      <span className="text-[10px] text-amber-500 dark:text-amber-400 font-mono ml-2">{price} кр/1K</span>
+                    )}
+                  </div>
+                  <div className="text-slate-400 dark:text-slate-600 text-[10px]">{(m.context / 1000).toFixed(0)}K context</div>
+                </button>
+              );
+            })}
           </div>
         )}
       </div>
@@ -131,12 +150,20 @@ export default memo(function ModelBar() {
         <span className="hidden sm:inline">{t('systemPrompt')}</span>
       </button>
 
-      {/* Token counter */}
-      {tokenCount > 0 && (
-        <div className="ml-auto text-xs text-slate-400 dark:text-slate-600 whitespace-nowrap">
-          <span className="text-violet-500 dark:text-violet-400">{tokenCount}</span> {t('tokens')}
-        </div>
-      )}
+      {/* Price + Token counter */}
+      <div className="ml-auto flex items-center gap-2">
+        {currentPrice != null && !tokenCount && (
+          <div className="text-[10px] text-amber-500/70 dark:text-amber-400/60 whitespace-nowrap flex items-center gap-0.5" title="Стоимость за 1000 выходных токенов">
+            <Coins size={10} />
+            {currentPrice} кр/1K
+          </div>
+        )}
+        {tokenCount > 0 && (
+          <div className="text-xs text-slate-400 dark:text-slate-600 whitespace-nowrap">
+            <span className="text-violet-500 dark:text-violet-400">{tokenCount}</span> {t('tokens')}
+          </div>
+        )}
+      </div>
 
       {/* Close dropdowns */}
       {(providerOpen || modelOpen) && (

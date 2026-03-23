@@ -24,6 +24,7 @@ export interface Message {
   model?: string;
   files: FileAttachment[];
   routing_info?: RoutingInfo | null;
+  cost?: number | null;
 }
 
 export interface FileAttachment {

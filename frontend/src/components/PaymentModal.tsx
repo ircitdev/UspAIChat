@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, CreditCard, Gift, Copy, Check, ExternalLink, Users } from 'lucide-react';
+import { X, CreditCard, Gift, Copy, Check, ExternalLink, Users, Info } from 'lucide-react';
 import { motion } from 'framer-motion';
 import api from '../services/api';
 import useAuthStore from '../store/authStore';
@@ -34,8 +34,14 @@ interface ReferralInfo {
   bonus_percent: number;
 }
 
+interface PricingModel {
+  id: string;
+  name: string;
+  pricePer1k: number;
+}
+
 export default function PaymentModal({ onClose }: { onClose: () => void }) {
-  const [tab, setTab] = useState<'pay' | 'history' | 'referral'>('pay');
+  const [tab, setTab] = useState<'pay' | 'history' | 'referral' | 'info'>('pay');
   const [packages, setPackages] = useState<Package[]>([]);
   const [selectedPkg, setSelectedPkg] = useState<Package | null>(null);
   const [promoCode, setPromoCode] = useState('');
@@ -45,6 +51,7 @@ export default function PaymentModal({ onClose }: { onClose: () => void }) {
   const [history, setHistory] = useState<any[]>([]);
   const [referral, setReferral] = useState<ReferralInfo | null>(null);
   const [copied, setCopied] = useState(false);
+  const [pricing, setPricing] = useState<Record<string, PricingModel[]>>({});
   const user = useAuthStore(s => s.user);
 
   useEffect(() => {
@@ -111,9 +118,17 @@ export default function PaymentModal({ onClose }: { onClose: () => void }) {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const loadPricing = async () => {
+    try {
+      const { data } = await api.get('/models/pricing');
+      setPricing(data);
+    } catch {}
+  };
+
   useEffect(() => {
     if (tab === 'history') loadHistory();
     if (tab === 'referral') loadReferral();
+    if (tab === 'info') loadPricing();
   }, [tab]);
 
   // Calculate total credits
@@ -142,6 +157,7 @@ export default function PaymentModal({ onClose }: { onClose: () => void }) {
           <div className="flex gap-1">
             {[
               { id: 'pay', icon: CreditCard, label: 'Пополнить' },
+              { id: 'info', icon: Info, label: 'Тарифы' },
               { id: 'history', icon: Gift, label: 'История' },
               { id: 'referral', icon: Users, label: 'Рефералы' },
             ].map(t => (
@@ -258,6 +274,76 @@ export default function PaymentModal({ onClose }: { onClose: () => void }) {
                   <div className="text-xs text-slate-400">{new Date(p.created_at * 1000).toLocaleDateString()}</div>
                 </div>
               ))}
+            </div>
+          )}
+
+          {/* ── INFO TAB ── */}
+          {tab === 'info' && (
+            <div className="space-y-4">
+              {/* What are credits */}
+              <div className="bg-violet-600/10 border border-violet-500/20 rounded-xl p-4 space-y-2">
+                <div className="text-sm font-semibold text-violet-600 dark:text-violet-400">Что такое кредиты?</div>
+                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                  Кредиты — внутренняя валюта для оплаты ответов AI. Списание происходит только за <strong>выходные токены</strong> (текст,
+                  который генерирует модель). Входные токены (ваш запрос) — бесплатно.
+                </p>
+                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                  1 кредит = 1 рубль при пополнении. Администраторы не расходуют кредиты.
+                </p>
+              </div>
+
+              {/* How many tokens is a message */}
+              <div className="bg-[#f8fafc] dark:bg-[#0d0d1a] rounded-xl p-4 space-y-2">
+                <div className="text-xs font-semibold text-slate-700 dark:text-slate-300">Сколько токенов в сообщении?</div>
+                <div className="grid grid-cols-2 gap-2 text-xs text-slate-500 dark:text-slate-400">
+                  <div className="bg-white dark:bg-[#1a1a2e] rounded-lg p-2 border border-[#e2e8f0] dark:border-[#2d2d3f]">
+                    <div className="font-mono text-slate-700 dark:text-slate-300">~750</div>
+                    <div>токенов = 500 слов</div>
+                  </div>
+                  <div className="bg-white dark:bg-[#1a1a2e] rounded-lg p-2 border border-[#e2e8f0] dark:border-[#2d2d3f]">
+                    <div className="font-mono text-slate-700 dark:text-slate-300">~150</div>
+                    <div>токенов = короткий ответ</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Examples */}
+              <div className="bg-[#f8fafc] dark:bg-[#0d0d1a] rounded-xl p-4 space-y-2">
+                <div className="text-xs font-semibold text-slate-700 dark:text-slate-300">Примеры расхода</div>
+                <div className="text-xs text-slate-500 dark:text-slate-400 space-y-1.5">
+                  <div className="flex justify-between"><span>Простой вопрос (Claude Sonnet)</span><span className="font-mono text-amber-500">~0.3−0.9 кр</span></div>
+                  <div className="flex justify-between"><span>Развёрнутый ответ (Claude Sonnet)</span><span className="font-mono text-amber-500">~1.5−4.5 кр</span></div>
+                  <div className="flex justify-between"><span>Простой вопрос (GPT-4o mini)</span><span className="font-mono text-amber-500">~0.06−0.18 кр</span></div>
+                  <div className="flex justify-between"><span>Длинный код (Claude Opus)</span><span className="font-mono text-amber-500">~15−45 кр</span></div>
+                  <div className="flex justify-between"><span>Быстрый ответ (Gemini Flash)</span><span className="font-mono text-amber-500">~0.04−0.12 кр</span></div>
+                </div>
+              </div>
+
+              {/* Pricing table */}
+              <div>
+                <div className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-2">Стоимость моделей (кредитов за 1K токенов)</div>
+                <div className="border border-[#e2e8f0] dark:border-[#2d2d3f] rounded-xl overflow-hidden">
+                  {Object.entries(pricing).map(([provider, models]) => (
+                    <div key={provider}>
+                      <div className="px-3 py-1.5 bg-[#f1f5f9] dark:bg-[#0d0d1a] text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                        {provider === 'anthropic' ? 'Anthropic (Claude)' : provider === 'openai' ? 'OpenAI' : provider === 'gemini' ? 'Google (Gemini)' : provider === 'deepseek' ? 'DeepSeek' : provider === 'kimi' ? 'Kimi' : provider}
+                      </div>
+                      {models.map(m => (
+                        <div key={m.id} className="flex items-center justify-between px-3 py-1.5 border-t border-[#e2e8f0] dark:border-[#2d2d3f] text-xs">
+                          <span className="text-slate-600 dark:text-slate-400">{m.name}</span>
+                          <span className={clsx('font-mono', m.pricePer1k <= 0.5 ? 'text-green-500' : m.pricePer1k <= 3 ? 'text-amber-500' : m.pricePer1k <= 10 ? 'text-orange-500' : 'text-red-400')}>
+                            {m.pricePer1k} кр
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <p className="text-[10px] text-slate-400 dark:text-slate-500 text-center">
+                Стоимость ответа = (количество токенов / 1000) × цена модели. Стоимость каждого ответа видна при наведении на сообщение.
+              </p>
             </div>
           )}
 

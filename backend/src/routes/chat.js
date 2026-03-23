@@ -147,8 +147,8 @@ router.post('/stream', async (req, res) => {
     const asstMsgId = uuid();
     const now2 = Math.floor(Date.now() / 1000);
     db.prepare(`
-      INSERT INTO messages (id, conversation_id, role, content, created_at, provider, model, token_count, routing_info)
-      VALUES (?, ?, 'assistant', ?, ?, ?, ?, ?, ?)
+      INSERT INTO messages (id, conversation_id, role, content, created_at, provider, model, token_count, routing_info, cost)
+      VALUES (?, ?, 'assistant', ?, ?, ?, ?, ?, ?, NULL)
     `).run(asstMsgId, conversation_id, fullResponse, now2, provider, model, tokenCount, routingInfo ? JSON.stringify(routingInfo) : null);
 
     try {
@@ -168,16 +168,20 @@ router.post('/stream', async (req, res) => {
 
     // Charge balance using actual provider/model (skip for admin)
     let balanceAfter = null;
+    let chargeCost = null;
     if (!isAdmin && tokenCount > 0) {
       const charge = chargeUser(req.userId, tokenCount, provider, model, `Ответ ${model}`);
       if (!charge.ok) {
         console.warn('Charge failed after response:', charge.reason);
       } else {
         balanceAfter = charge.balanceAfter;
+        chargeCost = charge.cost;
+        // Save cost to message
+        db.prepare('UPDATE messages SET cost = ? WHERE id = ?').run(chargeCost, asstMsgId);
       }
     }
 
-    send({ type: 'done', message_id: asstMsgId, full_content: fullResponse, balance_after: balanceAfter });
+    send({ type: 'done', message_id: asstMsgId, full_content: fullResponse, balance_after: balanceAfter, cost: chargeCost });
     res.end();
   } catch (err) {
     console.error('Chat error:', err);

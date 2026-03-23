@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { getDB } from '../db/database.js';
 import { requireAuth } from '../middleware/auth.js';
+import { getPricePer1k } from '../services/billing.js';
 
 const router = Router();
 
@@ -40,6 +41,20 @@ const MODELS = {
 };
 
 router.get('/', (req, res) => res.json(MODELS));
+
+// GET /api/models/pricing — return prices per 1K output tokens for all models
+router.get('/pricing', (req, res) => {
+  const pricing = {};
+  for (const [provider, models] of Object.entries(MODELS)) {
+    if (provider === 'auto') continue;
+    pricing[provider] = models.map(m => ({
+      id: m.id,
+      name: m.name,
+      pricePer1k: getPricePer1k(provider, m.id),
+    }));
+  }
+  res.json(pricing);
+});
 
 router.get('/keys', requireAuth, (req, res) => {
   const db = getDB();

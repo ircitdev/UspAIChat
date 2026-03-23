@@ -233,6 +233,8 @@ export function initDB() {
   try { db.exec(`ALTER TABLE conversations ADD COLUMN folder_id TEXT DEFAULT NULL`); } catch {}
   // Migration: add routing_info to messages (for auto-router)
   try { db.exec(`ALTER TABLE messages ADD COLUMN routing_info TEXT`); } catch {}
+  // Migration: add cost to messages (credits charged for this response)
+  try { db.exec(`ALTER TABLE messages ADD COLUMN cost REAL`); } catch {}
   // Migration: referral system columns
   try { db.exec(`ALTER TABLE users ADD COLUMN referral_code TEXT`); } catch {}
   try { db.exec(`ALTER TABLE users ADD COLUMN referred_by TEXT`); } catch {}

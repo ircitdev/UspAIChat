@@ -70,16 +70,16 @@ const MessageBubble = memo(function MessageBubble({ message }: Props) {
         ) : (
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
-            className="prose prose-invert prose-sm max-w-none prose-dark"
+            className="prose prose-sm max-w-none dark:prose-invert prose-slate dark:prose-p:text-slate-200 prose-headings:text-slate-800 dark:prose-headings:text-slate-100 prose-headings:font-semibold prose-headings:mt-4 prose-headings:mb-2 prose-p:my-1.5 prose-p:leading-relaxed"
             components={{
               code({ className, children, ...props }) {
                 const match = /language-(\w+)/.exec(className || '');
                 const inline = !match;
                 if (inline) {
-                  return <code className="bg-[#e2e8f0] dark:bg-[#0d0d1a] text-violet-600 dark:text-violet-300 px-1.5 py-0.5 rounded text-xs" {...props}>{children}</code>;
+                  return <code className="bg-[#e2e8f0] dark:bg-[#0d0d1a] text-violet-600 dark:text-violet-300 px-1.5 py-0.5 rounded text-xs font-mono" {...props}>{children}</code>;
                 }
                 return (
-                  <div className="relative group/code my-3">
+                  <div className="relative group/code my-3 -mx-1">
                     <div className="flex items-center justify-between bg-[#e2e8f0] dark:bg-[#0d0d1a] px-3 py-1.5 rounded-t-lg border border-[#d1d8e4] dark:border-[#2d2d3f] border-b-0">
                       <span className="text-xs text-slate-500 dark:text-slate-500">{match[1]}</span>
                       <CopyButton text={String(children)} />
@@ -93,14 +93,35 @@ const MessageBubble = memo(function MessageBubble({ message }: Props) {
                 );
               },
               table({ children }) {
-                return <div className="overflow-x-auto my-3"><table className="border-collapse w-full text-xs">{children}</table></div>;
+                return <div className="overflow-x-auto my-3 rounded-lg border border-[#d1d8e4] dark:border-[#2d2d3f]"><table className="border-collapse w-full text-xs">{children}</table></div>;
               },
               th({ children }) {
-                return <th className="border border-[#d1d8e4] dark:border-[#2d2d3f] bg-[#e2e8f0] dark:bg-[#0d0d1a] px-3 py-1.5 text-left text-slate-600 dark:text-slate-300">{children}</th>;
+                return <th className="border-b border-[#d1d8e4] dark:border-[#2d2d3f] bg-[#e2e8f0] dark:bg-[#0d0d1a] px-3 py-2 text-left text-slate-600 dark:text-slate-300 font-semibold">{children}</th>;
               },
               td({ children }) {
-                return <td className="border border-[#d1d8e4] dark:border-[#2d2d3f] px-3 py-1.5 text-slate-500 dark:text-slate-400">{children}</td>;
-              }
+                return <td className="border-b border-[#d1d8e4] dark:border-[#2d2d3f] px-3 py-1.5 text-slate-600 dark:text-slate-400">{children}</td>;
+              },
+              ul({ children }) {
+                return <ul className="list-disc pl-5 my-2 space-y-0.5 text-slate-700 dark:text-slate-300">{children}</ul>;
+              },
+              ol({ children }) {
+                return <ol className="list-decimal pl-5 my-2 space-y-0.5 text-slate-700 dark:text-slate-300">{children}</ol>;
+              },
+              li({ children }) {
+                return <li className="text-sm leading-relaxed">{children}</li>;
+              },
+              blockquote({ children }) {
+                return <blockquote className="border-l-3 border-violet-400 dark:border-violet-500 bg-violet-50 dark:bg-violet-950/30 px-3 py-2 my-2 rounded-r-lg text-slate-600 dark:text-slate-400 italic">{children}</blockquote>;
+              },
+              a({ href, children }) {
+                return <a href={href} target="_blank" rel="noopener noreferrer" className="text-violet-600 dark:text-violet-400 underline decoration-violet-300 dark:decoration-violet-600 hover:decoration-violet-500 transition-colors">{children}</a>;
+              },
+              hr() {
+                return <hr className="my-3 border-[#e2e8f0] dark:border-[#2d2d3f]" />;
+              },
+              pre({ children }) {
+                return <>{children}</>;
+              },
             }}
           >
             {message.content}
@@ -193,6 +214,11 @@ const MessageBubble = memo(function MessageBubble({ message }: Props) {
           </button>
           {message.model && (
             <span className="text-xs text-slate-400 dark:text-slate-700">{message.model}</span>
+          )}
+          {!isUser && message.cost != null && message.cost > 0 && (
+            <span className="text-[10px] text-amber-500/70 dark:text-amber-400/50 font-mono">
+              −{message.cost < 0.01 ? message.cost.toFixed(4) : message.cost.toFixed(2)} кр
+            </span>
           )}
         </div>
 
