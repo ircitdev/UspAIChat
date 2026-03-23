@@ -66,7 +66,36 @@ const MessageBubble = memo(function MessageBubble({ message }: Props) {
           : 'bg-[#f1f5f9] dark:bg-[#1a1a2e] text-slate-700 dark:text-slate-200 rounded-tl-sm'
       )}>
         {isUser ? (
-          <p className="whitespace-pre-wrap break-words">{message.content}</p>
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            className="prose prose-sm max-w-none prose-invert prose-p:text-white prose-headings:text-white prose-p:my-1 prose-p:leading-relaxed"
+            components={{
+              code({ className, children, ...props }) {
+                const match = /language-(\w+)/.exec(className || '');
+                const inline = !match;
+                if (inline) {
+                  return <code className="bg-white/20 text-white px-1.5 py-0.5 rounded text-xs font-mono" {...props}>{children}</code>;
+                }
+                return (
+                  <div className="relative group/code my-3 -mx-1">
+                    <div className="flex items-center justify-between bg-black/20 px-3 py-1.5 rounded-t-lg">
+                      <span className="text-xs text-white/60">{match[1]}</span>
+                      <CopyButton text={String(children)} />
+                    </div>
+                    <Suspense fallback={
+                      <pre className="bg-[#282c34] rounded-b-lg p-4 text-xs text-slate-300 overflow-x-auto"><code>{String(children).replace(/\n$/, '')}</code></pre>
+                    }>
+                      <LazyCodeBlock language={match[1]}>{String(children).replace(/\n$/, '')}</LazyCodeBlock>
+                    </Suspense>
+                  </div>
+                );
+              },
+              pre({ children }) { return <>{children}</>; },
+              p({ children }) { return <p className="whitespace-pre-wrap break-words">{children}</p>; },
+            }}
+          >
+            {message.content}
+          </ReactMarkdown>
         ) : (
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
@@ -264,7 +293,9 @@ function SyntaxHighlighterWrapper({ language, children }: { language: string; ch
       style={oneDarkStyle || {}}
       language={language}
       PreTag="div"
-      customStyle={{ margin: 0, borderRadius: '0 0 8px 8px', border: '1px solid', borderColor: 'var(--tw-border-opacity, 1) ? #2d2d3f : #d1d8e4', borderTop: 0 }}
+      showLineNumbers
+      lineNumberStyle={{ minWidth: '2.5em', paddingRight: '1em', color: '#4a5568', userSelect: 'none' }}
+      customStyle={{ margin: 0, borderRadius: '0 0 8px 8px', border: '1px solid #2d2d3f', borderTop: 0, fontSize: '13px' }}
     >
       {children}
     </SyntaxHighlighter>
