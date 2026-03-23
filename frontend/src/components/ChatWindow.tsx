@@ -211,16 +211,18 @@ export default function ChatWindow() {
                       <div className="flex-1 h-px bg-slate-200 dark:bg-slate-700/50" />
                     </div>
                     <AnimatePresence initial={false}>
-                      {group.messages.map(msg => (
-                        <motion.div
-                          key={msg.id}
-                          initial={{ opacity: 0, y: 8 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.15 }}
-                        >
-                          <MessageBubble message={msg} />
-                        </motion.div>
-                      ))}
+                      <div className="space-y-5">
+                        {group.messages.map(msg => (
+                          <motion.div
+                            key={msg.id}
+                            initial={{ opacity: 0, y: 8 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.15 }}
+                          >
+                            <MessageBubble message={msg} />
+                          </motion.div>
+                        ))}
+                      </div>
                     </AnimatePresence>
                   </div>
                 ))}
