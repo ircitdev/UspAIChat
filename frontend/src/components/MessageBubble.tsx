@@ -47,7 +47,7 @@ const MessageBubble = memo(function MessageBubble({ message }: Props) {
 
   return (
     <div className={clsx(
-      'flex gap-3 max-w-3xl mx-auto w-full group',
+      'flex gap-3 max-w-4xl mx-auto w-full group',
       isUser && 'flex-row-reverse'
     )}>
       {/* Avatar */}

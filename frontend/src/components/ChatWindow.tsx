@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AnimatePresence, motion } from 'framer-motion';
-import { PanelLeft, ArrowDown, Volume2, VolumeX } from 'lucide-react';
+import { PanelLeft, ArrowDown, Volume2, VolumeX, Settings2 } from 'lucide-react';
 import clsx from 'clsx';
 import useAppStore from '../store/appStore';
 import useAuthStore from '../store/authStore';
@@ -27,7 +27,7 @@ function MessageSkeleton() {
   return (
     <div className="space-y-4 animate-pulse">
       {[1, 2, 3].map(i => (
-        <div key={i} className={`flex gap-3 max-w-3xl mx-auto w-full ${i % 2 === 0 ? 'flex-row-reverse' : ''}`}>
+        <div key={i} className={`flex gap-3 max-w-4xl mx-auto w-full ${i % 2 === 0 ? 'flex-row-reverse' : ''}`}>
           <div className="w-7 h-7 rounded-full bg-slate-200 dark:bg-slate-700 shrink-0" />
           <div className={`flex-1 rounded-2xl px-4 py-3 ${i % 2 === 0 ? 'bg-violet-200 dark:bg-violet-900/30 rounded-tr-sm ml-16' : 'bg-slate-100 dark:bg-slate-800/50 rounded-tl-sm mr-16'}`}>
             <div className="space-y-2">
@@ -59,6 +59,7 @@ export default function ChatWindow() {
   const [pendingFiles, setPendingFiles] = useState<unknown[]>([]);
   const [showScrollBtn, setShowScrollBtn] = useState(false);
   const [routingModal, setRoutingModal] = useState<RoutingInfo | null>(null);
+  const [voicePickerOpen, setVoicePickerOpen] = useState(false);
 
   // TTS for assistant messages
   const voice = useVoiceChat({ lang: 'ru-RU' });
@@ -180,7 +181,7 @@ export default function ChatWindow() {
       <div
         ref={scrollContainerRef}
         onScroll={handleScroll}
-        className="flex-1 overflow-y-auto overflow-x-hidden px-2 sm:px-4 py-4 scroll-smooth"
+        className="flex-1 overflow-y-auto overflow-x-hidden py-4 scroll-smooth"
       >
         {!sidebarOpen && (
           <button onClick={() => setSidebarOpen(true)} className="fixed top-3 left-3 z-10 p-2.5 sm:p-2 bg-white/80 dark:bg-[#1e1e2e]/80 backdrop-blur-sm hover:bg-[#f1f5f9] dark:hover:bg-[#1e1e2e] rounded-xl sm:rounded-lg transition-colors text-slate-500 dark:text-slate-400 shadow-sm border border-slate-200/50 dark:border-slate-700/50">
@@ -195,7 +196,7 @@ export default function ChatWindow() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.18, ease: 'easeInOut' }}
-            className="space-y-2"
+            className="space-y-6 max-w-4xl mx-auto px-2 sm:px-4"
           >
             {messagesLoading ? (
               <MessageSkeleton />
@@ -243,6 +244,43 @@ export default function ChatWindow() {
 
       {/* Bottom action buttons */}
       <div className="absolute bottom-28 right-6 z-20 flex flex-col gap-2">
+        {/* Voice settings */}
+        {voice.supported && voice.voices.length > 0 && (
+          <div className="relative">
+            <button
+              onClick={() => setVoicePickerOpen(!voicePickerOpen)}
+              className="w-9 h-9 rounded-full bg-white dark:bg-[#1e1e2e] border border-[#d1d8e4] dark:border-[#2d2d3f] shadow-lg flex items-center justify-center text-slate-500 dark:text-slate-400 hover:text-violet-500 dark:hover:text-violet-400 transition-colors"
+              title="Выбрать голос"
+            >
+              <Settings2 size={13} />
+            </button>
+            {voicePickerOpen && (
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setVoicePickerOpen(false)} />
+                <div className="absolute bottom-full right-0 mb-2 bg-white dark:bg-[#1e1e2e] border border-[#d1d8e4] dark:border-[#2d2d3f] rounded-xl shadow-2xl z-50 min-w-[220px] max-h-64 overflow-y-auto">
+                  <div className="px-3 py-2 border-b border-[#e2e8f0] dark:border-[#2d2d3f] text-xs font-medium text-slate-600 dark:text-slate-300">Голос озвучки</div>
+                  <button
+                    onClick={() => { voice.setVoice(null); setVoicePickerOpen(false); }}
+                    className={clsx('w-full text-left px-3 py-2 text-xs hover:bg-[#f1f5f9] dark:hover:bg-[#2d2d3f] transition-colors',
+                      !voice.selectedVoice ? 'text-violet-500 bg-[#f1f5f9] dark:bg-[#2d2d3f]' : 'text-slate-600 dark:text-slate-400')}
+                  >
+                    Авто (по умолчанию)
+                  </button>
+                  {voice.voices.map(v => (
+                    <button key={v.voiceURI}
+                      onClick={() => { voice.setVoice(v.voiceURI); setVoicePickerOpen(false); voice.speak('Привет! Это мой голос.'); }}
+                      className={clsx('w-full text-left px-3 py-1.5 text-xs hover:bg-[#f1f5f9] dark:hover:bg-[#2d2d3f] transition-colors',
+                        voice.selectedVoice === v.voiceURI ? 'text-violet-500 bg-[#f1f5f9] dark:bg-[#2d2d3f]' : 'text-slate-600 dark:text-slate-400')}
+                    >
+                      <div className="truncate">{v.name}</div>
+                      <div className="text-[10px] text-slate-400 dark:text-slate-600">{v.lang}{v.isGoogle ? ' (Google)' : ''}</div>
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+        )}
         {/* Auto-speak toggle */}
         {voice.supported && (
           <button
@@ -277,12 +315,14 @@ export default function ChatWindow() {
 
       {/* Token counter */}
       {tokenCount > 0 && (
-        <div className="px-4 pb-1 text-right">
+        <div className="max-w-4xl mx-auto px-4 pb-1 text-right">
           <span className="text-xs text-slate-400 dark:text-slate-600">{tokenCount} tokens</span>
         </div>
       )}
 
-      <ChatInput onSend={handleSend} disabled={streaming} onFilesChange={setPendingFiles} />
+      <div className="max-w-4xl mx-auto w-full">
+        <ChatInput onSend={handleSend} disabled={streaming} onFilesChange={setPendingFiles} />
+      </div>
 
       {systemPromptOpen && <SystemPromptModal />}
       {routingModal && <RoutingInfoModal info={routingModal} onClose={() => setRoutingModal(null)} />}
@@ -296,7 +336,7 @@ export default function ChatWindow() {
       COMPLEX: 'bg-orange-500/15 text-orange-500 border-orange-500/30',
     };
     return (
-      <div className="flex gap-3 max-w-3xl mx-auto w-full mb-1">
+      <div className="flex gap-3 max-w-4xl mx-auto w-full mb-1">
         <div className="w-7 shrink-0" />
         <button
           onClick={() => setRoutingModal(info)}
@@ -320,7 +360,7 @@ export default function ChatWindow() {
 
 function StreamingBubble({ content }: { content: string }) {
   return (
-    <div className="flex gap-3 max-w-3xl mx-auto w-full">
+    <div className="flex gap-3 max-w-4xl mx-auto w-full">
       <div className="w-7 h-7 rounded-full bg-gradient-to-br from-violet-600 to-purple-800 flex items-center justify-center shrink-0 mt-1">
         <img src="/logo_w.png" alt="" className="w-4 h-4" />
       </div>
