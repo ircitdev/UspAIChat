@@ -15,12 +15,10 @@ import '../../presentation/screens/admin/admin_screen.dart';
 import '../../presentation/screens/settings/prompt_templates_screen.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
-  final authState = ref.watch(authProvider);
-
   return GoRouter(
     initialLocation: '/splash',
     redirect: (context, state) {
-      final loggedIn = authState.user != null;
+      final loggedIn = ref.read(authProvider).user != null;
       final isSplash = state.matchedLocation == '/splash';
       final isAuth = state.matchedLocation.startsWith('/auth');
 

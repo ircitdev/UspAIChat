@@ -14,13 +14,13 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _init();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _init());
   }
 
   Future<void> _init() async {
     try {
       final restored = await ref.read(authProvider.notifier).restoreSession()
-          .timeout(const Duration(seconds: 10));
+          .timeout(const Duration(seconds: 3));
       if (!mounted) return;
       context.go(restored ? '/' : '/auth');
     } catch (_) {

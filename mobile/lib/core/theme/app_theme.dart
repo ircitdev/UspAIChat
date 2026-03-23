@@ -18,7 +18,7 @@ class AppTheme {
       centerTitle: true,
       surfaceTintColor: Colors.transparent,
     ),
-    cardTheme: const CardThemeData(
+    cardTheme: const CardTheme(
       color: AppColorsLight.surface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(16)),
@@ -63,7 +63,7 @@ class AppTheme {
       labelSmall: TextStyle(color: AppColorsLight.textDim),
     ),
     dividerColor: AppColorsLight.cardBorder,
-    dialogTheme: const DialogThemeData(
+    dialogTheme: const DialogTheme(
       backgroundColor: AppColorsLight.surface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(16)),
