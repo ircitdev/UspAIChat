@@ -3,165 +3,625 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Разработчик — UspAIChat</title>
+    <title>Aleksandr Uspeshnyy — Developer — UspAIChat</title>
+    <meta name="description" content="Aleksandr Uspeshnyy — independent developer of UspAIChat, a self-hosted multi-provider AI chat platform.">
+    <meta name="author" content="Aleksandr Uspeshnyy">
+    <meta property="og:title" content="Aleksandr Uspeshnyy — UspAIChat Developer">
+    <meta property="og:description" content="Self-hosted multi-provider AI chat platform. Web & Mobile.">
+    <meta property="og:url" content="https://app.aifuturenow.ru/autor.html">
+    <meta property="og:type" content="profile">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg: #000000;
+            --bg-elevated: #1c1c1e;
+            --bg-secondary: #2c2c2e;
+            --bg-tertiary: #3a3a3c;
+            --text-primary: #f5f5f7;
+            --text-secondary: #a1a1a6;
+            --text-tertiary: #6e6e73;
+            --accent: #7C3AED;
+            --accent-light: #A78BFA;
+            --border: rgba(255,255,255,0.08);
+            --border-light: rgba(255,255,255,0.12);
+            --radius: 16px;
+            --radius-sm: 12px;
+            --radius-xs: 8px;
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #0D0D1A; color: #F1F5F9;
-            line-height: 1.7; padding: 0;
-        }
-        .container {
-            max-width: 720px; margin: 0 auto;
-            padding: 48px 24px 80px;
-        }
-        .logo {
-            display: flex; align-items: center; gap: 12px;
-            margin-bottom: 40px; text-decoration: none;
-        }
-        .logo-icon {
-            width: 40px; height: 40px; border-radius: 12px;
-            background: linear-gradient(135deg, #7C3AED, #6B21A8);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 20px;
-        }
-        .logo-text { color: #F1F5F9; font-size: 20px; font-weight: 700; }
-        h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; color: #F1F5F9; }
-        .subtitle { color: #94A3B8; font-size: 14px; margin-bottom: 40px; }
-
-        .card {
-            background: #1A1A2E;
-            border: 1px solid #2D2D3F;
-            border-radius: 16px;
-            padding: 32px;
-            margin-bottom: 24px;
-        }
-        .avatar {
-            width: 80px; height: 80px; border-radius: 50%;
-            background: linear-gradient(135deg, #7C3AED, #6B21A8);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 32px; font-weight: 700; color: white;
-            margin-bottom: 20px;
-        }
-        .name {
-            font-size: 22px; font-weight: 700; color: #F1F5F9;
-            margin-bottom: 4px;
-        }
-        .role {
-            font-size: 14px; color: #94A3B8;
-            margin-bottom: 24px;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--text-primary);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
-        .info-grid {
-            display: grid; gap: 16px;
+        /* ===== NAV ===== */
+        .nav {
+            position: sticky; top: 0; z-index: 100;
+            padding: 12px 24px;
+            background: rgba(0,0,0,0.72);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid var(--border);
         }
-        .info-item {
+        .nav-inner {
+            max-width: 980px; margin: 0 auto;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .nav-brand {
+            display: flex; align-items: center; gap: 10px;
+            text-decoration: none; color: var(--text-primary);
+        }
+        .nav-logo {
+            width: 32px; height: 32px; border-radius: 8px;
+            background: linear-gradient(135deg, #7C3AED, #5B21B6);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 14px; color: white;
+        }
+        .nav-title { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
+        .nav-links { display: flex; gap: 8px; }
+        .nav-link {
+            padding: 6px 14px; border-radius: 20px;
+            font-size: 13px; font-weight: 500;
+            color: var(--text-secondary); text-decoration: none;
+            transition: all 0.2s;
+        }
+        .nav-link:hover { color: var(--text-primary); background: var(--bg-elevated); }
+        .nav-link.active { color: white; background: var(--accent); }
+
+        /* ===== HERO ===== */
+        .hero {
+            max-width: 980px; margin: 0 auto;
+            padding: 80px 24px 60px;
+            text-align: center;
+        }
+        .hero-avatar {
+            width: 120px; height: 120px; border-radius: 50%;
+            background: linear-gradient(135deg, #7C3AED, #5B21B6, #3B0764);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 44px; font-weight: 800; color: white;
+            margin: 0 auto 28px;
+            box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.15), 0 20px 60px rgba(124, 58, 237, 0.2);
+        }
+        .hero h1 {
+            font-size: 44px; font-weight: 800; letter-spacing: -0.03em;
+            line-height: 1.1; margin-bottom: 12px;
+            background: linear-gradient(to right, #f5f5f7, #a1a1a6);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero-subtitle {
+            font-size: 18px; color: var(--text-secondary);
+            font-weight: 400; max-width: 560px; margin: 0 auto 32px;
+            line-height: 1.6;
+        }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 6px 16px; border-radius: 20px;
+            background: var(--bg-elevated); border: 1px solid var(--border);
+            font-size: 13px; color: var(--text-secondary); font-weight: 500;
+        }
+        .hero-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: #34D399; }
+
+        /* ===== SECTIONS ===== */
+        .section {
+            max-width: 980px; margin: 0 auto;
+            padding: 0 24px 80px;
+        }
+        .section-label {
+            font-size: 13px; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.08em; color: var(--accent-light);
+            margin-bottom: 8px;
+        }
+        .section-title {
+            font-size: 32px; font-weight: 700; letter-spacing: -0.02em;
+            margin-bottom: 40px; color: var(--text-primary);
+        }
+
+        /* ===== APP CARD ===== */
+        .app-card {
+            display: flex; gap: 32px; align-items: center;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 20px; padding: 32px;
+            margin-bottom: 40px;
+        }
+        .app-icon {
+            width: 96px; height: 96px; border-radius: 22px; flex-shrink: 0;
+            background: linear-gradient(135deg, #7C3AED, #5B21B6);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 36px; font-weight: 800; color: white;
+            box-shadow: 0 8px 30px rgba(124, 58, 237, 0.25);
+        }
+        .app-info h3 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+        .app-info p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 12px; }
+        .app-badges { display: flex; gap: 8px; flex-wrap: wrap; }
+        .app-badge {
+            padding: 4px 12px; border-radius: 6px;
+            font-size: 12px; font-weight: 600;
+            background: rgba(124, 58, 237, 0.12); color: var(--accent-light);
+        }
+        .app-badge.green { background: rgba(52, 211, 153, 0.12); color: #34D399; }
+
+        /* ===== ABOUT ===== */
+        .about-text {
+            font-size: 17px; line-height: 1.8; color: var(--text-secondary);
+            max-width: 720px;
+        }
+        .about-text p { margin-bottom: 16px; }
+        .about-text strong { color: var(--text-primary); font-weight: 600; }
+
+        /* ===== TECH GRID ===== */
+        .tech-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 16px;
+        }
+        .tech-card {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            transition: border-color 0.25s, transform 0.25s;
+        }
+        .tech-card:hover {
+            border-color: var(--border-light);
+            transform: translateY(-2px);
+        }
+        .tech-card-header {
             display: flex; align-items: center; gap: 12px;
-            padding: 12px 16px;
-            background: #141422;
-            border: 1px solid #2D2D3F;
-            border-radius: 12px;
+            margin-bottom: 12px;
         }
-        .info-icon {
-            width: 36px; height: 36px; border-radius: 10px;
+        .tech-icon {
+            width: 40px; height: 40px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; flex-shrink: 0;
+        }
+        .tech-icon.backend { background: rgba(52, 211, 153, 0.12); color: #34D399; }
+        .tech-icon.frontend { background: rgba(96, 165, 250, 0.12); color: #60A5FA; }
+        .tech-icon.mobile { background: rgba(124, 58, 237, 0.12); color: #A78BFA; }
+        .tech-icon.ai { background: rgba(251, 191, 36, 0.12); color: #FBBF24; }
+        .tech-icon.auth { background: rgba(244, 114, 182, 0.12); color: #F472B6; }
+        .tech-icon.infra { background: rgba(248, 113, 113, 0.12); color: #F87171; }
+        .tech-icon.payments { background: rgba(52, 211, 153, 0.12); color: #34D399; }
+        .tech-icon.telegram { background: rgba(96, 165, 250, 0.12); color: #60A5FA; }
+
+        .tech-card h4 { font-size: 15px; font-weight: 600; }
+        .tech-card p { font-size: 13px; color: var(--text-tertiary); line-height: 1.6; margin-bottom: 12px; }
+        .tech-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+        .tech-tag {
+            padding: 3px 10px; border-radius: 6px;
+            font-size: 11px; font-weight: 600; letter-spacing: 0.01em;
+            background: var(--bg-secondary); color: var(--text-secondary);
+        }
+
+        /* ===== FEATURES LIST ===== */
+        .features-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 12px;
+        }
+        .feature-item {
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 14px 16px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+        }
+        .feature-check {
+            width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0;
+            background: rgba(52, 211, 153, 0.12); color: #34D399;
+            display: flex; align-items: center; justify-content: center;
+            margin-top: 1px;
+        }
+        .feature-item span { font-size: 13px; font-weight: 500; color: var(--text-secondary); line-height: 1.4; }
+
+        /* ===== CONTACT ===== */
+        .contact-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+        .contact-card {
+            display: flex; align-items: center; gap: 16px;
+            padding: 20px 24px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            text-decoration: none; color: inherit;
+            transition: border-color 0.25s, transform 0.25s;
+        }
+        .contact-card:hover {
+            border-color: var(--border-light);
+            transform: translateY(-2px);
+        }
+        .contact-icon {
+            width: 48px; height: 48px; border-radius: 14px;
             display: flex; align-items: center; justify-content: center;
             flex-shrink: 0;
         }
-        .info-icon.phone { background: #059669/15; color: #34D399; background: rgba(5, 150, 105, 0.15); }
-        .info-icon.email { background: rgba(124, 58, 237, 0.15); color: #A78BFA; }
-        .info-icon.web { background: rgba(59, 130, 246, 0.15); color: #60A5FA; }
-        .info-label { font-size: 12px; color: #64748B; margin-bottom: 2px; }
-        .info-value { font-size: 14px; color: #F1F5F9; font-weight: 500; }
-        .info-value a {
-            color: #A78BFA; text-decoration: none;
-        }
-        .info-value a:hover { text-decoration: underline; }
+        .contact-icon.email { background: rgba(124, 58, 237, 0.12); color: #A78BFA; }
+        .contact-icon.phone { background: rgba(52, 211, 153, 0.12); color: #34D399; }
+        .contact-icon.tg { background: rgba(96, 165, 250, 0.12); color: #60A5FA; }
+        .contact-icon.web { background: rgba(251, 191, 36, 0.12); color: #FBBF24; }
+        .contact-label { font-size: 12px; color: var(--text-tertiary); margin-bottom: 2px; font-weight: 500; }
+        .contact-value { font-size: 15px; color: var(--text-primary); font-weight: 600; }
 
-        .section-title {
-            font-size: 16px; font-weight: 600; color: #F1F5F9;
-            margin-bottom: 12px; margin-top: 32px;
+        /* ===== LEGAL LINKS ===== */
+        .legal-links {
+            display: flex; flex-wrap: wrap; gap: 24px;
+            padding-top: 32px;
         }
-        .description {
-            color: #94A3B8; font-size: 14px; line-height: 1.8;
+        .legal-link {
+            font-size: 13px; color: var(--text-tertiary);
+            text-decoration: none; font-weight: 500;
+            transition: color 0.2s;
         }
+        .legal-link:hover { color: var(--accent-light); }
 
-        .back-link {
-            display: inline-flex; align-items: center; gap: 6px;
-            color: #A78BFA; text-decoration: none; font-size: 14px;
-            margin-top: 32px;
-        }
-        .back-link:hover { text-decoration: underline; }
-
+        /* ===== FOOTER ===== */
         .footer {
-            margin-top: 60px; padding-top: 24px;
-            border-top: 1px solid #2D2D3F;
-            text-align: center;
-            color: #64748B; font-size: 13px;
+            max-width: 980px; margin: 0 auto;
+            padding: 32px 24px 48px;
+            border-top: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+            flex-wrap: wrap; gap: 16px;
+        }
+        .footer-left { font-size: 13px; color: var(--text-tertiary); }
+        .footer-right { display: flex; gap: 16px; }
+        .footer-link {
+            font-size: 13px; color: var(--text-tertiary);
+            text-decoration: none; font-weight: 500;
+            transition: color 0.2s;
+        }
+        .footer-link:hover { color: var(--text-primary); }
+
+        /* ===== DIVIDER ===== */
+        .divider {
+            height: 1px; background: var(--border);
+            max-width: 980px; margin: 0 auto;
         }
 
-        @media (max-width: 480px) {
-            .container { padding: 24px 16px 60px; }
-            h1 { font-size: 22px; }
-            .card { padding: 24px; }
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .hero { padding: 48px 20px 40px; }
+            .hero h1 { font-size: 32px; }
+            .hero-subtitle { font-size: 16px; }
+            .hero-avatar { width: 88px; height: 88px; font-size: 32px; }
+            .section { padding: 0 20px 60px; }
+            .section-title { font-size: 26px; margin-bottom: 28px; }
+            .app-card { flex-direction: column; text-align: center; gap: 20px; padding: 24px; }
+            .tech-grid { grid-template-columns: 1fr; }
+            .features-grid { grid-template-columns: 1fr; }
+            .contact-grid { grid-template-columns: 1fr; }
+            .nav-links { display: none; }
+            .footer { flex-direction: column; align-items: flex-start; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <a href="/" class="logo">
-            <div class="logo-icon">U</div>
-            <span class="logo-text">UspAIChat</span>
-        </a>
 
-        <h1>Разработчик</h1>
-        <p class="subtitle">Контактная информация разработчика приложения</p>
+    <!-- Nav -->
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="/" class="nav-brand">
+                <div class="nav-logo">U</div>
+                <span class="nav-title">UspAIChat</span>
+            </a>
+            <div class="nav-links">
+                <a href="#about" class="nav-link">About</a>
+                <a href="#technology" class="nav-link">Technology</a>
+                <a href="#contact" class="nav-link">Contact</a>
+                <a href="/support.html" class="nav-link">Support</a>
+                <a href="/" class="nav-link active">Open App</a>
+            </div>
+        </div>
+    </nav>
 
-        <div class="card">
-            <div class="avatar">AU</div>
-            <div class="name">Aleksandr Uspeshnyy</div>
-            <div class="role">Разработчик UspAIChat</div>
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-avatar">AU</div>
+        <h1>Aleksandr Uspeshnyy</h1>
+        <p class="hero-subtitle">Independent developer specializing in AI-powered applications, full-stack web development, and cross-platform mobile solutions.</p>
+        <div class="hero-badge">
+            <span class="dot"></span>
+            Available for collaboration
+        </div>
+    </section>
 
-            <div class="info-grid">
-                <div class="info-item">
-                    <div class="info-icon phone">
-                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                    </div>
-                    <div>
-                        <div class="info-label">Телефон</div>
-                        <div class="info-value"><a href="tel:+79169535760">+7 (916) 953-57-60</a></div>
-                    </div>
-                </div>
+    <div class="divider"></div>
 
-                <div class="info-item">
-                    <div class="info-icon email">
-                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-                    </div>
-                    <div>
-                        <div class="info-label">Email</div>
-                        <div class="info-value"><a href="mailto:aleksandr@uspeshnyy.ru">aleksandr@uspeshnyy.ru</a></div>
-                    </div>
-                </div>
+    <!-- App -->
+    <section class="section" style="padding-top: 60px;">
+        <div class="section-label">Application</div>
+        <h2 class="section-title">UspAIChat</h2>
 
-                <div class="info-item">
-                    <div class="info-icon web">
-                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                    </div>
-                    <div>
-                        <div class="info-label">Веб-сайт</div>
-                        <div class="info-value"><a href="https://app.aifuturenow.ru" target="_blank">app.aifuturenow.ru</a></div>
-                    </div>
+        <div class="app-card">
+            <div class="app-icon">U</div>
+            <div class="app-info">
+                <h3>UspAIChat</h3>
+                <p>Self-hosted multi-provider AI chat platform with web and mobile clients. Chat with Claude, GPT-4o, Gemini, DeepSeek and Kimi through a unified, elegant interface with smart auto-routing.</p>
+                <div class="app-badges">
+                    <span class="app-badge green">v1.3.0</span>
+                    <span class="app-badge">iOS</span>
+                    <span class="app-badge">Android</span>
+                    <span class="app-badge">Web</span>
                 </div>
             </div>
         </div>
+    </section>
 
-        <a href="/" class="back-link">
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
-            Вернуться в приложение
-        </a>
-
-        <div class="footer">
-            &copy; 2024&ndash;2026 UspAIChat. Все права защищены.
+    <!-- About -->
+    <section id="about" class="section">
+        <div class="section-label">About</div>
+        <h2 class="section-title">About the Developer</h2>
+        <div class="about-text">
+            <p><strong>Aleksandr Uspeshnyy</strong> is an independent software developer based in Moscow, Russia. With deep expertise in full-stack web development, mobile applications, and AI integrations, he designs and builds products that bridge cutting-edge AI technology with intuitive user experiences.</p>
+            <p>UspAIChat was born from a practical need: a single, self-hosted interface that unifies multiple AI providers while keeping all data under the organization's control. The project evolved from a personal tool into a full-fledged platform with a credits-based billing system, smart model routing, Telegram bot integration, and native mobile apps for iOS and Android.</p>
+            <p>The entire application — backend, web frontend, mobile clients, AI integrations, payment processing, and deployment infrastructure — is designed, built, and maintained by a single developer.</p>
         </div>
-    </div>
+    </section>
+
+    <!-- Technology -->
+    <section id="technology" class="section">
+        <div class="section-label">Technology</div>
+        <h2 class="section-title">Built with Modern Stack</h2>
+
+        <div class="tech-grid">
+            <div class="tech-card">
+                <div class="tech-card-header">
+                    <div class="tech-icon backend">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><circle cx="6" cy="6" r="1"/><circle cx="6" cy="18" r="1"/></svg>
+                    </div>
+                    <h4>Backend</h4>
+                </div>
+                <p>High-performance Node.js server with Express.js and SQLite in WAL mode for concurrent reads without blocking.</p>
+                <div class="tech-tags">
+                    <span class="tech-tag">Node.js 20</span>
+                    <span class="tech-tag">Express.js</span>
+                    <span class="tech-tag">SQLite</span>
+                    <span class="tech-tag">better-sqlite3</span>
+                    <span class="tech-tag">JWT</span>
+                </div>
+            </div>
+
+            <div class="tech-card">
+                <div class="tech-card-header">
+                    <div class="tech-icon frontend">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/><line x1="12" y1="22" x2="12" y2="15.5"/><polyline points="22 8.5 12 15.5 2 8.5"/></svg>
+                    </div>
+                    <h4>Web Frontend</h4>
+                </div>
+                <p>Modern React SPA with TypeScript, real-time SSE streaming, dark/light themes, and responsive design.</p>
+                <div class="tech-tags">
+                    <span class="tech-tag">React 18</span>
+                    <span class="tech-tag">TypeScript</span>
+                    <span class="tech-tag">Vite</span>
+                    <span class="tech-tag">Tailwind CSS</span>
+                    <span class="tech-tag">Zustand</span>
+                </div>
+            </div>
+
+            <div class="tech-card">
+                <div class="tech-card-header">
+                    <div class="tech-icon mobile">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg>
+                    </div>
+                    <h4>Mobile Apps</h4>
+                </div>
+                <p>Cross-platform Flutter app with native Google/Apple sign-in, SSE streaming, voice input and text-to-speech.</p>
+                <div class="tech-tags">
+                    <span class="tech-tag">Flutter 3.29</span>
+                    <span class="tech-tag">Dart</span>
+                    <span class="tech-tag">Riverpod</span>
+                    <span class="tech-tag">GoRouter</span>
+                    <span class="tech-tag">Dio</span>
+                </div>
+            </div>
+
+            <div class="tech-card">
+                <div class="tech-card-header">
+                    <div class="tech-icon ai">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2a4 4 0 0 1 4 4c0 1.95-1.4 3.58-3.25 3.93L12 22"/><path d="M12 2a4 4 0 0 0-4 4c0 1.95 1.4 3.58 3.25 3.93"/><path d="M4 13h3"/><path d="M17 13h3"/><circle cx="12" cy="13" r="4"/></svg>
+                    </div>
+                    <h4>AI Providers</h4>
+                </div>
+                <p>Unified interface for 5 AI providers with Smart Auto Router — a 14-dimension prompt classifier that picks the optimal model.</p>
+                <div class="tech-tags">
+                    <span class="tech-tag">Anthropic Claude</span>
+                    <span class="tech-tag">OpenAI GPT</span>
+                    <span class="tech-tag">Google Gemini</span>
+                    <span class="tech-tag">DeepSeek</span>
+                    <span class="tech-tag">Kimi</span>
+                </div>
+            </div>
+
+            <div class="tech-card">
+                <div class="tech-card-header">
+                    <div class="tech-icon auth">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    </div>
+                    <h4>Authentication</h4>
+                </div>
+                <p>Multi-method OAuth with JWT access/refresh tokens, automatic rotation, and secure session management.</p>
+                <div class="tech-tags">
+                    <span class="tech-tag">Google OAuth</span>
+                    <span class="tech-tag">Apple Sign-In</span>
+                    <span class="tech-tag">Telegram Auth</span>
+                    <span class="tech-tag">JWT</span>
+                </div>
+            </div>
+
+            <div class="tech-card">
+                <div class="tech-card-header">
+                    <div class="tech-icon telegram">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+                    </div>
+                    <h4>Telegram Integration</h4>
+                </div>
+                <p>Full Telegram bot for authentication, balance top-up via bot payments, and push notifications for account activity.</p>
+                <div class="tech-tags">
+                    <span class="tech-tag">Telegram Bot API</span>
+                    <span class="tech-tag">Deep Linking</span>
+                    <span class="tech-tag">Bot Payments</span>
+                    <span class="tech-tag">Polling Auth</span>
+                </div>
+            </div>
+
+            <div class="tech-card">
+                <div class="tech-card-header">
+                    <div class="tech-icon payments">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                    </div>
+                    <h4>Payments</h4>
+                </div>
+                <p>Credits-based billing with multiple payment methods. Promo codes and referral system for user acquisition.</p>
+                <div class="tech-tags">
+                    <span class="tech-tag">YooKassa</span>
+                    <span class="tech-tag">Telegram Payments</span>
+                    <span class="tech-tag">Promo Codes</span>
+                    <span class="tech-tag">Referrals</span>
+                </div>
+            </div>
+
+            <div class="tech-card">
+                <div class="tech-card-header">
+                    <div class="tech-icon infra">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
+                    </div>
+                    <h4>Infrastructure</h4>
+                </div>
+                <p>Production deployment on dedicated VPS with Nginx reverse proxy, PM2 process management, and automated builds.</p>
+                <div class="tech-tags">
+                    <span class="tech-tag">Nginx</span>
+                    <span class="tech-tag">PM2</span>
+                    <span class="tech-tag">VPS</span>
+                    <span class="tech-tag">SSL/TLS</span>
+                    <span class="tech-tag">Git Deploy</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="section">
+        <div class="section-label">Capabilities</div>
+        <h2 class="section-title">Key Features</h2>
+        <div class="features-grid">
+            <div class="feature-item">
+                <div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span>5 AI providers through one interface</span>
+            </div>
+            <div class="feature-item">
+                <div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span>Smart Auto Router with 14D classifier</span>
+            </div>
+            <div class="feature-item">
+                <div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span>Real-time SSE streaming</span>
+            </div>
+            <div class="feature-item">
+                <div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span>iOS, Android & Web apps</span>
+            </div>
+            <div class="feature-item">
+                <div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span>Voice input (STT) & text-to-speech</span>
+            </div>
+            <div class="feature-item">
+                <div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span>Dark & Light themes</span>
+            </div>
+            <div class="feature-item">
+                <div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span>File uploads & image attachments</span>
+            </div>
+            <div class="feature-item">
+                <div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span>Full-text search across conversations</span>
+            </div>
+            <div class="feature-item">
+                <div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span>Conversation sharing & export</span>
+            </div>
+            <div class="feature-item">
+                <div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span>Prompt templates with / commands</span>
+            </div>
+            <div class="feature-item">
+                <div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span>Admin panel with user management</span>
+            </div>
+            <div class="feature-item">
+                <div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span>Self-hosted — your data stays yours</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="section">
+        <div class="section-label">Contact</div>
+        <h2 class="section-title">Get in Touch</h2>
+        <div class="contact-grid">
+            <a href="mailto:aleksandr@uspeshnyy.ru" class="contact-card">
+                <div class="contact-icon email">
+                    <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                </div>
+                <div>
+                    <div class="contact-label">Email</div>
+                    <div class="contact-value">aleksandr@uspeshnyy.ru</div>
+                </div>
+            </a>
+            <a href="tel:+79169535760" class="contact-card">
+                <div class="contact-icon phone">
+                    <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                </div>
+                <div>
+                    <div class="contact-label">Phone</div>
+                    <div class="contact-value">+7 (916) 953-57-60</div>
+                </div>
+            </a>
+            <a href="https://t.me/UspAIChatBot" class="contact-card" target="_blank">
+                <div class="contact-icon tg">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+                </div>
+                <div>
+                    <div class="contact-label">Telegram Bot</div>
+                    <div class="contact-value">@UspAIChatBot</div>
+                </div>
+            </a>
+            <a href="https://app.aifuturenow.ru" class="contact-card" target="_blank">
+                <div class="contact-icon web">
+                    <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                </div>
+                <div>
+                    <div class="contact-label">Website</div>
+                    <div class="contact-value">app.aifuturenow.ru</div>
+                </div>
+            </a>
+        </div>
+
+        <div class="legal-links">
+            <a href="/privacy" class="legal-link">Privacy Policy</a>
+            <a href="/terms" class="legal-link">Terms of Use</a>
+            <a href="/support.html" class="legal-link">Support</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-left">&copy; 2024&ndash;2026 Aleksandr Uspeshnyy. All rights reserved.</div>
+        <div class="footer-right">
+            <a href="/" class="footer-link">Open App</a>
+            <a href="/support.html" class="footer-link">Support</a>
+            <a href="/privacy" class="footer-link">Privacy</a>
+        </div>
+    </footer>
+
 </body>
 </html>
