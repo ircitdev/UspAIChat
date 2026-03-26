@@ -3,132 +3,277 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Политика конфиденциальности — UspAIChat</title>
+    <title>Политика конфиденциальности — Нейростеи</title>
+    <meta name="description" content="Политика конфиденциальности приложения Нейростеи (UspAIChat)">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #0D0D1A; color: #F1F5F9;
-            line-height: 1.7; padding: 0;
+        :root {
+            --bg: #ffffff; --bg-elevated: #f5f5f7; --bg-secondary: #e8e8ed;
+            --bg-card: #ffffff; --text-primary: #1d1d1f; --text-secondary: #6e6e73;
+            --text-tertiary: #86868b; --accent: #7C3AED; --accent-light: #8B5CF6;
+            --blue: #0071e3; --green: #34C759; --border: rgba(0,0,0,0.08);
+            --border-light: rgba(0,0,0,0.12); --shadow: 0 1px 3px rgba(0,0,0,0.06);
+            --shadow-lg: 0 8px 30px rgba(0,0,0,0.08);
         }
-        .container {
-            max-width: 720px; margin: 0 auto;
-            padding: 48px 24px 80px;
+        @media (prefers-color-scheme: dark) {
+            :root { --bg: #000000; --bg-elevated: #1c1c1e; --bg-secondary: #2c2c2e; --bg-card: #1c1c1e; --text-primary: #f5f5f7; --text-secondary: #a1a1a6; --text-tertiary: #6e6e73; --accent: #8B5CF6; --accent-light: #A78BFA; --blue: #60A5FA; --green: #34D399; --border: rgba(255,255,255,0.08); --border-light: rgba(255,255,255,0.12); --shadow: 0 1px 3px rgba(0,0,0,0.2); --shadow-lg: 0 8px 30px rgba(0,0,0,0.3); }
         }
-        .logo {
-            display: flex; align-items: center; gap: 12px;
-            margin-bottom: 40px; text-decoration: none;
-        }
-        .logo-icon {
-            width: 40px; height: 40px; border-radius: 12px;
-            background: linear-gradient(135deg, #7C3AED, #6B21A8);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 20px;
-        }
-        .logo-text { color: #F1F5F9; font-size: 20px; font-weight: 700; }
-        h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; color: #F1F5F9; }
-        .subtitle { color: #94A3B8; font-size: 14px; margin-bottom: 40px; }
-        h2 {
-            font-size: 18px; font-weight: 600; color: #A78BFA;
-            margin-top: 36px; margin-bottom: 12px;
-            padding-bottom: 8px; border-bottom: 1px solid #1E1E2E;
-        }
-        p { color: #CBD5E1; margin-bottom: 12px; font-size: 15px; }
-        ul { padding-left: 24px; margin-bottom: 12px; }
-        li { color: #CBD5E1; margin-bottom: 6px; font-size: 15px; }
-        a { color: #A78BFA; text-decoration: none; }
-        a:hover { text-decoration: underline; }
-        .footer {
-            margin-top: 48px; padding-top: 24px;
-            border-top: 1px solid #1E1E2E;
-            color: #64748B; font-size: 13px;
+        html[data-theme="light"] { --bg: #ffffff; --bg-elevated: #f5f5f7; --bg-secondary: #e8e8ed; --bg-card: #ffffff; --text-primary: #1d1d1f; --text-secondary: #6e6e73; --text-tertiary: #86868b; --accent: #7C3AED; --accent-light: #8B5CF6; --blue: #0071e3; --green: #34C759; --border: rgba(0,0,0,0.08); --border-light: rgba(0,0,0,0.12); --shadow: 0 1px 3px rgba(0,0,0,0.06); --shadow-lg: 0 8px 30px rgba(0,0,0,0.08); }
+        html[data-theme="dark"] { --bg: #000000; --bg-elevated: #1c1c1e; --bg-secondary: #2c2c2e; --bg-card: #1c1c1e; --text-primary: #f5f5f7; --text-secondary: #a1a1a6; --text-tertiary: #6e6e73; --accent: #8B5CF6; --accent-light: #A78BFA; --blue: #60A5FA; --green: #34D399; --border: rgba(255,255,255,0.08); --border-light: rgba(255,255,255,0.12); --shadow: 0 1px 3px rgba(0,0,0,0.2); --shadow-lg: 0 8px 30px rgba(0,0,0,0.3); }
+
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text-primary); line-height: 1.5; -webkit-font-smoothing: antialiased; }
+
+        .nav { position: sticky; top: 0; z-index: 100; padding: 0 24px; background: color-mix(in srgb, var(--bg) 72%, transparent); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); border-bottom: 1px solid var(--border); }
+        .nav-inner { max-width: 980px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 52px; }
+        .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text-primary); }
+        .nav-logo { width: 30px; height: 30px; border-radius: 8px; object-fit: cover; }
+        .nav-name { font-size: 15px; font-weight: 700; }
+        .nav-right { display: flex; align-items: center; gap: 6px; }
+        .nav-link { padding: 6px 12px; border-radius: 18px; font-size: 13px; font-weight: 500; color: var(--text-secondary); text-decoration: none; transition: all 0.2s; white-space: nowrap; }
+        .nav-link:hover { color: var(--text-primary); background: var(--bg-elevated); }
+        .nav-link.active { color: #fff; background: var(--accent); }
+        .nav-controls { display: flex; align-items: center; gap: 4px; margin-left: 8px; border-left: 1px solid var(--border); padding-left: 12px; }
+        .nav-btn { width: 32px; height: 32px; border-radius: 8px; border: none; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); transition: all 0.2s; font-size: 14px; font-family: inherit; font-weight: 600; }
+        .nav-btn:hover { background: var(--bg-elevated); color: var(--text-primary); }
+        .theme-icon-dark, .theme-icon-light { display: none; }
+        @media (prefers-color-scheme: dark) { .theme-icon-dark { display: block; } }
+        @media (prefers-color-scheme: light) { .theme-icon-light { display: block; } }
+        html[data-theme="dark"] .theme-icon-light { display: none !important; } html[data-theme="dark"] .theme-icon-dark { display: block !important; }
+        html[data-theme="light"] .theme-icon-dark { display: none !important; } html[data-theme="light"] .theme-icon-light { display: block !important; }
+
+        .hero { max-width: 980px; margin: 0 auto; padding: 72px 24px 48px; text-align: center; }
+        .hero-icon { width: 80px; height: 80px; border-radius: 24px; background: linear-gradient(135deg, var(--accent), #5B21B6); display: flex; align-items: center; justify-content: center; margin: 0 auto 28px; box-shadow: 0 20px 60px color-mix(in srgb, var(--accent) 25%, transparent); }
+        .hero h1 { font-size: 44px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 12px; }
+        .hero-sub { font-size: 15px; color: var(--text-tertiary); }
+
+        .content { max-width: 740px; margin: 0 auto; padding: 0 24px 72px; }
+        .content h2 { font-size: 20px; font-weight: 700; margin-top: 40px; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border); color: var(--accent); }
+        .content p { color: var(--text-secondary); margin-bottom: 12px; font-size: 15px; line-height: 1.8; }
+        .content ul { padding-left: 24px; margin-bottom: 14px; }
+        .content li { color: var(--text-secondary); margin-bottom: 8px; font-size: 15px; line-height: 1.7; }
+        .content li strong { color: var(--text-primary); font-weight: 600; }
+        .content a { color: var(--accent); text-decoration: none; font-weight: 500; }
+        .content a:hover { text-decoration: underline; }
+
+        .divider { height: 1px; background: var(--border); max-width: 980px; margin: 0 auto; }
+
+        .footer { max-width: 980px; margin: 0 auto; padding: 28px 24px 40px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+        .footer-left { font-size: 13px; color: var(--text-tertiary); }
+        .footer-right { display: flex; gap: 16px; }
+        .footer-link { font-size: 13px; color: var(--text-tertiary); text-decoration: none; font-weight: 500; transition: color 0.2s; }
+        .footer-link:hover { color: var(--text-primary); }
+
+        [data-lang="en"] { display: none; }
+        html[lang="en"] [data-lang="ru"] { display: none; }
+        html[lang="en"] [data-lang="en"] { display: initial; }
+        html[lang="en"] div[data-lang="en"], html[lang="en"] p[data-lang="en"], html[lang="en"] section[data-lang="en"], html[lang="en"] span[data-lang="en"], html[lang="en"] a[data-lang="en"], html[lang="en"] h1[data-lang="en"], html[lang="en"] h2[data-lang="en"] { display: revert; }
+        div[data-lang="ru"], p[data-lang="ru"], section[data-lang="ru"], span[data-lang="ru"], a[data-lang="ru"], h1[data-lang="ru"], h2[data-lang="ru"] { display: revert; }
+
+        @media (max-width: 768px) {
+            .hero { padding: 48px 20px 36px; } .hero h1 { font-size: 32px; } .hero-icon { width: 64px; height: 64px; }
+            .content { padding: 0 20px 56px; } .content h2 { font-size: 18px; }
+            .nav-link { display: none; } .footer { flex-direction: column; align-items: flex-start; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <a href="/" class="logo">
-            <div class="logo-icon">🤖</div>
-            <span class="logo-text">UspAIChat</span>
+
+<nav class="nav">
+    <div class="nav-inner">
+        <a href="/" class="nav-brand">
+            <img src="/app-icon.jpg" class="nav-logo" alt="Нейростеи">
+            <span class="nav-name"><span data-lang="ru">Нейростеи</span><span data-lang="en">Neurosetei</span></span>
         </a>
-
-        <h1>Политика конфиденциальности</h1>
-        <p class="subtitle">Последнее обновление: 23 марта 2026 г.</p>
-
-        <p>Настоящая Политика конфиденциальности описывает, как UspAIChat (далее — «Сервис», «мы») собирает, использует и защищает персональные данные пользователей при использовании веб-приложения и мобильного приложения.</p>
-
-        <h2>1. Какие данные мы собираем</h2>
-        <p>При использовании Сервиса мы можем собирать следующие данные:</p>
-        <ul>
-            <li><strong>Данные аутентификации:</strong> имя, адрес электронной почты, аватар (при входе через Google, Apple или Telegram)</li>
-            <li><strong>Данные переписки:</strong> сообщения, отправленные AI-моделям, и полученные ответы</li>
-            <li><strong>Загруженные файлы:</strong> изображения и документы, отправленные в чат</li>
-            <li><strong>Платёжные данные:</strong> информация о транзакциях (сумма, дата, статус). Данные банковских карт обрабатываются платёжной системой ЮKassa и не хранятся на наших серверах</li>
-            <li><strong>Технические данные:</strong> IP-адрес, тип браузера, операционная система</li>
-        </ul>
-
-        <h2>2. Как мы используем данные</h2>
-        <p>Собранные данные используются для:</p>
-        <ul>
-            <li>Предоставления доступа к Сервису и аутентификации</li>
-            <li>Обработки запросов к AI-моделям</li>
-            <li>Обработки платежей и начисления кредитов</li>
-            <li>Работы реферальной программы и промо-кодов</li>
-            <li>Улучшения качества Сервиса</li>
-            <li>Технической поддержки пользователей</li>
-        </ul>
-
-        <h2>3. Хранение данных</h2>
-        <p>Все данные хранятся на серверах, расположенных на территории Российской Федерации. Данные переписки хранятся в зашифрованной базе данных и доступны только авторизованному пользователю.</p>
-        <p>Мы не передаём ваши данные третьим лицам, за исключением:</p>
-        <ul>
-            <li>AI-провайдеров (Anthropic, OpenAI, Google, DeepSeek, Kimi) — для обработки ваших запросов</li>
-            <li>Платёжных систем (ЮKassa) — для обработки платежей</li>
-        </ul>
-
-        <h2>4. Передача данных AI-провайдерам</h2>
-        <p>Ваши сообщения передаются выбранному AI-провайдеру для генерации ответа. Каждый провайдер имеет собственную политику конфиденциальности. Мы рекомендуем не отправлять конфиденциальную информацию (пароли, номера карт, персональные документы) в чат.</p>
-
-        <h2>5. Безопасность</h2>
-        <p>Мы применяем следующие меры для защиты данных:</p>
-        <ul>
-            <li>Шифрование данных при передаче (HTTPS/TLS)</li>
-            <li>JWT-аутентификация с автоматическим обновлением токенов</li>
-            <li>Хеширование паролей (bcrypt)</li>
-            <li>Защита от CSRF и XSS атак</li>
-        </ul>
-
-        <h2>6. Права пользователей</h2>
-        <p>Вы имеете право:</p>
-        <ul>
-            <li>Получить доступ к своим данным</li>
-            <li>Удалить свой аккаунт и все связанные данные</li>
-            <li>Экспортировать историю диалогов</li>
-            <li>Отозвать согласие на обработку данных</li>
-        </ul>
-        <p>Для реализации этих прав свяжитесь с нами по адресу <a href="mailto:dev@ircit.ru">dev@ircit.ru</a>.</p>
-
-        <h2>7. Cookies и аналитика</h2>
-        <p>Сервис использует localStorage для хранения токенов аутентификации и пользовательских настроек (тема, язык). Мы не используем сторонние cookie-трекеры и системы аналитики.</p>
-
-        <h2>8. Возрастные ограничения</h2>
-        <p>Сервис предназначен для лиц старше 13 лет. Мы сознательно не собираем данные детей младше этого возраста.</p>
-
-        <h2>9. Изменения политики</h2>
-        <p>Мы оставляем за собой право обновлять настоящую Политику. Уведомление об изменениях будет размещено на этой странице с указанием даты обновления.</p>
-
-        <h2>10. Контакты</h2>
-        <p>По всем вопросам, связанным с конфиденциальностью, обращайтесь:</p>
-        <ul>
-            <li>Email: <a href="mailto:dev@ircit.ru">dev@ircit.ru</a></li>
-            <li>Telegram: <a href="https://t.me/UspAIChatbot">@UspAIChatbot</a></li>
-            <li>Сайт: <a href="https://app.aifuturenow.ru">app.aifuturenow.ru</a></li>
-        </ul>
-
-        <div class="footer">
-            <p>© 2026 IRCit Dev. Все права защищены.</p>
-            <p>UspAIChat — мультипровайдерное приложение для чата с ИИ</p>
+        <div class="nav-right">
+            <a href="/autor.html" class="nav-link" data-lang="ru">Разработчик</a><a href="/autor.html" class="nav-link" data-lang="en">Developer</a>
+            <a href="/support.html" class="nav-link" data-lang="ru">Поддержка</a><a href="/support.html" class="nav-link" data-lang="en">Support</a>
+            <a href="/privacy" class="nav-link active" data-lang="ru">Приватность</a><a href="/privacy" class="nav-link active" data-lang="en">Privacy</a>
+            <a href="/" class="nav-link" data-lang="ru">Открыть</a><a href="/" class="nav-link" data-lang="en">Open App</a>
+            <div class="nav-controls">
+                <button class="nav-btn" onclick="toggleLang()" title="Language" id="langBtn">RU</button>
+                <button class="nav-btn" onclick="toggleTheme()" title="Theme">
+                    <svg class="theme-icon-light" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                    <svg class="theme-icon-dark" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                </button>
+            </div>
         </div>
     </div>
+</nav>
+
+<section class="hero">
+    <div class="hero-icon">
+        <svg width="36" height="36" fill="none" stroke="white" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    </div>
+    <h1 data-lang="ru">Политика конфиденциальности</h1>
+    <h1 data-lang="en">Privacy Policy</h1>
+    <p class="hero-sub" data-lang="ru">Последнее обновление: 26 марта 2026 г.</p>
+    <p class="hero-sub" data-lang="en">Last updated: March 26, 2026</p>
+</section>
+
+<div class="divider"></div>
+
+<!-- RU Content -->
+<div class="content" data-lang="ru">
+    <p>Настоящая Политика конфиденциальности описывает, как Нейростеи (UspAIChat) (далее — «Сервис», «мы») собирает, использует и защищает персональные данные пользователей при использовании веб-приложения и мобильного приложения.</p>
+
+    <h2>1. Какие данные мы собираем</h2>
+    <p>При использовании Сервиса мы можем собирать следующие данные:</p>
+    <ul>
+        <li><strong>Данные аутентификации:</strong> имя, адрес электронной почты, аватар (при входе через Google, Apple или Telegram)</li>
+        <li><strong>Данные переписки:</strong> сообщения, отправленные AI-моделям, и полученные ответы</li>
+        <li><strong>Загруженные файлы:</strong> изображения и документы, отправленные в чат</li>
+        <li><strong>Платёжные данные:</strong> информация о транзакциях (сумма, дата, статус). Данные банковских карт обрабатываются платёжной системой ЮKassa и не хранятся на наших серверах</li>
+        <li><strong>Технические данные:</strong> IP-адрес, тип браузера, операционная система</li>
+    </ul>
+
+    <h2>2. Как мы используем данные</h2>
+    <p>Собранные данные используются для:</p>
+    <ul>
+        <li>Предоставления доступа к Сервису и аутентификации</li>
+        <li>Обработки запросов к AI-моделям</li>
+        <li>Обработки платежей и начисления кредитов</li>
+        <li>Работы реферальной программы и промо-кодов</li>
+        <li>Улучшения качества Сервиса</li>
+        <li>Технической поддержки пользователей</li>
+    </ul>
+
+    <h2>3. Хранение данных</h2>
+    <p>Все данные хранятся на серверах, расположенных на территории Российской Федерации. Данные переписки хранятся в зашифрованной базе данных и доступны только авторизованному пользователю.</p>
+    <p>Мы не передаём ваши данные третьим лицам, за исключением:</p>
+    <ul>
+        <li>AI-провайдеров (Anthropic, OpenAI, Google, DeepSeek, Kimi) — для обработки ваших запросов</li>
+        <li>Платёжных систем (ЮKassa) — для обработки платежей</li>
+    </ul>
+
+    <h2>4. Передача данных AI-провайдерам</h2>
+    <p>Ваши сообщения передаются выбранному AI-провайдеру для генерации ответа. Каждый провайдер имеет собственную политику конфиденциальности. Мы рекомендуем не отправлять конфиденциальную информацию (пароли, номера карт, персональные документы) в чат.</p>
+
+    <h2>5. Безопасность</h2>
+    <p>Мы применяем следующие меры для защиты данных:</p>
+    <ul>
+        <li>Шифрование данных при передаче (HTTPS/TLS)</li>
+        <li>JWT-аутентификация с автоматическим обновлением токенов</li>
+        <li>Хеширование паролей (bcrypt)</li>
+        <li>Защита от CSRF и XSS атак</li>
+    </ul>
+
+    <h2>6. Права пользователей</h2>
+    <p>Вы имеете право:</p>
+    <ul>
+        <li>Получить доступ к своим данным</li>
+        <li>Удалить свой аккаунт и все связанные данные</li>
+        <li>Экспортировать историю диалогов</li>
+        <li>Отозвать согласие на обработку данных</li>
+    </ul>
+    <p>Для реализации этих прав свяжитесь с нами по адресу <a href="mailto:aleksandr@uspeshnyy.ru">aleksandr@uspeshnyy.ru</a>.</p>
+
+    <h2>7. Cookies и аналитика</h2>
+    <p>Сервис использует localStorage для хранения токенов аутентификации и пользовательских настроек (тема, язык). Мы не используем сторонние cookie-трекеры и системы аналитики.</p>
+
+    <h2>8. Возрастные ограничения</h2>
+    <p>Сервис предназначен для лиц старше 13 лет. Мы сознательно не собираем данные детей младше этого возраста.</p>
+
+    <h2>9. Изменения политики</h2>
+    <p>Мы оставляем за собой право обновлять настоящую Политику. Уведомление об изменениях будет размещено на этой странице с указанием даты обновления.</p>
+
+    <h2>10. Контакты</h2>
+    <p>По всем вопросам, связанным с конфиденциальностью, обращайтесь:</p>
+    <ul>
+        <li>Email: <a href="mailto:aleksandr@uspeshnyy.ru">aleksandr@uspeshnyy.ru</a></li>
+        <li>Telegram: <a href="https://t.me/UspSupport_bot">@UspSupport_bot</a></li>
+        <li>Сайт: <a href="https://app.aifuturenow.ru">app.aifuturenow.ru</a></li>
+    </ul>
+</div>
+
+<!-- EN Content -->
+<div class="content" data-lang="en">
+    <p>This Privacy Policy describes how Neurosetei (UspAIChat) ("Service", "we") collects, uses, and protects personal data when you use our web and mobile applications.</p>
+
+    <h2>1. Data We Collect</h2>
+    <p>When using the Service, we may collect the following data:</p>
+    <ul>
+        <li><strong>Authentication data:</strong> name, email address, avatar (when signing in via Google, Apple, or Telegram)</li>
+        <li><strong>Conversation data:</strong> messages sent to AI models and received responses</li>
+        <li><strong>Uploaded files:</strong> images and documents sent in chat</li>
+        <li><strong>Payment data:</strong> transaction information (amount, date, status). Bank card data is processed by YooKassa and is not stored on our servers</li>
+        <li><strong>Technical data:</strong> IP address, browser type, operating system</li>
+    </ul>
+
+    <h2>2. How We Use Data</h2>
+    <p>Collected data is used for:</p>
+    <ul>
+        <li>Providing access to the Service and authentication</li>
+        <li>Processing requests to AI models</li>
+        <li>Processing payments and crediting balances</li>
+        <li>Operating the referral program and promo codes</li>
+        <li>Improving Service quality</li>
+        <li>Technical support</li>
+    </ul>
+
+    <h2>3. Data Storage</h2>
+    <p>All data is stored on servers located in the Russian Federation. Conversation data is stored in an encrypted database and is accessible only to the authorized user.</p>
+    <p>We do not share your data with third parties, except:</p>
+    <ul>
+        <li>AI providers (Anthropic, OpenAI, Google, DeepSeek, Kimi) — to process your requests</li>
+        <li>Payment systems (YooKassa) — to process payments</li>
+    </ul>
+
+    <h2>4. Data Transfer to AI Providers</h2>
+    <p>Your messages are sent to the selected AI provider to generate a response. Each provider has its own privacy policy. We recommend not sending confidential information (passwords, card numbers, personal documents) in chat.</p>
+
+    <h2>5. Security</h2>
+    <p>We implement the following measures to protect data:</p>
+    <ul>
+        <li>Data encryption in transit (HTTPS/TLS)</li>
+        <li>JWT authentication with automatic token refresh</li>
+        <li>Password hashing (bcrypt)</li>
+        <li>CSRF and XSS protection</li>
+    </ul>
+
+    <h2>6. User Rights</h2>
+    <p>You have the right to:</p>
+    <ul>
+        <li>Access your data</li>
+        <li>Delete your account and all associated data</li>
+        <li>Export your conversation history</li>
+        <li>Withdraw consent for data processing</li>
+    </ul>
+    <p>To exercise these rights, contact us at <a href="mailto:aleksandr@uspeshnyy.ru">aleksandr@uspeshnyy.ru</a>.</p>
+
+    <h2>7. Cookies & Analytics</h2>
+    <p>The Service uses localStorage to store authentication tokens and user settings (theme, language). We do not use third-party cookie trackers or analytics systems.</p>
+
+    <h2>8. Age Restrictions</h2>
+    <p>The Service is intended for persons aged 13 and older. We do not knowingly collect data from children under this age.</p>
+
+    <h2>9. Policy Changes</h2>
+    <p>We reserve the right to update this Policy. Changes will be posted on this page with the update date.</p>
+
+    <h2>10. Contact</h2>
+    <p>For all privacy-related questions, contact us:</p>
+    <ul>
+        <li>Email: <a href="mailto:aleksandr@uspeshnyy.ru">aleksandr@uspeshnyy.ru</a></li>
+        <li>Telegram: <a href="https://t.me/UspSupport_bot">@UspSupport_bot</a></li>
+        <li>Website: <a href="https://app.aifuturenow.ru">app.aifuturenow.ru</a></li>
+    </ul>
+</div>
+
+<footer class="footer">
+    <div class="footer-left">&copy; 2024&ndash;2026 Aleksandr Uspeshnyy</div>
+    <div class="footer-right">
+        <a href="/" class="footer-link" data-lang="ru">Приложение</a><a href="/" class="footer-link" data-lang="en">Open App</a>
+        <a href="/autor.html" class="footer-link" data-lang="ru">Разработчик</a><a href="/autor.html" class="footer-link" data-lang="en">Developer</a>
+        <a href="/support.html" class="footer-link" data-lang="ru">Поддержка</a><a href="/support.html" class="footer-link" data-lang="en">Support</a>
+    </div>
+</footer>
+
+<script>
+function toggleTheme(){const h=document.documentElement,c=h.getAttribute('data-theme'),n=c==='dark'?'light':c==='light'?null:(window.matchMedia('(prefers-color-scheme:dark)').matches?'light':'dark');if(n){h.setAttribute('data-theme',n);localStorage.setItem('theme',n)}else{h.removeAttribute('data-theme');localStorage.removeItem('theme')}}
+function toggleLang(){const h=document.documentElement,n=h.lang==='ru'?'en':'ru';h.lang=n;localStorage.setItem('lang',n);document.getElementById('langBtn').textContent=n==='ru'?'RU':'EN'}
+(function(){const t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);const l=localStorage.getItem('lang');if(l){document.documentElement.lang=l;document.getElementById('langBtn').textContent=l==='ru'?'RU':'EN'}})();
+</script>
 </body>
 </html>

@@ -3,13 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aleksandr Uspeshnyy — Developer — UspAIChat</title>
-    <meta name="description" content="Aleksandr Uspeshnyy — independent developer of UspAIChat, a self-hosted multi-provider AI chat platform.">
-    <meta name="author" content="Aleksandr Uspeshnyy">
-    <meta property="og:title" content="Aleksandr Uspeshnyy — UspAIChat Developer">
-    <meta property="og:description" content="Self-hosted multi-provider AI chat platform. Web & Mobile.">
+    <title>Разработчик — Нейростеи</title>
+    <meta name="description" content="Aleksandr Uspeshnyy — разработчик приложения Нейростеи (UspAIChat)">
+    <meta property="og:title" content="Разработчик — Нейростеи (UspAIChat)">
     <meta property="og:url" content="https://app.aifuturenow.ru/autor.html">
-    <meta property="og:type" content="profile">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -17,611 +14,445 @@
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         :root {
-            --bg: #000000;
-            --bg-elevated: #1c1c1e;
-            --bg-secondary: #2c2c2e;
-            --bg-tertiary: #3a3a3c;
-            --text-primary: #f5f5f7;
-            --text-secondary: #a1a1a6;
-            --text-tertiary: #6e6e73;
-            --accent: #7C3AED;
-            --accent-light: #A78BFA;
-            --border: rgba(255,255,255,0.08);
-            --border-light: rgba(255,255,255,0.12);
-            --radius: 16px;
-            --radius-sm: 12px;
-            --radius-xs: 8px;
+            --bg: #ffffff; --bg-elevated: #f5f5f7; --bg-secondary: #e8e8ed;
+            --bg-card: #ffffff; --text-primary: #1d1d1f; --text-secondary: #6e6e73;
+            --text-tertiary: #86868b; --accent: #7C3AED; --accent-light: #8B5CF6;
+            --blue: #0071e3; --green: #34C759; --border: rgba(0,0,0,0.08);
+            --border-light: rgba(0,0,0,0.12); --shadow: 0 1px 3px rgba(0,0,0,0.06);
+            --shadow-lg: 0 8px 30px rgba(0,0,0,0.08);
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #000000; --bg-elevated: #1c1c1e; --bg-secondary: #2c2c2e;
+                --bg-card: #1c1c1e; --text-primary: #f5f5f7; --text-secondary: #a1a1a6;
+                --text-tertiary: #6e6e73; --accent: #8B5CF6; --accent-light: #A78BFA;
+                --blue: #60A5FA; --green: #34D399; --border: rgba(255,255,255,0.08);
+                --border-light: rgba(255,255,255,0.12); --shadow: 0 1px 3px rgba(0,0,0,0.2);
+                --shadow-lg: 0 8px 30px rgba(0,0,0,0.3);
+            }
+        }
+        html[data-theme="light"] {
+            --bg: #ffffff; --bg-elevated: #f5f5f7; --bg-secondary: #e8e8ed;
+            --bg-card: #ffffff; --text-primary: #1d1d1f; --text-secondary: #6e6e73;
+            --text-tertiary: #86868b; --accent: #7C3AED; --accent-light: #8B5CF6;
+            --blue: #0071e3; --green: #34C759; --border: rgba(0,0,0,0.08);
+            --border-light: rgba(0,0,0,0.12); --shadow: 0 1px 3px rgba(0,0,0,0.06);
+            --shadow-lg: 0 8px 30px rgba(0,0,0,0.08);
+        }
+        html[data-theme="dark"] {
+            --bg: #000000; --bg-elevated: #1c1c1e; --bg-secondary: #2c2c2e;
+            --bg-card: #1c1c1e; --text-primary: #f5f5f7; --text-secondary: #a1a1a6;
+            --text-tertiary: #6e6e73; --accent: #8B5CF6; --accent-light: #A78BFA;
+            --blue: #60A5FA; --green: #34D399; --border: rgba(255,255,255,0.08);
+            --border-light: rgba(255,255,255,0.12); --shadow: 0 1px 3px rgba(0,0,0,0.2);
+            --shadow-lg: 0 8px 30px rgba(0,0,0,0.3);
         }
 
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
-            background: var(--bg);
-            color: var(--text-primary);
-            line-height: 1.5;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text-primary); line-height: 1.5; -webkit-font-smoothing: antialiased; }
 
-        /* ===== NAV ===== */
-        .nav {
-            position: sticky; top: 0; z-index: 100;
-            padding: 12px 24px;
-            background: rgba(0,0,0,0.72);
-            backdrop-filter: saturate(180%) blur(20px);
-            -webkit-backdrop-filter: saturate(180%) blur(20px);
-            border-bottom: 1px solid var(--border);
-        }
-        .nav-inner {
-            max-width: 980px; margin: 0 auto;
-            display: flex; align-items: center; justify-content: space-between;
-        }
-        .nav-brand {
-            display: flex; align-items: center; gap: 10px;
-            text-decoration: none; color: var(--text-primary);
-        }
-        .nav-logo {
-            width: 32px; height: 32px; border-radius: 8px;
-            background: linear-gradient(135deg, #7C3AED, #5B21B6);
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 800; font-size: 14px; color: white;
-        }
-        .nav-title { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
-        .nav-links { display: flex; gap: 8px; }
-        .nav-link {
-            padding: 6px 14px; border-radius: 20px;
-            font-size: 13px; font-weight: 500;
-            color: var(--text-secondary); text-decoration: none;
-            transition: all 0.2s;
-        }
+        /* NAV */
+        .nav { position: sticky; top: 0; z-index: 100; padding: 0 24px; background: color-mix(in srgb, var(--bg) 72%, transparent); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); border-bottom: 1px solid var(--border); }
+        .nav-inner { max-width: 980px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 52px; }
+        .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text-primary); }
+        .nav-logo { width: 30px; height: 30px; border-radius: 8px; object-fit: cover; }
+        .nav-name { font-size: 15px; font-weight: 700; letter-spacing: -0.01em; }
+        .nav-right { display: flex; align-items: center; gap: 6px; }
+        .nav-link { padding: 6px 12px; border-radius: 18px; font-size: 13px; font-weight: 500; color: var(--text-secondary); text-decoration: none; transition: all 0.2s; white-space: nowrap; }
         .nav-link:hover { color: var(--text-primary); background: var(--bg-elevated); }
-        .nav-link.active { color: white; background: var(--accent); }
+        .nav-link.active { color: #fff; background: var(--accent); }
+        .nav-controls { display: flex; align-items: center; gap: 4px; margin-left: 8px; border-left: 1px solid var(--border); padding-left: 12px; }
+        .nav-btn { width: 32px; height: 32px; border-radius: 8px; border: none; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); transition: all 0.2s; font-size: 14px; }
+        .nav-btn:hover { background: var(--bg-elevated); color: var(--text-primary); }
+        .nav-btn.active-lang { color: var(--accent); font-weight: 700; }
+        .theme-icon-dark, .theme-icon-light { display: none; }
+        @media (prefers-color-scheme: dark) { .theme-icon-dark { display: block; } }
+        @media (prefers-color-scheme: light) { .theme-icon-light { display: block; } }
+        html[data-theme="dark"] .theme-icon-light { display: none !important; }
+        html[data-theme="dark"] .theme-icon-dark { display: block !important; }
+        html[data-theme="light"] .theme-icon-dark { display: none !important; }
+        html[data-theme="light"] .theme-icon-light { display: block !important; }
 
-        /* ===== HERO ===== */
-        .hero {
-            max-width: 980px; margin: 0 auto;
-            padding: 80px 24px 60px;
-            text-align: center;
-        }
-        .hero-avatar {
-            width: 120px; height: 120px; border-radius: 50%;
-            background: linear-gradient(135deg, #7C3AED, #5B21B6, #3B0764);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 44px; font-weight: 800; color: white;
-            margin: 0 auto 28px;
-            box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.15), 0 20px 60px rgba(124, 58, 237, 0.2);
-        }
-        .hero h1 {
-            font-size: 44px; font-weight: 800; letter-spacing: -0.03em;
-            line-height: 1.1; margin-bottom: 12px;
-            background: linear-gradient(to right, #f5f5f7, #a1a1a6);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .hero-subtitle {
-            font-size: 18px; color: var(--text-secondary);
-            font-weight: 400; max-width: 560px; margin: 0 auto 32px;
-            line-height: 1.6;
-        }
-        .hero-badge {
-            display: inline-flex; align-items: center; gap: 6px;
-            padding: 6px 16px; border-radius: 20px;
-            background: var(--bg-elevated); border: 1px solid var(--border);
-            font-size: 13px; color: var(--text-secondary); font-weight: 500;
-        }
-        .hero-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: #34D399; }
+        /* HERO */
+        .hero { max-width: 980px; margin: 0 auto; padding: 72px 24px 56px; text-align: center; }
+        .hero-avatar { width: 128px; height: 128px; border-radius: 50%; object-fit: cover; margin: 0 auto 24px; display: block; box-shadow: 0 0 0 4px var(--bg), 0 0 0 6px var(--border), var(--shadow-lg); }
+        .hero h1 { font-size: 44px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 12px; }
+        .hero-sub { font-size: 18px; color: var(--text-secondary); max-width: 560px; margin: 0 auto 28px; line-height: 1.6; }
+        .hero-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 16px; border-radius: 20px; background: var(--bg-elevated); border: 1px solid var(--border); font-size: 13px; color: var(--text-secondary); font-weight: 500; }
+        .hero-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
 
-        /* ===== SECTIONS ===== */
-        .section {
-            max-width: 980px; margin: 0 auto;
-            padding: 0 24px 80px;
-        }
-        .section-label {
-            font-size: 13px; font-weight: 600; text-transform: uppercase;
-            letter-spacing: 0.08em; color: var(--accent-light);
-            margin-bottom: 8px;
-        }
-        .section-title {
-            font-size: 32px; font-weight: 700; letter-spacing: -0.02em;
-            margin-bottom: 40px; color: var(--text-primary);
-        }
+        /* SECTIONS */
+        .section { max-width: 980px; margin: 0 auto; padding: 0 24px 72px; }
+        .section-label { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 8px; }
+        .section-title { font-size: 32px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 36px; }
+        .divider { height: 1px; background: var(--border); max-width: 980px; margin: 0 auto; }
 
-        /* ===== APP CARD ===== */
-        .app-card {
-            display: flex; gap: 32px; align-items: center;
-            background: var(--bg-elevated);
-            border: 1px solid var(--border);
-            border-radius: 20px; padding: 32px;
-            margin-bottom: 40px;
-        }
-        .app-icon {
-            width: 96px; height: 96px; border-radius: 22px; flex-shrink: 0;
-            background: linear-gradient(135deg, #7C3AED, #5B21B6);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 36px; font-weight: 800; color: white;
-            box-shadow: 0 8px 30px rgba(124, 58, 237, 0.25);
-        }
-        .app-info h3 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
-        .app-info p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 12px; }
-        .app-badges { display: flex; gap: 8px; flex-wrap: wrap; }
-        .app-badge {
-            padding: 4px 12px; border-radius: 6px;
-            font-size: 12px; font-weight: 600;
-            background: rgba(124, 58, 237, 0.12); color: var(--accent-light);
-        }
-        .app-badge.green { background: rgba(52, 211, 153, 0.12); color: #34D399; }
+        /* APP CARD */
+        .app-card { display: flex; gap: 28px; align-items: center; background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 28px; margin-bottom: 36px; box-shadow: var(--shadow); }
+        .app-icon { width: 88px; height: 88px; border-radius: 20px; flex-shrink: 0; object-fit: cover; box-shadow: var(--shadow-lg); }
+        .app-info h3 { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+        .app-info p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 10px; }
+        .app-badges { display: flex; gap: 6px; flex-wrap: wrap; }
+        .badge { padding: 3px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; background: color-mix(in srgb, var(--accent) 10%, transparent); color: var(--accent); }
+        .badge.green { background: color-mix(in srgb, var(--green) 12%, transparent); color: var(--green); }
 
-        /* ===== ABOUT ===== */
-        .about-text {
-            font-size: 17px; line-height: 1.8; color: var(--text-secondary);
-            max-width: 720px;
-        }
+        /* ABOUT */
+        .about-text { font-size: 16px; line-height: 1.8; color: var(--text-secondary); max-width: 720px; }
         .about-text p { margin-bottom: 16px; }
         .about-text strong { color: var(--text-primary); font-weight: 600; }
 
-        /* ===== TECH GRID ===== */
-        .tech-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 16px;
-        }
-        .tech-card {
-            background: var(--bg-elevated);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 24px;
-            transition: border-color 0.25s, transform 0.25s;
-        }
-        .tech-card:hover {
-            border-color: var(--border-light);
-            transform: translateY(-2px);
-        }
-        .tech-card-header {
-            display: flex; align-items: center; gap: 12px;
-            margin-bottom: 12px;
-        }
-        .tech-icon {
-            width: 40px; height: 40px; border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 18px; flex-shrink: 0;
-        }
-        .tech-icon.backend { background: rgba(52, 211, 153, 0.12); color: #34D399; }
-        .tech-icon.frontend { background: rgba(96, 165, 250, 0.12); color: #60A5FA; }
-        .tech-icon.mobile { background: rgba(124, 58, 237, 0.12); color: #A78BFA; }
-        .tech-icon.ai { background: rgba(251, 191, 36, 0.12); color: #FBBF24; }
-        .tech-icon.auth { background: rgba(244, 114, 182, 0.12); color: #F472B6; }
-        .tech-icon.infra { background: rgba(248, 113, 113, 0.12); color: #F87171; }
-        .tech-icon.payments { background: rgba(52, 211, 153, 0.12); color: #34D399; }
-        .tech-icon.telegram { background: rgba(96, 165, 250, 0.12); color: #60A5FA; }
-
+        /* TECH GRID */
+        .tech-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 14px; }
+        .tech-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 22px; transition: border-color 0.25s, transform 0.25s; box-shadow: var(--shadow); }
+        .tech-card:hover { border-color: var(--border-light); transform: translateY(-2px); }
+        .tech-card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+        .tech-icon { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .tech-card h4 { font-size: 15px; font-weight: 600; }
-        .tech-card p { font-size: 13px; color: var(--text-tertiary); line-height: 1.6; margin-bottom: 12px; }
-        .tech-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-        .tech-tag {
-            padding: 3px 10px; border-radius: 6px;
-            font-size: 11px; font-weight: 600; letter-spacing: 0.01em;
-            background: var(--bg-secondary); color: var(--text-secondary);
-        }
+        .tech-card p { font-size: 13px; color: var(--text-tertiary); line-height: 1.6; margin-bottom: 10px; }
+        .tech-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+        .tech-tag { padding: 3px 9px; border-radius: 6px; font-size: 11px; font-weight: 600; background: var(--bg-elevated); color: var(--text-secondary); }
 
-        /* ===== FEATURES LIST ===== */
-        .features-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 12px;
-        }
-        .feature-item {
-            display: flex; align-items: flex-start; gap: 10px;
-            padding: 14px 16px;
-            background: var(--bg-elevated);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-        }
-        .feature-check {
-            width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0;
-            background: rgba(52, 211, 153, 0.12); color: #34D399;
-            display: flex; align-items: center; justify-content: center;
-            margin-top: 1px;
-        }
+        /* FEATURES */
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+        .feature-item { display: flex; align-items: flex-start; gap: 10px; padding: 14px 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow); }
+        .feature-check { width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0; background: color-mix(in srgb, var(--green) 12%, transparent); color: var(--green); display: flex; align-items: center; justify-content: center; margin-top: 1px; }
         .feature-item span { font-size: 13px; font-weight: 500; color: var(--text-secondary); line-height: 1.4; }
 
-        /* ===== CONTACT ===== */
-        .contact-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 16px;
-        }
-        .contact-card {
-            display: flex; align-items: center; gap: 16px;
-            padding: 20px 24px;
-            background: var(--bg-elevated);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            text-decoration: none; color: inherit;
-            transition: border-color 0.25s, transform 0.25s;
-        }
-        .contact-card:hover {
-            border-color: var(--border-light);
-            transform: translateY(-2px);
-        }
-        .contact-icon {
-            width: 48px; height: 48px; border-radius: 14px;
-            display: flex; align-items: center; justify-content: center;
-            flex-shrink: 0;
-        }
-        .contact-icon.email { background: rgba(124, 58, 237, 0.12); color: #A78BFA; }
-        .contact-icon.phone { background: rgba(52, 211, 153, 0.12); color: #34D399; }
-        .contact-icon.tg { background: rgba(96, 165, 250, 0.12); color: #60A5FA; }
-        .contact-icon.web { background: rgba(251, 191, 36, 0.12); color: #FBBF24; }
-        .contact-label { font-size: 12px; color: var(--text-tertiary); margin-bottom: 2px; font-weight: 500; }
-        .contact-value { font-size: 15px; color: var(--text-primary); font-weight: 600; }
+        /* CONTACT */
+        .contact-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+        .contact-card { display: flex; align-items: center; gap: 16px; padding: 20px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; text-decoration: none; color: inherit; transition: border-color 0.25s, transform 0.25s; box-shadow: var(--shadow); }
+        .contact-card:hover { border-color: var(--border-light); transform: translateY(-2px); }
+        .c-icon { width: 46px; height: 46px; border-radius: 13px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .c-label { font-size: 12px; color: var(--text-tertiary); margin-bottom: 2px; font-weight: 500; }
+        .c-value { font-size: 15px; color: var(--text-primary); font-weight: 600; }
 
-        /* ===== LEGAL LINKS ===== */
-        .legal-links {
-            display: flex; flex-wrap: wrap; gap: 24px;
-            padding-top: 32px;
-        }
-        .legal-link {
-            font-size: 13px; color: var(--text-tertiary);
-            text-decoration: none; font-weight: 500;
-            transition: color 0.2s;
-        }
-        .legal-link:hover { color: var(--accent-light); }
+        /* LEGAL */
+        .legal-links { display: flex; flex-wrap: wrap; gap: 20px; padding-top: 28px; }
+        .legal-link { font-size: 13px; color: var(--text-tertiary); text-decoration: none; font-weight: 500; transition: color 0.2s; }
+        .legal-link:hover { color: var(--accent); }
 
-        /* ===== FOOTER ===== */
-        .footer {
-            max-width: 980px; margin: 0 auto;
-            padding: 32px 24px 48px;
-            border-top: 1px solid var(--border);
-            display: flex; align-items: center; justify-content: space-between;
-            flex-wrap: wrap; gap: 16px;
-        }
+        /* FOOTER */
+        .footer { max-width: 980px; margin: 0 auto; padding: 28px 24px 40px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
         .footer-left { font-size: 13px; color: var(--text-tertiary); }
         .footer-right { display: flex; gap: 16px; }
-        .footer-link {
-            font-size: 13px; color: var(--text-tertiary);
-            text-decoration: none; font-weight: 500;
-            transition: color 0.2s;
-        }
+        .footer-link { font-size: 13px; color: var(--text-tertiary); text-decoration: none; font-weight: 500; transition: color 0.2s; }
         .footer-link:hover { color: var(--text-primary); }
 
-        /* ===== DIVIDER ===== */
-        .divider {
-            height: 1px; background: var(--border);
-            max-width: 980px; margin: 0 auto;
-        }
+        /* i18n: hide inactive lang */
+        [data-lang="en"] { display: none; }
+        html[lang="en"] [data-lang="ru"] { display: none; }
+        html[lang="en"] [data-lang="en"] { display: initial; }
+        /* fix for block elements */
+        html[lang="en"] div[data-lang="en"], html[lang="en"] p[data-lang="en"], html[lang="en"] section[data-lang="en"], html[lang="en"] span[data-lang="en"], html[lang="en"] a[data-lang="en"], html[lang="en"] h1[data-lang="en"], html[lang="en"] h2[data-lang="en"], html[lang="en"] h3[data-lang="en"], html[lang="en"] h4[data-lang="en"] { display: revert; }
+        div[data-lang="ru"], p[data-lang="ru"], section[data-lang="ru"], span[data-lang="ru"], a[data-lang="ru"], h1[data-lang="ru"], h2[data-lang="ru"], h3[data-lang="ru"], h4[data-lang="ru"] { display: revert; }
 
-        /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
-            .hero { padding: 48px 20px 40px; }
+            .hero { padding: 48px 20px 36px; }
             .hero h1 { font-size: 32px; }
-            .hero-subtitle { font-size: 16px; }
-            .hero-avatar { width: 88px; height: 88px; font-size: 32px; }
-            .section { padding: 0 20px 60px; }
+            .hero-avatar { width: 96px; height: 96px; }
+            .section { padding: 0 20px 56px; }
             .section-title { font-size: 26px; margin-bottom: 28px; }
-            .app-card { flex-direction: column; text-align: center; gap: 20px; padding: 24px; }
-            .tech-grid { grid-template-columns: 1fr; }
-            .features-grid { grid-template-columns: 1fr; }
-            .contact-grid { grid-template-columns: 1fr; }
-            .nav-links { display: none; }
+            .app-card { flex-direction: column; text-align: center; gap: 16px; }
+            .tech-grid, .features-grid, .contact-grid { grid-template-columns: 1fr; }
+            .nav-link { display: none; }
             .footer { flex-direction: column; align-items: flex-start; }
         }
+        @media (min-width: 769px) and (max-width: 768px) { .nav-link { font-size: 12px; padding: 5px 8px; } }
     </style>
 </head>
 <body>
 
-    <!-- Nav -->
-    <nav class="nav">
-        <div class="nav-inner">
-            <a href="/" class="nav-brand">
-                <div class="nav-logo">U</div>
-                <span class="nav-title">UspAIChat</span>
-            </a>
-            <div class="nav-links">
-                <a href="#about" class="nav-link">About</a>
-                <a href="#technology" class="nav-link">Technology</a>
-                <a href="#contact" class="nav-link">Contact</a>
-                <a href="/support.html" class="nav-link">Support</a>
-                <a href="/" class="nav-link active">Open App</a>
+<nav class="nav">
+    <div class="nav-inner">
+        <a href="/" class="nav-brand">
+            <img src="/app-icon.jpg" class="nav-logo" alt="Нейростеи">
+            <span class="nav-name"><span data-lang="ru">Нейростеи</span><span data-lang="en">Neurosetei</span></span>
+        </a>
+        <div class="nav-right">
+            <a href="/autor.html" class="nav-link active" data-lang="ru">Разработчик</a>
+            <a href="/autor.html" class="nav-link active" data-lang="en">Developer</a>
+            <a href="/support.html" class="nav-link" data-lang="ru">Поддержка</a>
+            <a href="/support.html" class="nav-link" data-lang="en">Support</a>
+            <a href="/privacy" class="nav-link" data-lang="ru">Приватность</a>
+            <a href="/privacy" class="nav-link" data-lang="en">Privacy</a>
+            <a href="/" class="nav-link" data-lang="ru">Открыть</a>
+            <a href="/" class="nav-link" data-lang="en">Open App</a>
+            <div class="nav-controls">
+                <button class="nav-btn" onclick="toggleLang()" title="Language" id="langBtn">RU</button>
+                <button class="nav-btn" onclick="toggleTheme()" title="Theme" id="themeBtn">
+                    <svg class="theme-icon-light" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                    <svg class="theme-icon-dark" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                </button>
             </div>
         </div>
-    </nav>
+    </div>
+</nav>
 
-    <!-- Hero -->
-    <section class="hero">
-        <div class="hero-avatar">AU</div>
-        <h1>Aleksandr Uspeshnyy</h1>
-        <p class="hero-subtitle">Independent developer specializing in AI-powered applications, full-stack web development, and cross-platform mobile solutions.</p>
-        <div class="hero-badge">
-            <span class="dot"></span>
-            Available for collaboration
-        </div>
-    </section>
+<!-- HERO -->
+<section class="hero">
+    <img src="/avatar.jpg" class="hero-avatar" alt="Aleksandr Uspeshnyy">
+    <h1 data-lang="ru">Aleksandr Uspeshnyy</h1>
+    <h1 data-lang="en">Aleksandr Uspeshnyy</h1>
+    <p class="hero-sub" data-lang="ru">Независимый разработчик, специализирующийся на AI-приложениях, полнофункциональной веб-разработке и кроссплатформенных мобильных решениях.</p>
+    <p class="hero-sub" data-lang="en">Independent developer specializing in AI-powered applications, full-stack web development, and cross-platform mobile solutions.</p>
+    <div class="hero-badge"><span class="dot"></span> <span data-lang="ru">Доступен для сотрудничества</span><span data-lang="en">Available for collaboration</span></div>
+</section>
 
-    <div class="divider"></div>
+<div class="divider"></div>
 
-    <!-- App -->
-    <section class="section" style="padding-top: 60px;">
-        <div class="section-label">Application</div>
-        <h2 class="section-title">UspAIChat</h2>
-
-        <div class="app-card">
-            <div class="app-icon">U</div>
-            <div class="app-info">
-                <h3>UspAIChat</h3>
-                <p>Self-hosted multi-provider AI chat platform with web and mobile clients. Chat with Claude, GPT-4o, Gemini, DeepSeek and Kimi through a unified, elegant interface with smart auto-routing.</p>
-                <div class="app-badges">
-                    <span class="app-badge green">v1.3.0</span>
-                    <span class="app-badge">iOS</span>
-                    <span class="app-badge">Android</span>
-                    <span class="app-badge">Web</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- About -->
-    <section id="about" class="section">
-        <div class="section-label">About</div>
-        <h2 class="section-title">About the Developer</h2>
-        <div class="about-text">
-            <p><strong>Aleksandr Uspeshnyy</strong> is an independent software developer based in Moscow, Russia. With deep expertise in full-stack web development, mobile applications, and AI integrations, he designs and builds products that bridge cutting-edge AI technology with intuitive user experiences.</p>
-            <p>UspAIChat was born from a practical need: a single, self-hosted interface that unifies multiple AI providers while keeping all data under the organization's control. The project evolved from a personal tool into a full-fledged platform with a credits-based billing system, smart model routing, Telegram bot integration, and native mobile apps for iOS and Android.</p>
-            <p>The entire application — backend, web frontend, mobile clients, AI integrations, payment processing, and deployment infrastructure — is designed, built, and maintained by a single developer.</p>
-        </div>
-    </section>
-
-    <!-- Technology -->
-    <section id="technology" class="section">
-        <div class="section-label">Technology</div>
-        <h2 class="section-title">Built with Modern Stack</h2>
-
-        <div class="tech-grid">
-            <div class="tech-card">
-                <div class="tech-card-header">
-                    <div class="tech-icon backend">
-                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><circle cx="6" cy="6" r="1"/><circle cx="6" cy="18" r="1"/></svg>
-                    </div>
-                    <h4>Backend</h4>
-                </div>
-                <p>High-performance Node.js server with Express.js and SQLite in WAL mode for concurrent reads without blocking.</p>
-                <div class="tech-tags">
-                    <span class="tech-tag">Node.js 20</span>
-                    <span class="tech-tag">Express.js</span>
-                    <span class="tech-tag">SQLite</span>
-                    <span class="tech-tag">better-sqlite3</span>
-                    <span class="tech-tag">JWT</span>
-                </div>
-            </div>
-
-            <div class="tech-card">
-                <div class="tech-card-header">
-                    <div class="tech-icon frontend">
-                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/><line x1="12" y1="22" x2="12" y2="15.5"/><polyline points="22 8.5 12 15.5 2 8.5"/></svg>
-                    </div>
-                    <h4>Web Frontend</h4>
-                </div>
-                <p>Modern React SPA with TypeScript, real-time SSE streaming, dark/light themes, and responsive design.</p>
-                <div class="tech-tags">
-                    <span class="tech-tag">React 18</span>
-                    <span class="tech-tag">TypeScript</span>
-                    <span class="tech-tag">Vite</span>
-                    <span class="tech-tag">Tailwind CSS</span>
-                    <span class="tech-tag">Zustand</span>
-                </div>
-            </div>
-
-            <div class="tech-card">
-                <div class="tech-card-header">
-                    <div class="tech-icon mobile">
-                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg>
-                    </div>
-                    <h4>Mobile Apps</h4>
-                </div>
-                <p>Cross-platform Flutter app with native Google/Apple sign-in, SSE streaming, voice input and text-to-speech.</p>
-                <div class="tech-tags">
-                    <span class="tech-tag">Flutter 3.29</span>
-                    <span class="tech-tag">Dart</span>
-                    <span class="tech-tag">Riverpod</span>
-                    <span class="tech-tag">GoRouter</span>
-                    <span class="tech-tag">Dio</span>
-                </div>
-            </div>
-
-            <div class="tech-card">
-                <div class="tech-card-header">
-                    <div class="tech-icon ai">
-                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2a4 4 0 0 1 4 4c0 1.95-1.4 3.58-3.25 3.93L12 22"/><path d="M12 2a4 4 0 0 0-4 4c0 1.95 1.4 3.58 3.25 3.93"/><path d="M4 13h3"/><path d="M17 13h3"/><circle cx="12" cy="13" r="4"/></svg>
-                    </div>
-                    <h4>AI Providers</h4>
-                </div>
-                <p>Unified interface for 5 AI providers with Smart Auto Router — a 14-dimension prompt classifier that picks the optimal model.</p>
-                <div class="tech-tags">
-                    <span class="tech-tag">Anthropic Claude</span>
-                    <span class="tech-tag">OpenAI GPT</span>
-                    <span class="tech-tag">Google Gemini</span>
-                    <span class="tech-tag">DeepSeek</span>
-                    <span class="tech-tag">Kimi</span>
-                </div>
-            </div>
-
-            <div class="tech-card">
-                <div class="tech-card-header">
-                    <div class="tech-icon auth">
-                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                    </div>
-                    <h4>Authentication</h4>
-                </div>
-                <p>Multi-method OAuth with JWT access/refresh tokens, automatic rotation, and secure session management.</p>
-                <div class="tech-tags">
-                    <span class="tech-tag">Google OAuth</span>
-                    <span class="tech-tag">Apple Sign-In</span>
-                    <span class="tech-tag">Telegram Auth</span>
-                    <span class="tech-tag">JWT</span>
-                </div>
-            </div>
-
-            <div class="tech-card">
-                <div class="tech-card-header">
-                    <div class="tech-icon telegram">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
-                    </div>
-                    <h4>Telegram Integration</h4>
-                </div>
-                <p>Full Telegram bot for authentication, balance top-up via bot payments, and push notifications for account activity.</p>
-                <div class="tech-tags">
-                    <span class="tech-tag">Telegram Bot API</span>
-                    <span class="tech-tag">Deep Linking</span>
-                    <span class="tech-tag">Bot Payments</span>
-                    <span class="tech-tag">Polling Auth</span>
-                </div>
-            </div>
-
-            <div class="tech-card">
-                <div class="tech-card-header">
-                    <div class="tech-icon payments">
-                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-                    </div>
-                    <h4>Payments</h4>
-                </div>
-                <p>Credits-based billing with multiple payment methods. Promo codes and referral system for user acquisition.</p>
-                <div class="tech-tags">
-                    <span class="tech-tag">YooKassa</span>
-                    <span class="tech-tag">Telegram Payments</span>
-                    <span class="tech-tag">Promo Codes</span>
-                    <span class="tech-tag">Referrals</span>
-                </div>
-            </div>
-
-            <div class="tech-card">
-                <div class="tech-card-header">
-                    <div class="tech-icon infra">
-                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
-                    </div>
-                    <h4>Infrastructure</h4>
-                </div>
-                <p>Production deployment on dedicated VPS with Nginx reverse proxy, PM2 process management, and automated builds.</p>
-                <div class="tech-tags">
-                    <span class="tech-tag">Nginx</span>
-                    <span class="tech-tag">PM2</span>
-                    <span class="tech-tag">VPS</span>
-                    <span class="tech-tag">SSL/TLS</span>
-                    <span class="tech-tag">Git Deploy</span>
-                </div>
+<!-- APP -->
+<section class="section" style="padding-top: 56px;">
+    <div class="section-label" data-lang="ru">Приложение</div>
+    <div class="section-label" data-lang="en">Application</div>
+    <h2 class="section-title" data-lang="ru">Нейростеи (UspAIChat)</h2>
+    <h2 class="section-title" data-lang="en">Neurosetei (UspAIChat)</h2>
+    <div class="app-card">
+        <img src="/app-icon.jpg" class="app-icon" alt="Нейростеи">
+        <div class="app-info">
+            <h3 data-lang="ru">Нейростеи</h3>
+            <h3 data-lang="en">Neurosetei</h3>
+            <p data-lang="ru">Self-hosted мультипровайдерная AI-чат платформа с веб- и мобильными клиентами. Общайтесь с Claude, GPT-4o, Gemini, DeepSeek и Kimi через единый элегантный интерфейс с умной авто-маршрутизацией.</p>
+            <p data-lang="en">Self-hosted multi-provider AI chat platform with web and mobile clients. Chat with Claude, GPT-4o, Gemini, DeepSeek and Kimi through a unified, elegant interface with smart auto-routing.</p>
+            <div class="app-badges">
+                <span class="badge green">v1.3.0</span>
+                <span class="badge">iOS</span>
+                <span class="badge">Android</span>
+                <span class="badge">Web</span>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Features -->
-    <section class="section">
-        <div class="section-label">Capabilities</div>
-        <h2 class="section-title">Key Features</h2>
-        <div class="features-grid">
-            <div class="feature-item">
-                <div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
-                <span>5 AI providers through one interface</span>
+<!-- ABOUT -->
+<section id="about" class="section">
+    <div class="section-label" data-lang="ru">О разработчике</div>
+    <div class="section-label" data-lang="en">About</div>
+    <h2 class="section-title" data-lang="ru">О разработчике</h2>
+    <h2 class="section-title" data-lang="en">About the Developer</h2>
+    <div class="about-text" data-lang="ru">
+        <p><strong>Aleksandr Uspeshnyy</strong> — независимый разработчик из Москвы. Обладает глубокой экспертизой в полнофункциональной веб-разработке, мобильных приложениях и AI-интеграциях. Проектирует и создаёт продукты, которые объединяют передовые AI-технологии с интуитивным пользовательским опытом.</p>
+        <p>Нейростеи (UspAIChat) родился из практической потребности: единый self-hosted интерфейс, объединяющий множество AI-провайдеров, при этом все данные остаются под контролем организации. Проект эволюционировал из персонального инструмента в полноценную платформу с системой биллинга на кредитах, умной маршрутизацией моделей, интеграцией с Telegram-ботом и нативными мобильными приложениями для iOS и Android.</p>
+        <p>Весь проект — бэкенд, веб-фронтенд, мобильные клиенты, AI-интеграции, обработка платежей и инфраструктура развёртывания — спроектирован, создан и поддерживается одним разработчиком.</p>
+    </div>
+    <div class="about-text" data-lang="en">
+        <p><strong>Aleksandr Uspeshnyy</strong> is an independent software developer based in Moscow, Russia. With deep expertise in full-stack web development, mobile applications, and AI integrations, he designs and builds products that bridge cutting-edge AI technology with intuitive user experiences.</p>
+        <p>Neurosetei (UspAIChat) was born from a practical need: a single, self-hosted interface that unifies multiple AI providers while keeping all data under the organization's control. The project evolved from a personal tool into a full-fledged platform with a credits-based billing system, smart model routing, Telegram bot integration, and native mobile apps for iOS and Android.</p>
+        <p>The entire application — backend, web frontend, mobile clients, AI integrations, payment processing, and deployment infrastructure — is designed, built, and maintained by a single developer.</p>
+    </div>
+</section>
+
+<!-- TECH -->
+<section id="technology" class="section">
+    <div class="section-label" data-lang="ru">Технологии</div>
+    <div class="section-label" data-lang="en">Technology</div>
+    <h2 class="section-title" data-lang="ru">Современный стек</h2>
+    <h2 class="section-title" data-lang="en">Built with Modern Stack</h2>
+    <div class="tech-grid">
+        <div class="tech-card">
+            <div class="tech-card-header">
+                <div class="tech-icon" style="background:color-mix(in srgb, var(--green) 12%, transparent);color:var(--green);">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><circle cx="6" cy="6" r="1"/><circle cx="6" cy="18" r="1"/></svg>
+                </div>
+                <h4>Backend</h4>
             </div>
-            <div class="feature-item">
-                <div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
-                <span>Smart Auto Router with 14D classifier</span>
-            </div>
-            <div class="feature-item">
-                <div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
-                <span>Real-time SSE streaming</span>
-            </div>
-            <div class="feature-item">
-                <div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
-                <span>iOS, Android & Web apps</span>
-            </div>
-            <div class="feature-item">
-                <div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
-                <span>Voice input (STT) & text-to-speech</span>
-            </div>
-            <div class="feature-item">
-                <div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
-                <span>Dark & Light themes</span>
-            </div>
-            <div class="feature-item">
-                <div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
-                <span>File uploads & image attachments</span>
-            </div>
-            <div class="feature-item">
-                <div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
-                <span>Full-text search across conversations</span>
-            </div>
-            <div class="feature-item">
-                <div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
-                <span>Conversation sharing & export</span>
-            </div>
-            <div class="feature-item">
-                <div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
-                <span>Prompt templates with / commands</span>
-            </div>
-            <div class="feature-item">
-                <div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
-                <span>Admin panel with user management</span>
-            </div>
-            <div class="feature-item">
-                <div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
-                <span>Self-hosted — your data stays yours</span>
-            </div>
+            <p data-lang="ru">Высокопроизводительный сервер на Node.js с Express.js и SQLite в режиме WAL для параллельного чтения.</p>
+            <p data-lang="en">High-performance Node.js server with Express.js and SQLite in WAL mode for concurrent reads.</p>
+            <div class="tech-tags"><span class="tech-tag">Node.js 20</span><span class="tech-tag">Express.js</span><span class="tech-tag">SQLite</span><span class="tech-tag">better-sqlite3</span><span class="tech-tag">JWT</span></div>
         </div>
-    </section>
-
-    <!-- Contact -->
-    <section id="contact" class="section">
-        <div class="section-label">Contact</div>
-        <h2 class="section-title">Get in Touch</h2>
-        <div class="contact-grid">
-            <a href="mailto:aleksandr@uspeshnyy.ru" class="contact-card">
-                <div class="contact-icon email">
-                    <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        <div class="tech-card">
+            <div class="tech-card-header">
+                <div class="tech-icon" style="background:color-mix(in srgb, var(--blue) 12%, transparent);color:var(--blue);">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/></svg>
                 </div>
-                <div>
-                    <div class="contact-label">Email</div>
-                    <div class="contact-value">aleksandr@uspeshnyy.ru</div>
-                </div>
-            </a>
-            <a href="tel:+79169535760" class="contact-card">
-                <div class="contact-icon phone">
-                    <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                </div>
-                <div>
-                    <div class="contact-label">Phone</div>
-                    <div class="contact-value">+7 (916) 953-57-60</div>
-                </div>
-            </a>
-            <a href="https://t.me/UspAIChatBot" class="contact-card" target="_blank">
-                <div class="contact-icon tg">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
-                </div>
-                <div>
-                    <div class="contact-label">Telegram Bot</div>
-                    <div class="contact-value">@UspAIChatBot</div>
-                </div>
-            </a>
-            <a href="https://app.aifuturenow.ru" class="contact-card" target="_blank">
-                <div class="contact-icon web">
-                    <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                </div>
-                <div>
-                    <div class="contact-label">Website</div>
-                    <div class="contact-value">app.aifuturenow.ru</div>
-                </div>
-            </a>
+                <h4>Web Frontend</h4>
+            </div>
+            <p data-lang="ru">Современное React SPA с TypeScript, SSE-стримингом, тёмной/светлой темой и адаптивным дизайном.</p>
+            <p data-lang="en">Modern React SPA with TypeScript, real-time SSE streaming, dark/light themes, and responsive design.</p>
+            <div class="tech-tags"><span class="tech-tag">React 18</span><span class="tech-tag">TypeScript</span><span class="tech-tag">Vite</span><span class="tech-tag">Tailwind CSS</span><span class="tech-tag">Zustand</span></div>
         </div>
-
-        <div class="legal-links">
-            <a href="/privacy" class="legal-link">Privacy Policy</a>
-            <a href="/terms" class="legal-link">Terms of Use</a>
-            <a href="/support.html" class="legal-link">Support</a>
+        <div class="tech-card">
+            <div class="tech-card-header">
+                <div class="tech-icon" style="background:color-mix(in srgb, var(--accent) 12%, transparent);color:var(--accent);">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg>
+                </div>
+                <h4 data-lang="ru">Мобильные приложения</h4>
+                <h4 data-lang="en">Mobile Apps</h4>
+            </div>
+            <p data-lang="ru">Кроссплатформенное Flutter-приложение с нативным Google/Apple входом, SSE-стримингом, голосовым вводом и озвучкой.</p>
+            <p data-lang="en">Cross-platform Flutter app with native Google/Apple sign-in, SSE streaming, voice input and text-to-speech.</p>
+            <div class="tech-tags"><span class="tech-tag">Flutter 3.29</span><span class="tech-tag">Dart</span><span class="tech-tag">Riverpod</span><span class="tech-tag">GoRouter</span><span class="tech-tag">Dio</span></div>
         </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-left">&copy; 2024&ndash;2026 Aleksandr Uspeshnyy. All rights reserved.</div>
-        <div class="footer-right">
-            <a href="/" class="footer-link">Open App</a>
-            <a href="/support.html" class="footer-link">Support</a>
-            <a href="/privacy" class="footer-link">Privacy</a>
+        <div class="tech-card">
+            <div class="tech-card-header">
+                <div class="tech-icon" style="background:rgba(251,191,36,0.12);color:#FBBF24;">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v4m0 12v4m-7.07-15.07 2.83 2.83m8.48 8.48 2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48 2.83-2.83"/></svg>
+                </div>
+                <h4>AI</h4>
+            </div>
+            <p data-lang="ru">Единый интерфейс для 5 AI-провайдеров с Smart Auto Router — 14-мерным классификатором промптов.</p>
+            <p data-lang="en">Unified interface for 5 AI providers with Smart Auto Router — a 14-dimension prompt classifier.</p>
+            <div class="tech-tags"><span class="tech-tag">Claude</span><span class="tech-tag">GPT-4o</span><span class="tech-tag">Gemini</span><span class="tech-tag">DeepSeek</span><span class="tech-tag">Kimi</span></div>
         </div>
-    </footer>
+        <div class="tech-card">
+            <div class="tech-card-header">
+                <div class="tech-icon" style="background:rgba(244,114,182,0.12);color:#F472B6;">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </div>
+                <h4 data-lang="ru">Аутентификация</h4>
+                <h4 data-lang="en">Authentication</h4>
+            </div>
+            <p data-lang="ru">Мульти-OAuth с JWT access/refresh токенами, автоматической ротацией и безопасным управлением сессиями.</p>
+            <p data-lang="en">Multi-method OAuth with JWT access/refresh tokens, automatic rotation, and secure session management.</p>
+            <div class="tech-tags"><span class="tech-tag">Google OAuth</span><span class="tech-tag">Apple Sign-In</span><span class="tech-tag">Telegram Auth</span><span class="tech-tag">JWT</span></div>
+        </div>
+        <div class="tech-card">
+            <div class="tech-card-header">
+                <div class="tech-icon" style="background:color-mix(in srgb, var(--blue) 12%, transparent);color:var(--blue);">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+                </div>
+                <h4>Telegram</h4>
+            </div>
+            <p data-lang="ru">Полная интеграция: авторизация, пополнение баланса через бот-платежи, push-уведомления и поддержка.</p>
+            <p data-lang="en">Full integration: authentication, balance top-up via bot payments, push notifications and support.</p>
+            <div class="tech-tags"><span class="tech-tag">Bot API</span><span class="tech-tag">Deep Linking</span><span class="tech-tag">Bot Payments</span><span class="tech-tag">Polling Auth</span></div>
+        </div>
+        <div class="tech-card">
+            <div class="tech-card-header">
+                <div class="tech-icon" style="background:color-mix(in srgb, var(--green) 12%, transparent);color:var(--green);">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                </div>
+                <h4 data-lang="ru">Платежи</h4>
+                <h4 data-lang="en">Payments</h4>
+            </div>
+            <p data-lang="ru">Биллинг на кредитах с несколькими способами оплаты. Промо-коды и реферальная система.</p>
+            <p data-lang="en">Credits-based billing with multiple payment methods. Promo codes and referral system.</p>
+            <div class="tech-tags"><span class="tech-tag">YooKassa</span><span class="tech-tag">Telegram Payments</span><span class="tech-tag">Promo Codes</span><span class="tech-tag">Referrals</span></div>
+        </div>
+        <div class="tech-card">
+            <div class="tech-card-header">
+                <div class="tech-icon" style="background:rgba(248,113,113,0.12);color:#F87171;">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/></svg>
+                </div>
+                <h4 data-lang="ru">Инфраструктура</h4>
+                <h4 data-lang="en">Infrastructure</h4>
+            </div>
+            <p data-lang="ru">Продакшен на выделенном VPS с Nginx reverse proxy, PM2, автоматическими билдами и SSL.</p>
+            <p data-lang="en">Production deployment on dedicated VPS with Nginx reverse proxy, PM2 process management, and SSL.</p>
+            <div class="tech-tags"><span class="tech-tag">Nginx</span><span class="tech-tag">PM2</span><span class="tech-tag">VPS</span><span class="tech-tag">SSL/TLS</span><span class="tech-tag">Git Deploy</span></div>
+        </div>
+    </div>
+</section>
 
+<!-- FEATURES -->
+<section class="section">
+    <div class="section-label" data-lang="ru">Возможности</div>
+    <div class="section-label" data-lang="en">Capabilities</div>
+    <h2 class="section-title" data-lang="ru">Ключевые функции</h2>
+    <h2 class="section-title" data-lang="en">Key Features</h2>
+    <div class="features-grid" id="features-ru" data-lang="ru">
+        <div class="feature-item"><div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span>5 AI-провайдеров в одном интерфейсе</span></div>
+        <div class="feature-item"><div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span>Smart Auto Router с 14D классификатором</span></div>
+        <div class="feature-item"><div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span>SSE-стриминг в реальном времени</span></div>
+        <div class="feature-item"><div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span>iOS, Android и Web-приложения</span></div>
+        <div class="feature-item"><div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span>Голосовой ввод (STT) и озвучка (TTS)</span></div>
+        <div class="feature-item"><div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span>Тёмная и светлая тема</span></div>
+        <div class="feature-item"><div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span>Загрузка файлов и изображений</span></div>
+        <div class="feature-item"><div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span>Полнотекстовый поиск по беседам</span></div>
+        <div class="feature-item"><div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span>Шаринг и экспорт бесед</span></div>
+        <div class="feature-item"><div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span>Шаблоны промптов (/ команды)</span></div>
+        <div class="feature-item"><div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span>Админ-панель с управлением</span></div>
+        <div class="feature-item"><div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span>Self-hosted — данные остаются у вас</span></div>
+    </div>
+    <div class="features-grid" data-lang="en">
+        <div class="feature-item"><div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span>5 AI providers through one interface</span></div>
+        <div class="feature-item"><div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span>Smart Auto Router with 14D classifier</span></div>
+        <div class="feature-item"><div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span>Real-time SSE streaming</span></div>
+        <div class="feature-item"><div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span>iOS, Android & Web apps</span></div>
+        <div class="feature-item"><div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span>Voice input (STT) & text-to-speech</span></div>
+        <div class="feature-item"><div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span>Dark & Light themes</span></div>
+        <div class="feature-item"><div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span>File uploads & image attachments</span></div>
+        <div class="feature-item"><div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span>Full-text search across conversations</span></div>
+        <div class="feature-item"><div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span>Conversation sharing & export</span></div>
+        <div class="feature-item"><div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span>Prompt templates with / commands</span></div>
+        <div class="feature-item"><div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span>Admin panel with user management</span></div>
+        <div class="feature-item"><div class="feature-check"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span>Self-hosted — your data stays yours</span></div>
+    </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="section">
+    <div class="section-label" data-lang="ru">Контакты</div>
+    <div class="section-label" data-lang="en">Contact</div>
+    <h2 class="section-title" data-lang="ru">Связаться</h2>
+    <h2 class="section-title" data-lang="en">Get in Touch</h2>
+    <div class="contact-grid">
+        <a href="mailto:aleksandr@uspeshnyy.ru" class="contact-card">
+            <div class="c-icon" style="background:color-mix(in srgb, var(--accent) 12%, transparent);color:var(--accent);">
+                <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+            </div>
+            <div><div class="c-label">Email</div><div class="c-value">aleksandr@uspeshnyy.ru</div></div>
+        </a>
+        <a href="tel:+79169535760" class="contact-card">
+            <div class="c-icon" style="background:color-mix(in srgb, var(--green) 12%, transparent);color:var(--green);">
+                <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            </div>
+            <div><div class="c-label" data-lang="ru">Телефон</div><div class="c-label" data-lang="en">Phone</div><div class="c-value">+7 (916) 953-57-60</div></div>
+        </a>
+        <a href="https://t.me/UspSupport_bot" class="contact-card" target="_blank">
+            <div class="c-icon" style="background:color-mix(in srgb, var(--blue) 12%, transparent);color:var(--blue);">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+            </div>
+            <div><div class="c-label">Telegram</div><div class="c-value">@UspSupport_bot</div></div>
+        </a>
+        <a href="https://app.aifuturenow.ru" class="contact-card" target="_blank">
+            <div class="c-icon" style="background:rgba(251,191,36,0.12);color:#FBBF24;">
+                <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            </div>
+            <div><div class="c-label" data-lang="ru">Веб-сайт</div><div class="c-label" data-lang="en">Website</div><div class="c-value">app.aifuturenow.ru</div></div>
+        </a>
+    </div>
+    <div class="legal-links">
+        <a href="/privacy" class="legal-link" data-lang="ru">Политика конфиденциальности</a>
+        <a href="/privacy" class="legal-link" data-lang="en">Privacy Policy</a>
+        <a href="/terms" class="legal-link" data-lang="ru">Условия использования</a>
+        <a href="/terms" class="legal-link" data-lang="en">Terms of Use</a>
+        <a href="/support.html" class="legal-link" data-lang="ru">Поддержка</a>
+        <a href="/support.html" class="legal-link" data-lang="en">Support</a>
+    </div>
+</section>
+
+<footer class="footer">
+    <div class="footer-left">&copy; 2024&ndash;2026 Aleksandr Uspeshnyy</div>
+    <div class="footer-right">
+        <a href="/" class="footer-link" data-lang="ru">Открыть приложение</a>
+        <a href="/" class="footer-link" data-lang="en">Open App</a>
+        <a href="/support.html" class="footer-link" data-lang="ru">Поддержка</a>
+        <a href="/support.html" class="footer-link" data-lang="en">Support</a>
+        <a href="/privacy" class="footer-link" data-lang="ru">Приватность</a>
+        <a href="/privacy" class="footer-link" data-lang="en">Privacy</a>
+    </div>
+</footer>
+
+<script>
+function toggleTheme() {
+    const html = document.documentElement;
+    const current = html.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : current === 'light' ? null : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'light' : 'dark');
+    if (next) { html.setAttribute('data-theme', next); localStorage.setItem('theme', next); }
+    else { html.removeAttribute('data-theme'); localStorage.removeItem('theme'); }
+}
+function toggleLang() {
+    const html = document.documentElement;
+    const next = html.lang === 'ru' ? 'en' : 'ru';
+    html.lang = next;
+    localStorage.setItem('lang', next);
+    document.getElementById('langBtn').textContent = next === 'ru' ? 'RU' : 'EN';
+}
+(function() {
+    const t = localStorage.getItem('theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+    const l = localStorage.getItem('lang');
+    if (l) { document.documentElement.lang = l; document.getElementById('langBtn').textContent = l === 'ru' ? 'RU' : 'EN'; }
+})();
+</script>
 </body>
 </html>

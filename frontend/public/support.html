@@ -3,635 +3,322 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Support — UspAIChat</title>
-    <meta name="description" content="Get help with UspAIChat. Contact support via email, Telegram, or phone. Find answers in our FAQ.">
-    <meta property="og:title" content="UspAIChat — Support">
-    <meta property="og:description" content="We're here to help. Contact us via email, Telegram, or phone.">
-    <meta property="og:url" content="https://app.aifuturenow.ru/support.html">
-    <meta property="og:type" content="website">
+    <title>Поддержка — Нейростеи</title>
+    <meta name="description" content="Поддержка Нейростеи (UspAIChat). Свяжитесь с нами по email, Telegram или телефону.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
         :root {
-            --bg: #000000;
-            --bg-elevated: #1c1c1e;
-            --bg-secondary: #2c2c2e;
-            --bg-tertiary: #3a3a3c;
-            --text-primary: #f5f5f7;
-            --text-secondary: #a1a1a6;
-            --text-tertiary: #6e6e73;
-            --accent: #7C3AED;
-            --accent-light: #A78BFA;
-            --blue: #60A5FA;
-            --green: #34D399;
-            --pink: #F472B6;
-            --border: rgba(255,255,255,0.08);
-            --border-light: rgba(255,255,255,0.12);
-            --radius: 16px;
+            --bg: #ffffff; --bg-elevated: #f5f5f7; --bg-secondary: #e8e8ed;
+            --bg-card: #ffffff; --text-primary: #1d1d1f; --text-secondary: #6e6e73;
+            --text-tertiary: #86868b; --accent: #7C3AED; --accent-light: #8B5CF6;
+            --blue: #0071e3; --green: #34C759; --border: rgba(0,0,0,0.08);
+            --border-light: rgba(0,0,0,0.12); --shadow: 0 1px 3px rgba(0,0,0,0.06);
+            --shadow-lg: 0 8px 30px rgba(0,0,0,0.08);
         }
+        @media (prefers-color-scheme: dark) {
+            :root { --bg: #000000; --bg-elevated: #1c1c1e; --bg-secondary: #2c2c2e; --bg-card: #1c1c1e; --text-primary: #f5f5f7; --text-secondary: #a1a1a6; --text-tertiary: #6e6e73; --accent: #8B5CF6; --accent-light: #A78BFA; --blue: #60A5FA; --green: #34D399; --border: rgba(255,255,255,0.08); --border-light: rgba(255,255,255,0.12); --shadow: 0 1px 3px rgba(0,0,0,0.2); --shadow-lg: 0 8px 30px rgba(0,0,0,0.3); }
+        }
+        html[data-theme="light"] { --bg: #ffffff; --bg-elevated: #f5f5f7; --bg-secondary: #e8e8ed; --bg-card: #ffffff; --text-primary: #1d1d1f; --text-secondary: #6e6e73; --text-tertiary: #86868b; --accent: #7C3AED; --accent-light: #8B5CF6; --blue: #0071e3; --green: #34C759; --border: rgba(0,0,0,0.08); --border-light: rgba(0,0,0,0.12); --shadow: 0 1px 3px rgba(0,0,0,0.06); --shadow-lg: 0 8px 30px rgba(0,0,0,0.08); }
+        html[data-theme="dark"] { --bg: #000000; --bg-elevated: #1c1c1e; --bg-secondary: #2c2c2e; --bg-card: #1c1c1e; --text-primary: #f5f5f7; --text-secondary: #a1a1a6; --text-tertiary: #6e6e73; --accent: #8B5CF6; --accent-light: #A78BFA; --blue: #60A5FA; --green: #34D399; --border: rgba(255,255,255,0.08); --border-light: rgba(255,255,255,0.12); --shadow: 0 1px 3px rgba(0,0,0,0.2); --shadow-lg: 0 8px 30px rgba(0,0,0,0.3); }
 
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
-            background: var(--bg);
-            color: var(--text-primary);
-            line-height: 1.5;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text-primary); line-height: 1.5; -webkit-font-smoothing: antialiased; }
 
-        /* ===== NAV ===== */
-        .nav {
-            position: sticky; top: 0; z-index: 100;
-            padding: 12px 24px;
-            background: rgba(0,0,0,0.72);
-            backdrop-filter: saturate(180%) blur(20px);
-            -webkit-backdrop-filter: saturate(180%) blur(20px);
-            border-bottom: 1px solid var(--border);
-        }
-        .nav-inner {
-            max-width: 980px; margin: 0 auto;
-            display: flex; align-items: center; justify-content: space-between;
-        }
-        .nav-brand {
-            display: flex; align-items: center; gap: 10px;
-            text-decoration: none; color: var(--text-primary);
-        }
-        .nav-logo {
-            width: 32px; height: 32px; border-radius: 8px;
-            background: linear-gradient(135deg, #7C3AED, #5B21B6);
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 800; font-size: 14px; color: white;
-        }
-        .nav-title { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
-        .nav-links { display: flex; gap: 8px; }
-        .nav-link {
-            padding: 6px 14px; border-radius: 20px;
-            font-size: 13px; font-weight: 500;
-            color: var(--text-secondary); text-decoration: none;
-            transition: all 0.2s;
-        }
+        .nav { position: sticky; top: 0; z-index: 100; padding: 0 24px; background: color-mix(in srgb, var(--bg) 72%, transparent); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); border-bottom: 1px solid var(--border); }
+        .nav-inner { max-width: 980px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 52px; }
+        .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text-primary); }
+        .nav-logo { width: 30px; height: 30px; border-radius: 8px; object-fit: cover; }
+        .nav-name { font-size: 15px; font-weight: 700; }
+        .nav-right { display: flex; align-items: center; gap: 6px; }
+        .nav-link { padding: 6px 12px; border-radius: 18px; font-size: 13px; font-weight: 500; color: var(--text-secondary); text-decoration: none; transition: all 0.2s; white-space: nowrap; }
         .nav-link:hover { color: var(--text-primary); background: var(--bg-elevated); }
-        .nav-link.active { color: white; background: var(--accent); }
+        .nav-link.active { color: #fff; background: var(--accent); }
+        .nav-controls { display: flex; align-items: center; gap: 4px; margin-left: 8px; border-left: 1px solid var(--border); padding-left: 12px; }
+        .nav-btn { width: 32px; height: 32px; border-radius: 8px; border: none; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); transition: all 0.2s; font-size: 14px; font-family: inherit; font-weight: 600; }
+        .nav-btn:hover { background: var(--bg-elevated); color: var(--text-primary); }
+        .theme-icon-dark, .theme-icon-light { display: none; }
+        @media (prefers-color-scheme: dark) { .theme-icon-dark { display: block; } }
+        @media (prefers-color-scheme: light) { .theme-icon-light { display: block; } }
+        html[data-theme="dark"] .theme-icon-light { display: none !important; } html[data-theme="dark"] .theme-icon-dark { display: block !important; }
+        html[data-theme="light"] .theme-icon-dark { display: none !important; } html[data-theme="light"] .theme-icon-light { display: block !important; }
 
-        /* ===== HERO ===== */
-        .hero {
-            max-width: 980px; margin: 0 auto;
-            padding: 80px 24px 60px;
-            text-align: center;
-        }
-        .hero-icon {
-            width: 80px; height: 80px; border-radius: 24px;
-            background: linear-gradient(135deg, var(--accent), #5B21B6);
-            display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 28px;
-            box-shadow: 0 20px 60px rgba(124, 58, 237, 0.25);
-        }
-        .hero h1 {
-            font-size: 48px; font-weight: 800; letter-spacing: -0.03em;
-            line-height: 1.1; margin-bottom: 16px;
-            background: linear-gradient(to right, #f5f5f7, #a1a1a6);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .hero-subtitle {
-            font-size: 19px; color: var(--text-secondary);
-            font-weight: 400; max-width: 520px; margin: 0 auto;
-            line-height: 1.6;
-        }
+        .hero { max-width: 980px; margin: 0 auto; padding: 72px 24px 56px; text-align: center; }
+        .hero-icon { width: 80px; height: 80px; border-radius: 24px; background: linear-gradient(135deg, var(--accent), #5B21B6); display: flex; align-items: center; justify-content: center; margin: 0 auto 28px; box-shadow: 0 20px 60px color-mix(in srgb, var(--accent) 25%, transparent); }
+        .hero h1 { font-size: 44px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 16px; }
+        .hero-sub { font-size: 18px; color: var(--text-secondary); max-width: 520px; margin: 0 auto; line-height: 1.6; }
 
-        /* ===== SECTIONS ===== */
-        .section {
-            max-width: 980px; margin: 0 auto;
-            padding: 0 24px 80px;
-        }
-        .section-label {
-            font-size: 13px; font-weight: 600; text-transform: uppercase;
-            letter-spacing: 0.08em; color: var(--accent-light);
-            margin-bottom: 8px;
-        }
-        .section-title {
-            font-size: 32px; font-weight: 700; letter-spacing: -0.02em;
-            margin-bottom: 16px; color: var(--text-primary);
-        }
-        .section-desc {
-            font-size: 16px; color: var(--text-secondary); line-height: 1.7;
-            margin-bottom: 40px; max-width: 600px;
-        }
+        .section { max-width: 980px; margin: 0 auto; padding: 0 24px 72px; }
+        .section-label { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 8px; }
+        .section-title { font-size: 32px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 16px; }
+        .section-desc { font-size: 16px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 36px; max-width: 600px; }
+        .divider { height: 1px; background: var(--border); max-width: 980px; margin: 0 auto; }
 
-        .divider {
-            height: 1px; background: var(--border);
-            max-width: 980px; margin: 0 auto;
-        }
+        /* Contact hero cards */
+        .contact-hero-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 56px; }
+        .ch-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 28px 22px; text-align: center; text-decoration: none; color: inherit; transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s; box-shadow: var(--shadow); }
+        .ch-card:hover { border-color: var(--border-light); transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+        .ch-icon { width: 52px; height: 52px; border-radius: 15px; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; }
+        .ch-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+        .ch-value { font-size: 14px; color: var(--text-secondary); font-weight: 500; margin-bottom: 10px; }
+        .ch-hint { font-size: 12px; color: var(--text-tertiary); line-height: 1.5; }
 
-        /* ===== CONTACT CARDS ===== */
-        .contact-hero-grid {
-            display: grid; grid-template-columns: repeat(3, 1fr);
-            gap: 20px; margin-top: 60px;
-        }
-        .contact-hero-card {
-            background: var(--bg-elevated);
-            border: 1px solid var(--border);
-            border-radius: 20px; padding: 32px 24px;
-            text-align: center; text-decoration: none; color: inherit;
-            transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
-        }
-        .contact-hero-card:hover {
-            border-color: var(--border-light);
-            transform: translateY(-4px);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
-        }
-        .contact-hero-icon {
-            width: 56px; height: 56px; border-radius: 16px;
-            display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 16px;
-        }
-        .contact-hero-icon.email { background: rgba(124, 58, 237, 0.12); color: var(--accent-light); }
-        .contact-hero-icon.tg { background: rgba(96, 165, 250, 0.12); color: var(--blue); }
-        .contact-hero-icon.phone { background: rgba(52, 211, 153, 0.12); color: var(--green); }
-        .contact-hero-title {
-            font-size: 16px; font-weight: 700; margin-bottom: 4px;
-        }
-        .contact-hero-value {
-            font-size: 14px; color: var(--text-secondary); font-weight: 500;
-            margin-bottom: 12px;
-        }
-        .contact-hero-hint {
-            font-size: 12px; color: var(--text-tertiary); line-height: 1.5;
-        }
-
-        /* ===== TELEGRAM BANNER ===== */
-        .tg-banner {
-            background: linear-gradient(135deg, #1a1a2e 0%, #0d1b3e 50%, #1a1a2e 100%);
-            border: 1px solid rgba(96, 165, 250, 0.15);
-            border-radius: 20px; padding: 40px;
-            display: flex; align-items: center; gap: 32px;
-            margin-bottom: 80px;
-            position: relative; overflow: hidden;
-        }
-        .tg-banner::before {
-            content: ''; position: absolute;
-            top: -50%; right: -20%; width: 300px; height: 300px;
-            background: radial-gradient(circle, rgba(96, 165, 250, 0.08) 0%, transparent 70%);
-            pointer-events: none;
-        }
-        .tg-banner-icon {
-            width: 72px; height: 72px; border-radius: 20px;
-            background: rgba(96, 165, 250, 0.12);
-            display: flex; align-items: center; justify-content: center;
-            flex-shrink: 0;
-            color: var(--blue);
-        }
+        /* Telegram banner */
+        .tg-banner { background: var(--bg-card); border: 1px solid color-mix(in srgb, var(--blue) 15%, var(--border)); border-radius: 20px; padding: 36px; display: flex; align-items: center; gap: 28px; margin-bottom: 72px; box-shadow: var(--shadow); position: relative; overflow: hidden; }
+        .tg-banner::before { content:''; position: absolute; top: -50%; right: -20%; width: 300px; height: 300px; background: radial-gradient(circle, color-mix(in srgb, var(--blue) 6%, transparent) 0%, transparent 70%); pointer-events: none; }
+        .tg-banner-icon { width: 68px; height: 68px; border-radius: 18px; background: color-mix(in srgb, var(--blue) 12%, transparent); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--blue); }
         .tg-banner-content { flex: 1; }
-        .tg-banner h3 {
-            font-size: 20px; font-weight: 700; margin-bottom: 8px;
-        }
-        .tg-banner p {
-            font-size: 15px; color: var(--text-secondary); line-height: 1.7;
-            margin-bottom: 16px;
-        }
-        .tg-banner-features {
-            display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px;
-        }
-        .tg-feature {
-            display: flex; align-items: center; gap: 6px;
-            padding: 5px 12px; border-radius: 8px;
-            background: rgba(96, 165, 250, 0.08);
-            font-size: 12px; font-weight: 600; color: var(--blue);
-        }
-        .tg-feature svg { flex-shrink: 0; }
-        .tg-btn {
-            display: inline-flex; align-items: center; gap: 8px;
-            padding: 12px 24px; border-radius: 12px;
-            background: var(--blue); color: #fff;
-            text-decoration: none; font-size: 14px; font-weight: 600;
-            transition: all 0.2s;
-            box-shadow: 0 4px 16px rgba(96, 165, 250, 0.3);
-        }
-        .tg-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 24px rgba(96, 165, 250, 0.4);
-        }
+        .tg-banner h3 { font-size: 19px; font-weight: 700; margin-bottom: 8px; }
+        .tg-banner p { font-size: 14px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 14px; }
+        .tg-features { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px; }
+        .tg-feat { display: flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 7px; background: color-mix(in srgb, var(--blue) 8%, transparent); font-size: 12px; font-weight: 600; color: var(--blue); }
+        .tg-btn { display: inline-flex; align-items: center; gap: 8px; padding: 11px 22px; border-radius: 12px; background: var(--blue); color: #fff; text-decoration: none; font-size: 14px; font-weight: 600; transition: all 0.2s; box-shadow: 0 4px 16px color-mix(in srgb, var(--blue) 30%, transparent); }
+        .tg-btn:hover { transform: translateY(-1px); }
 
-        /* ===== FAQ ===== */
-        .faq-list { max-width: 720px; }
-        .faq-item {
-            border-bottom: 1px solid var(--border);
-        }
-        .faq-item:last-child { border-bottom: none; }
-        .faq-question {
-            width: 100%; text-align: left;
-            padding: 20px 0;
-            background: none; border: none; color: var(--text-primary);
-            font-family: inherit;
-            font-size: 16px; font-weight: 600; line-height: 1.4;
-            cursor: pointer;
-            display: flex; align-items: center; justify-content: space-between;
-            gap: 16px;
-            transition: color 0.2s;
-        }
-        .faq-question:hover { color: var(--accent-light); }
-        .faq-arrow {
-            transition: transform 0.3s; flex-shrink: 0;
-            color: var(--text-tertiary);
-            width: 24px; height: 24px;
-            display: flex; align-items: center; justify-content: center;
-            border-radius: 50%;
-            background: var(--bg-elevated);
-        }
-        .faq-item.open .faq-arrow { transform: rotate(180deg); background: rgba(124,58,237,0.12); color: var(--accent-light); }
-        .faq-answer {
-            max-height: 0; overflow: hidden;
-            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .faq-item.open .faq-answer { max-height: 400px; }
-        .faq-answer-inner {
-            padding: 0 0 24px;
-            color: var(--text-secondary); font-size: 15px; line-height: 1.8;
-        }
-
-        /* ===== SUPPORT TOPICS ===== */
-        .topics-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 12px; margin-bottom: 60px;
-        }
-        .topic-card {
-            background: var(--bg-elevated);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 20px;
-            transition: border-color 0.25s, transform 0.25s;
-        }
-        .topic-card:hover {
-            border-color: var(--border-light);
-            transform: translateY(-2px);
-        }
-        .topic-icon {
-            width: 36px; height: 36px; border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            margin-bottom: 12px;
-        }
+        /* Topics */
+        .topics-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-bottom: 56px; }
+        .topic-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 20px; box-shadow: var(--shadow); transition: border-color 0.25s, transform 0.25s; }
+        .topic-card:hover { border-color: var(--border-light); transform: translateY(-2px); }
+        .topic-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
         .topic-card h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
         .topic-card p { font-size: 12px; color: var(--text-tertiary); line-height: 1.5; }
 
-        /* ===== INFO CARDS ===== */
-        .info-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 16px;
-        }
-        .info-card {
-            background: var(--bg-elevated);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 24px;
-        }
-        .info-card-header {
-            display: flex; align-items: center; gap: 10px;
-            margin-bottom: 10px;
-        }
-        .info-card-icon {
-            width: 32px; height: 32px; border-radius: 8px;
-            display: flex; align-items: center; justify-content: center;
-        }
+        /* FAQ */
+        .faq-list { max-width: 720px; }
+        .faq-item { border-bottom: 1px solid var(--border); }
+        .faq-item:last-child { border-bottom: none; }
+        .faq-q { width: 100%; text-align: left; padding: 18px 0; background: none; border: none; color: var(--text-primary); font-family: inherit; font-size: 15px; font-weight: 600; line-height: 1.4; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 14px; transition: color 0.2s; }
+        .faq-q:hover { color: var(--accent); }
+        .faq-arrow { width: 24px; height: 24px; border-radius: 50%; background: var(--bg-elevated); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--text-tertiary); transition: transform 0.3s, background 0.3s, color 0.3s; }
+        .faq-item.open .faq-arrow { transform: rotate(180deg); background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--accent); }
+        .faq-a { max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1); }
+        .faq-item.open .faq-a { max-height: 400px; }
+        .faq-a-inner { padding: 0 0 20px; color: var(--text-secondary); font-size: 14px; line-height: 1.8; }
+
+        /* Info cards */
+        .info-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+        .info-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 22px; box-shadow: var(--shadow); }
+        .info-card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .info-card-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
         .info-card h4 { font-size: 14px; font-weight: 600; }
         .info-card p { font-size: 13px; color: var(--text-secondary); line-height: 1.7; }
 
-        /* ===== FOOTER ===== */
-        .footer {
-            max-width: 980px; margin: 0 auto;
-            padding: 32px 24px 48px;
-            border-top: 1px solid var(--border);
-            display: flex; align-items: center; justify-content: space-between;
-            flex-wrap: wrap; gap: 16px;
-        }
+        .footer { max-width: 980px; margin: 0 auto; padding: 28px 24px 40px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
         .footer-left { font-size: 13px; color: var(--text-tertiary); }
         .footer-right { display: flex; gap: 16px; }
-        .footer-link {
-            font-size: 13px; color: var(--text-tertiary);
-            text-decoration: none; font-weight: 500;
-            transition: color 0.2s;
-        }
+        .footer-link { font-size: 13px; color: var(--text-tertiary); text-decoration: none; font-weight: 500; transition: color 0.2s; }
         .footer-link:hover { color: var(--text-primary); }
 
-        /* ===== RESPONSIVE ===== */
+        [data-lang="en"] { display: none; }
+        html[lang="en"] [data-lang="ru"] { display: none; }
+        html[lang="en"] [data-lang="en"] { display: initial; }
+        html[lang="en"] div[data-lang="en"], html[lang="en"] p[data-lang="en"], html[lang="en"] section[data-lang="en"], html[lang="en"] span[data-lang="en"], html[lang="en"] a[data-lang="en"], html[lang="en"] h1[data-lang="en"], html[lang="en"] h2[data-lang="en"], html[lang="en"] h3[data-lang="en"], html[lang="en"] h4[data-lang="en"] { display: revert; }
+        div[data-lang="ru"], p[data-lang="ru"], section[data-lang="ru"], span[data-lang="ru"], a[data-lang="ru"], h1[data-lang="ru"], h2[data-lang="ru"], h3[data-lang="ru"], h4[data-lang="ru"] { display: revert; }
+
         @media (max-width: 768px) {
-            .hero { padding: 48px 20px 40px; }
-            .hero h1 { font-size: 34px; }
-            .hero-subtitle { font-size: 16px; }
-            .hero-icon { width: 64px; height: 64px; border-radius: 18px; }
-            .contact-hero-grid { grid-template-columns: 1fr; gap: 12px; }
-            .contact-hero-card { padding: 24px 20px; display: flex; align-items: center; gap: 16px; text-align: left; }
-            .contact-hero-icon { margin: 0; flex-shrink: 0; }
-            .contact-hero-hint { display: none; }
-            .section { padding: 0 20px 60px; }
-            .section-title { font-size: 26px; }
-            .tg-banner { flex-direction: column; text-align: center; padding: 28px; gap: 20px; }
-            .tg-banner-features { justify-content: center; }
-            .topics-grid { grid-template-columns: repeat(2, 1fr); }
-            .info-grid { grid-template-columns: 1fr; }
-            .nav-links { display: none; }
-            .footer { flex-direction: column; align-items: flex-start; }
+            .hero { padding: 48px 20px 36px; } .hero h1 { font-size: 32px; } .hero-icon { width: 64px; height: 64px; }
+            .contact-hero-grid { grid-template-columns: 1fr; } .ch-card { display: flex; align-items: center; gap: 14px; text-align: left; padding: 20px; } .ch-icon { margin: 0; flex-shrink: 0; } .ch-hint { display: none; }
+            .section { padding: 0 20px 56px; } .section-title { font-size: 26px; }
+            .tg-banner { flex-direction: column; text-align: center; padding: 24px; gap: 16px; } .tg-features { justify-content: center; }
+            .topics-grid { grid-template-columns: repeat(2, 1fr); } .info-grid { grid-template-columns: 1fr; }
+            .nav-link { display: none; } .footer { flex-direction: column; align-items: flex-start; }
         }
-        @media (max-width: 480px) {
-            .hero h1 { font-size: 28px; }
-            .topics-grid { grid-template-columns: 1fr; }
-        }
+        @media (max-width: 480px) { .hero h1 { font-size: 28px; } .topics-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
-    <!-- Nav -->
-    <nav class="nav">
-        <div class="nav-inner">
-            <a href="/" class="nav-brand">
-                <div class="nav-logo">U</div>
-                <span class="nav-title">UspAIChat</span>
+<nav class="nav">
+    <div class="nav-inner">
+        <a href="/" class="nav-brand">
+            <img src="/app-icon.jpg" class="nav-logo" alt="Нейростеи">
+            <span class="nav-name"><span data-lang="ru">Нейростеи</span><span data-lang="en">Neurosetei</span></span>
+        </a>
+        <div class="nav-right">
+            <a href="/autor.html" class="nav-link" data-lang="ru">Разработчик</a>
+            <a href="/autor.html" class="nav-link" data-lang="en">Developer</a>
+            <a href="/support.html" class="nav-link active" data-lang="ru">Поддержка</a>
+            <a href="/support.html" class="nav-link active" data-lang="en">Support</a>
+            <a href="/privacy" class="nav-link" data-lang="ru">Приватность</a>
+            <a href="/privacy" class="nav-link" data-lang="en">Privacy</a>
+            <a href="/" class="nav-link" data-lang="ru">Открыть</a>
+            <a href="/" class="nav-link" data-lang="en">Open App</a>
+            <div class="nav-controls">
+                <button class="nav-btn" onclick="toggleLang()" title="Language" id="langBtn">RU</button>
+                <button class="nav-btn" onclick="toggleTheme()" title="Theme">
+                    <svg class="theme-icon-light" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                    <svg class="theme-icon-dark" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                </button>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<section class="hero">
+    <div class="hero-icon">
+        <svg width="36" height="36" fill="none" stroke="white" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    </div>
+    <h1 data-lang="ru">Чем можем помочь?</h1>
+    <h1 data-lang="en">How can we help?</h1>
+    <p class="hero-sub" data-lang="ru">Мы стремимся обеспечить лучший опыт использования. Свяжитесь с нами любым удобным способом.</p>
+    <p class="hero-sub" data-lang="en">We're committed to providing you with the best experience. Reach out through any channel below.</p>
+
+    <div class="contact-hero-grid" id="contact">
+        <a href="mailto:aleksandr@uspeshnyy.ru" class="ch-card">
+            <div class="ch-icon" style="background:color-mix(in srgb, var(--accent) 12%, transparent);color:var(--accent);">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+            </div>
+            <div>
+                <div class="ch-title">Email</div>
+                <div class="ch-value">aleksandr@uspeshnyy.ru</div>
+                <div class="ch-hint" data-lang="ru">Для подробных обращений. Ответ в течение 24 часов.</div>
+                <div class="ch-hint" data-lang="en">For detailed inquiries. Response within 24 hours.</div>
+            </div>
+        </a>
+        <a href="https://t.me/UspSupport_bot" class="ch-card" target="_blank">
+            <div class="ch-icon" style="background:color-mix(in srgb, var(--blue) 12%, transparent);color:var(--blue);">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+            </div>
+            <div>
+                <div class="ch-title">Telegram</div>
+                <div class="ch-value">@UspSupport_bot</div>
+                <div class="ch-hint" data-lang="ru">Самый быстрый способ получить помощь.</div>
+                <div class="ch-hint" data-lang="en">Fastest way to get help. Real-time support.</div>
+            </div>
+        </a>
+        <a href="tel:+79169535760" class="ch-card">
+            <div class="ch-icon" style="background:color-mix(in srgb, var(--green) 12%, transparent);color:var(--green);">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            </div>
+            <div>
+                <div class="ch-title" data-lang="ru">Телефон</div>
+                <div class="ch-title" data-lang="en">Phone</div>
+                <div class="ch-value">+7 (916) 953-57-60</div>
+                <div class="ch-hint" data-lang="ru">Пн-Пт, 10:00-19:00 МСК</div>
+                <div class="ch-hint" data-lang="en">Mon-Fri, 10:00-19:00 MSK</div>
+            </div>
+        </a>
+    </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- Telegram Banner -->
+<section class="section" style="padding-top: 56px;">
+    <div class="tg-banner">
+        <div class="tg-banner-icon">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+        </div>
+        <div class="tg-banner-content">
+            <h3 data-lang="ru">Telegram бот поддержки</h3>
+            <h3 data-lang="en">Telegram Support Bot</h3>
+            <p data-lang="ru">Получите мгновенную помощь прямо в Telegram. Бот обеспечивает поддержку в реальном времени, управление аккаунтом и обработку платежей.</p>
+            <p data-lang="en">Get instant help directly in Telegram. Our support bot provides real-time assistance, account management, and payment processing.</p>
+            <div class="tg-features">
+                <span class="tg-feat"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span data-lang="ru">Поддержка 24/7</span><span data-lang="en">Real-time support</span></span>
+                <span class="tg-feat"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span data-lang="ru">Пополнение баланса</span><span data-lang="en">Balance top-up</span></span>
+                <span class="tg-feat"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span data-lang="ru">Авторизация</span><span data-lang="en">Account auth</span></span>
+                <span class="tg-feat"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span data-lang="ru">Уведомления</span><span data-lang="en">Notifications</span></span>
+            </div>
+            <a href="https://t.me/UspSupport_bot" class="tg-btn" target="_blank">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+                <span data-lang="ru">Открыть в Telegram</span><span data-lang="en">Open in Telegram</span>
             </a>
-            <div class="nav-links">
-                <a href="/autor.html" class="nav-link">Developer</a>
-                <a href="#faq" class="nav-link">FAQ</a>
-                <a href="#contact" class="nav-link active">Support</a>
-                <a href="/" class="nav-link">Open App</a>
-            </div>
         </div>
-    </nav>
+    </div>
+</section>
 
-    <!-- Hero -->
-    <section class="hero">
-        <div class="hero-icon">
-            <svg width="36" height="36" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+<!-- Topics -->
+<section class="section">
+    <div class="section-label" data-lang="ru">Темы</div><div class="section-label" data-lang="en">Topics</div>
+    <h2 class="section-title" data-lang="ru">С чем мы поможем?</h2><h2 class="section-title" data-lang="en">What can we help with?</h2>
+    <div class="topics-grid">
+        <div class="topic-card">
+            <div class="topic-icon" style="background:color-mix(in srgb, var(--accent) 12%, transparent);color:var(--accent);"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+            <h4 data-lang="ru">Аккаунт и вход</h4><h4 data-lang="en">Account & Login</h4>
+            <p data-lang="ru">Проблемы со входом, сброс пароля, привязка аккаунтов</p><p data-lang="en">Sign-in issues, password reset, account linking</p>
         </div>
-        <h1>How can we help?</h1>
-        <p class="hero-subtitle">We're committed to providing you with the best experience. Reach out through any channel below.</p>
-
-        <!-- Contact cards inline with hero -->
-        <div class="contact-hero-grid" id="contact">
-            <a href="mailto:aleksandr@uspeshnyy.ru" class="contact-hero-card">
-                <div class="contact-hero-icon email">
-                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-                </div>
-                <div class="contact-hero-title">Email</div>
-                <div class="contact-hero-value">aleksandr@uspeshnyy.ru</div>
-                <div class="contact-hero-hint">For detailed inquiries and account issues. We respond within 24 hours.</div>
-            </a>
-            <a href="https://t.me/UspSupport_bot" class="contact-hero-card" target="_blank">
-                <div class="contact-hero-icon tg">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
-                </div>
-                <div class="contact-hero-title">Telegram</div>
-                <div class="contact-hero-value">@UspSupport_bot</div>
-                <div class="contact-hero-hint">Fastest way to get help. Real-time support and instant notifications.</div>
-            </a>
-            <a href="tel:+79169535760" class="contact-hero-card">
-                <div class="contact-hero-icon phone">
-                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                </div>
-                <div class="contact-hero-title">Phone</div>
-                <div class="contact-hero-value">+7 (916) 953-57-60</div>
-                <div class="contact-hero-hint">For urgent matters. Available Mon-Fri, 10:00-19:00 MSK.</div>
-            </a>
+        <div class="topic-card">
+            <div class="topic-icon" style="background:color-mix(in srgb, var(--blue) 12%, transparent);color:var(--blue);"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
+            <h4 data-lang="ru">Оплата и биллинг</h4><h4 data-lang="en">Billing & Payments</h4>
+            <p data-lang="ru">Пополнение баланса, способы оплаты, промо-коды</p><p data-lang="en">Balance top-up, payment methods, promo codes</p>
         </div>
-    </section>
-
-    <div class="divider"></div>
-
-    <!-- Telegram Banner -->
-    <section class="section" style="padding-top: 60px;">
-        <div class="tg-banner">
-            <div class="tg-banner-icon">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
-            </div>
-            <div class="tg-banner-content">
-                <h3>Telegram Support Bot</h3>
-                <p>Get instant help directly in Telegram. Our support bot provides real-time assistance, account management, and payment processing.</p>
-                <div class="tg-banner-features">
-                    <span class="tg-feature">
-                        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                        Real-time support
-                    </span>
-                    <span class="tg-feature">
-                        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                        Balance top-up
-                    </span>
-                    <span class="tg-feature">
-                        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                        Account auth
-                    </span>
-                    <span class="tg-feature">
-                        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                        Instant notifications
-                    </span>
-                </div>
-                <a href="https://t.me/UspSupport_bot" class="tg-btn" target="_blank">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
-                    Open in Telegram
-                </a>
-            </div>
+        <div class="topic-card">
+            <div class="topic-icon" style="background:rgba(251,191,36,0.12);color:#FBBF24;"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v4m0 12v4m-7.07-15.07 2.83 2.83m8.48 8.48 2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48 2.83-2.83"/></svg></div>
+            <h4 data-lang="ru">AI-модели и чат</h4><h4 data-lang="en">AI Models & Chat</h4>
+            <p data-lang="ru">Выбор моделей, Smart Router, стриминг</p><p data-lang="en">Model selection, Smart Router, streaming issues</p>
         </div>
-    </section>
-
-    <!-- Support Topics -->
-    <section class="section">
-        <div class="section-label">Topics</div>
-        <h2 class="section-title">What can we help with?</h2>
-        <div class="topics-grid">
-            <div class="topic-card">
-                <div class="topic-icon" style="background: rgba(124,58,237,0.12); color: #A78BFA;">
-                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                </div>
-                <h4>Account & Login</h4>
-                <p>Sign-in issues, password reset, account linking, profile settings</p>
-            </div>
-            <div class="topic-card">
-                <div class="topic-icon" style="background: rgba(96,165,250,0.12); color: #60A5FA;">
-                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-                </div>
-                <h4>Billing & Payments</h4>
-                <p>Balance top-up, payment methods, transaction history, promo codes</p>
-            </div>
-            <div class="topic-card">
-                <div class="topic-icon" style="background: rgba(251,191,36,0.12); color: #FBBF24;">
-                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2a4 4 0 0 1 4 4c0 1.95-1.4 3.58-3.25 3.93L12 22"/><path d="M12 2a4 4 0 0 0-4 4c0 1.95 1.4 3.58 3.25 3.93"/><circle cx="12" cy="13" r="4"/></svg>
-                </div>
-                <h4>AI Models & Chat</h4>
-                <p>Model selection, Smart Router, streaming issues, response quality</p>
-            </div>
-            <div class="topic-card">
-                <div class="topic-icon" style="background: rgba(244,114,182,0.12); color: #F472B6;">
-                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg>
-                </div>
-                <h4>Mobile App</h4>
-                <p>iOS and Android app issues, installation, sync, push notifications</p>
-            </div>
-            <div class="topic-card">
-                <div class="topic-icon" style="background: rgba(52,211,153,0.12); color: #34D399;">
-                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                </div>
-                <h4>Privacy & Security</h4>
-                <p>Data protection, account deletion, privacy policy questions</p>
-            </div>
-            <div class="topic-card">
-                <div class="topic-icon" style="background: rgba(248,113,113,0.12); color: #F87171;">
-                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                </div>
-                <h4>Bug Reports</h4>
-                <p>Report issues, unexpected behavior, errors, and technical problems</p>
-            </div>
+        <div class="topic-card">
+            <div class="topic-icon" style="background:rgba(244,114,182,0.12);color:#F472B6;"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg></div>
+            <h4 data-lang="ru">Мобильное приложение</h4><h4 data-lang="en">Mobile App</h4>
+            <p data-lang="ru">iOS и Android, установка, синхронизация</p><p data-lang="en">iOS and Android, installation, sync</p>
         </div>
-    </section>
-
-    <!-- FAQ -->
-    <section id="faq" class="section">
-        <div class="section-label">FAQ</div>
-        <h2 class="section-title">Frequently Asked Questions</h2>
-        <p class="section-desc">Answers to the most common questions. Can't find what you're looking for? Contact us through any channel above.</p>
-
-        <div class="faq-list">
-            <div class="faq-item">
-                <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
-                    How do I get started with UspAIChat?
-                    <span class="faq-arrow"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span>
-                </button>
-                <div class="faq-answer">
-                    <div class="faq-answer-inner">
-                        Sign in using Google, Apple, or Telegram. Once authenticated, you can immediately start chatting with AI. Select a model from the top bar and type your question. New users receive a welcome bonus of credits to get started.
-                    </div>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
-                    How do I add credits to my account?
-                    <span class="faq-arrow"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span>
-                </button>
-                <div class="faq-answer">
-                    <div class="faq-answer-inner">
-                        Tap your balance in the top right corner or go to Profile &rarr; Top Up. We accept payments via YooKassa (bank cards, SBP) and through our Telegram bot. You can also use promo codes for bonus credits.
-                    </div>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
-                    Which AI models are available?
-                    <span class="faq-arrow"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span>
-                </button>
-                <div class="faq-answer">
-                    <div class="faq-answer-inner">
-                        We support: Anthropic Claude (Opus, Sonnet, Haiku), OpenAI GPT-4o and GPT-4o-mini, Google Gemini, DeepSeek, and Kimi. Plus our Smart Auto Router that automatically selects the best model for each query based on 14-dimension prompt analysis.
-                    </div>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
-                    What is Smart Auto Router?
-                    <span class="faq-arrow"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span>
-                </button>
-                <div class="faq-answer">
-                    <div class="faq-answer-inner">
-                        Smart Auto Router analyzes your prompt across 14 dimensions (complexity, language, creativity, coding needs, etc.) and automatically selects the most cost-effective model that can handle your request. This saves credits while maintaining quality. You can switch to manual model selection at any time.
-                    </div>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
-                    How do I use a promo code?
-                    <span class="faq-arrow"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span>
-                </button>
-                <div class="faq-answer">
-                    <div class="faq-answer-inner">
-                        Open your Profile and find the "Promo Code" field. Enter the code and tap "Apply". Credits are added instantly. Each promo code has specific terms — some are one-time use, others have usage limits or expiration dates.
-                    </div>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
-                    Is my data secure?
-                    <span class="faq-arrow"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span>
-                </button>
-                <div class="faq-answer">
-                    <div class="faq-answer-inner">
-                        Yes. UspAIChat is a self-hosted solution — all data is stored on our secure server. We do not share your conversations with third parties. Authentication is protected with JWT tokens that automatically refresh. All connections use HTTPS/TLS encryption.
-                    </div>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
-                    Can I use UspAIChat on multiple devices?
-                    <span class="faq-arrow"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span>
-                </button>
-                <div class="faq-answer">
-                    <div class="faq-answer-inner">
-                        Absolutely. Sign in on the web at app.aifuturenow.ru, or download the mobile app for iOS and Android. All your conversations, settings, and credits sync automatically across all devices.
-                    </div>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
-                    How do I delete my account?
-                    <span class="faq-arrow"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span>
-                </button>
-                <div class="faq-answer">
-                    <div class="faq-answer-inner">
-                        Send an email to aleksandr@uspeshnyy.ru requesting account deletion. Include the email address associated with your account. All personal data, conversations, and associated records will be permanently deleted within 24 hours.
-                    </div>
-                </div>
-            </div>
+        <div class="topic-card">
+            <div class="topic-icon" style="background:color-mix(in srgb, var(--green) 12%, transparent);color:var(--green);"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+            <h4 data-lang="ru">Приватность</h4><h4 data-lang="en">Privacy & Security</h4>
+            <p data-lang="ru">Защита данных, удаление аккаунта</p><p data-lang="en">Data protection, account deletion</p>
         </div>
-    </section>
-
-    <!-- Response Info -->
-    <section class="section">
-        <div class="section-label">Service Level</div>
-        <h2 class="section-title">What to Expect</h2>
-        <div class="info-grid">
-            <div class="info-card">
-                <div class="info-card-header">
-                    <div class="info-card-icon" style="background: rgba(96,165,250,0.12); color: #60A5FA;">
-                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-                    </div>
-                    <h4>Response Time</h4>
-                </div>
-                <p>Telegram: typically within minutes during business hours. Email: within 24 hours. We prioritize urgent issues related to account access and payments.</p>
-            </div>
-            <div class="info-card">
-                <div class="info-card-header">
-                    <div class="info-card-icon" style="background: rgba(52,211,153,0.12); color: #34D399;">
-                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                    </div>
-                    <h4>Business Hours</h4>
-                </div>
-                <p>Monday through Friday, 10:00 to 19:00 MSK (UTC+3). Telegram bot support is available 24/7 for automated queries. Urgent issues are handled outside business hours.</p>
-            </div>
-            <div class="info-card">
-                <div class="info-card-header">
-                    <div class="info-card-icon" style="background: rgba(124,58,237,0.12); color: #A78BFA;">
-                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                    </div>
-                    <h4>Privacy Promise</h4>
-                </div>
-                <p>Support interactions are confidential. We only access your account data when necessary to resolve your issue, and we never share information with third parties.</p>
-            </div>
+        <div class="topic-card">
+            <div class="topic-icon" style="background:rgba(248,113,113,0.12);color:#F87171;"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+            <h4 data-lang="ru">Баг-репорты</h4><h4 data-lang="en">Bug Reports</h4>
+            <p data-lang="ru">Ошибки, неожиданное поведение</p><p data-lang="en">Issues, unexpected behavior, errors</p>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-left">&copy; 2024&ndash;2026 Aleksandr Uspeshnyy. All rights reserved.</div>
-        <div class="footer-right">
-            <a href="/" class="footer-link">Open App</a>
-            <a href="/autor.html" class="footer-link">Developer</a>
-            <a href="/privacy" class="footer-link">Privacy</a>
-            <a href="/terms" class="footer-link">Terms</a>
+<!-- FAQ -->
+<section id="faq" class="section">
+    <div class="section-label">FAQ</div>
+    <h2 class="section-title" data-lang="ru">Часто задаваемые вопросы</h2><h2 class="section-title" data-lang="en">Frequently Asked Questions</h2>
+    <p class="section-desc" data-lang="ru">Ответы на самые частые вопросы. Не нашли ответа? Свяжитесь с нами.</p>
+    <p class="section-desc" data-lang="en">Answers to common questions. Can't find what you need? Contact us above.</p>
+    <div class="faq-list">
+        <div class="faq-item"><button class="faq-q" onclick="this.parentElement.classList.toggle('open')"><span data-lang="ru">Как начать пользоваться?</span><span data-lang="en">How do I get started?</span><span class="faq-arrow"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></button><div class="faq-a"><div class="faq-a-inner" data-lang="ru">Войдите через Google, Apple или Telegram. Выберите модель и начните общение. Новые пользователи получают приветственные кредиты.</div><div class="faq-a-inner" data-lang="en">Sign in via Google, Apple, or Telegram. Pick a model and start chatting. New users receive welcome credits.</div></div></div>
+        <div class="faq-item"><button class="faq-q" onclick="this.parentElement.classList.toggle('open')"><span data-lang="ru">Как пополнить баланс?</span><span data-lang="en">How do I add credits?</span><span class="faq-arrow"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></button><div class="faq-a"><div class="faq-a-inner" data-lang="ru">Нажмите на баланс или перейдите в Профиль. Оплата через ЮKassa (карты, СБП) и Telegram-бот. Можно использовать промо-коды.</div><div class="faq-a-inner" data-lang="en">Tap your balance or go to Profile. Pay via YooKassa (cards, SBP) or Telegram bot. Promo codes also available.</div></div></div>
+        <div class="faq-item"><button class="faq-q" onclick="this.parentElement.classList.toggle('open')"><span data-lang="ru">Какие AI-модели доступны?</span><span data-lang="en">Which AI models are available?</span><span class="faq-arrow"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></button><div class="faq-a"><div class="faq-a-inner" data-lang="ru">Claude (Opus, Sonnet, Haiku), GPT-4o, GPT-4o-mini, Gemini, DeepSeek, Kimi. Плюс Smart Auto Router.</div><div class="faq-a-inner" data-lang="en">Claude (Opus, Sonnet, Haiku), GPT-4o, GPT-4o-mini, Gemini, DeepSeek, Kimi. Plus Smart Auto Router.</div></div></div>
+        <div class="faq-item"><button class="faq-q" onclick="this.parentElement.classList.toggle('open')"><span data-lang="ru">Что такое Smart Auto Router?</span><span data-lang="en">What is Smart Auto Router?</span><span class="faq-arrow"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></button><div class="faq-a"><div class="faq-a-inner" data-lang="ru">Анализирует промпт по 14 измерениям и автоматически выбирает оптимальную модель. Экономит кредиты без потери качества.</div><div class="faq-a-inner" data-lang="en">Analyzes your prompt across 14 dimensions and selects the optimal model. Saves credits while maintaining quality.</div></div></div>
+        <div class="faq-item"><button class="faq-q" onclick="this.parentElement.classList.toggle('open')"><span data-lang="ru">Мои данные в безопасности?</span><span data-lang="en">Is my data secure?</span><span class="faq-arrow"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></button><div class="faq-a"><div class="faq-a-inner" data-lang="ru">Да. Self-hosted решение, данные на нашем защищённом сервере. JWT-аутентификация, HTTPS/TLS шифрование.</div><div class="faq-a-inner" data-lang="en">Yes. Self-hosted solution, data on our secure server. JWT auth, HTTPS/TLS encryption.</div></div></div>
+        <div class="faq-item"><button class="faq-q" onclick="this.parentElement.classList.toggle('open')"><span data-lang="ru">Как удалить аккаунт?</span><span data-lang="en">How do I delete my account?</span><span class="faq-arrow"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></button><div class="faq-a"><div class="faq-a-inner" data-lang="ru">Напишите на aleksandr@uspeshnyy.ru. Все данные будут удалены в течение 24 часов.</div><div class="faq-a-inner" data-lang="en">Email aleksandr@uspeshnyy.ru. All data will be deleted within 24 hours.</div></div></div>
+    </div>
+</section>
+
+<!-- Service Level -->
+<section class="section">
+    <div class="section-label" data-lang="ru">Уровень сервиса</div><div class="section-label" data-lang="en">Service Level</div>
+    <h2 class="section-title" data-lang="ru">Что ожидать</h2><h2 class="section-title" data-lang="en">What to Expect</h2>
+    <div class="info-grid">
+        <div class="info-card">
+            <div class="info-card-header"><div class="info-card-icon" style="background:color-mix(in srgb, var(--blue) 12%, transparent);color:var(--blue);"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div><h4 data-lang="ru">Время ответа</h4><h4 data-lang="en">Response Time</h4></div>
+            <p data-lang="ru">Telegram: в течение минут в рабочее время. Email: в течение 24 часов. Приоритет — проблемы с доступом и оплатой.</p>
+            <p data-lang="en">Telegram: within minutes during business hours. Email: within 24 hours. Priority: access and payment issues.</p>
         </div>
-    </footer>
+        <div class="info-card">
+            <div class="info-card-header"><div class="info-card-icon" style="background:color-mix(in srgb, var(--green) 12%, transparent);color:var(--green);"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><h4 data-lang="ru">Часы работы</h4><h4 data-lang="en">Business Hours</h4></div>
+            <p data-lang="ru">Пн-Пт, 10:00-19:00 МСК. Telegram-бот доступен 24/7. Срочные вопросы — вне рабочего времени.</p>
+            <p data-lang="en">Mon-Fri, 10:00-19:00 MSK. Telegram bot 24/7. Urgent issues handled outside hours.</p>
+        </div>
+        <div class="info-card">
+            <div class="info-card-header"><div class="info-card-icon" style="background:color-mix(in srgb, var(--accent) 12%, transparent);color:var(--accent);"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><h4 data-lang="ru">Конфиденциальность</h4><h4 data-lang="en">Privacy Promise</h4></div>
+            <p data-lang="ru">Обращения конфиденциальны. Данные аккаунта используются только для решения вашего вопроса.</p>
+            <p data-lang="en">Support interactions are confidential. Account data only accessed to resolve your issue.</p>
+        </div>
+    </div>
+</section>
 
+<footer class="footer">
+    <div class="footer-left">&copy; 2024&ndash;2026 Aleksandr Uspeshnyy</div>
+    <div class="footer-right">
+        <a href="/" class="footer-link" data-lang="ru">Приложение</a><a href="/" class="footer-link" data-lang="en">Open App</a>
+        <a href="/autor.html" class="footer-link" data-lang="ru">Разработчик</a><a href="/autor.html" class="footer-link" data-lang="en">Developer</a>
+        <a href="/privacy" class="footer-link" data-lang="ru">Приватность</a><a href="/privacy" class="footer-link" data-lang="en">Privacy</a>
+    </div>
+</footer>
+
+<script>
+function toggleTheme(){const h=document.documentElement,c=h.getAttribute('data-theme'),n=c==='dark'?'light':c==='light'?null:(window.matchMedia('(prefers-color-scheme:dark)').matches?'light':'dark');if(n){h.setAttribute('data-theme',n);localStorage.setItem('theme',n)}else{h.removeAttribute('data-theme');localStorage.removeItem('theme')}}
+function toggleLang(){const h=document.documentElement,n=h.lang==='ru'?'en':'ru';h.lang=n;localStorage.setItem('lang',n);document.getElementById('langBtn').textContent=n==='ru'?'RU':'EN'}
+(function(){const t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);const l=localStorage.getItem('lang');if(l){document.documentElement.lang=l;document.getElementById('langBtn').textContent=l==='ru'?'RU':'EN'}})();
+</script>
 </body>
 </html>
