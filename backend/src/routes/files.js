@@ -4,18 +4,43 @@ import { v4 as uuid } from 'uuid';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { getDB } from '../db/database.js';
+import { requireAuth } from '../middleware/auth.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const router = Router();
 
+router.use(requireAuth);
+
+const ALLOWED_MIMES = new Set([
+  'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml',
+  'application/pdf',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'application/msword',
+  'text/plain', 'text/markdown', 'text/csv', 'text/html', 'text/css',
+  'application/json', 'application/xml',
+]);
+
+const ALLOWED_EXTENSIONS = /\.(jpg|jpeg|png|gif|webp|svg|pdf|docx|doc|txt|md|csv|html|css|json|xml|js|ts|py)$/i;
+
 const storage = multer.diskStorage({
   destination: join(__dirname, '../../../uploads'),
   filename: (req, file, cb) => {
-    cb(null, `${uuid()}-${file.originalname}`);
+    const safeName = file.originalname.replace(/[^a-zA-Z0-9._-]/g, '_');
+    cb(null, `${uuid()}-${safeName}`);
   }
 });
 
-const upload = multer({ storage, limits: { fileSize: 50 * 1024 * 1024 } });
+const upload = multer({
+  storage,
+  limits: { fileSize: 50 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    if (ALLOWED_MIMES.has(file.mimetype) || ALLOWED_EXTENSIONS.test(file.originalname)) {
+      cb(null, true);
+    } else {
+      cb(new Error(`File type not allowed: ${file.mimetype}`), false);
+    }
+  }
+});
 
 router.post('/upload', upload.array('files', 10), async (req, res) => {
   const db = getDB();

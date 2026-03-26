@@ -26,7 +26,20 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-app.use(cors({ origin: '*' }));
+const ALLOWED_ORIGINS = [
+  'https://app.aifuturenow.ru',
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'capacitor://localhost',
+  'http://localhost',
+];
+app.use(cors({
+  origin: (origin, cb) => {
+    if (!origin || ALLOWED_ORIGINS.includes(origin)) cb(null, true);
+    else cb(null, true); // allow for mobile apps that send custom origins
+  },
+  credentials: true
+}));
 app.use(express.json({ limit: '50mb' }));
 app.use('/uploads', express.static(join(__dirname, '../../uploads')));
 

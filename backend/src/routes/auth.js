@@ -7,7 +7,12 @@ import { processReferral } from '../services/telegram.js';
 
 const router = Router();
 
-export const JWT_SECRET = process.env.JWT_SECRET || 'uspaichat_secret_change_in_production';
+const DEFAULT_SECRET = 'uspaichat_secret_change_in_production';
+export const JWT_SECRET = process.env.JWT_SECRET || DEFAULT_SECRET;
+if (JWT_SECRET === DEFAULT_SECRET && process.env.NODE_ENV === 'production') {
+  console.error('FATAL: JWT_SECRET is not set in production! Set JWT_SECRET in .env');
+  process.exit(1);
+}
 const JWT_EXPIRES = '15m';
 const REFRESH_EXPIRES = 60 * 60 * 24 * 30;
 
