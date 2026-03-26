@@ -70,6 +70,8 @@ const frontendDist = join(__dirname, '../../frontend/dist');
 // Privacy policy page
 app.get('/privacy', (req, res) => res.sendFile(join(__dirname, '../../frontend/public/privacy.html')));
 app.get('/terms', (req, res) => res.sendFile(join(__dirname, '../../frontend/public/privacy.html')));
+app.get('/autor.html', (req, res) => res.sendFile(join(__dirname, '../../frontend/public/autor.html')));
+app.get('/support.html', (req, res) => res.sendFile(join(__dirname, '../../frontend/public/support.html')));
 
 if (existsSync(frontendDist)) {
   app.use(express.static(frontendDist));
