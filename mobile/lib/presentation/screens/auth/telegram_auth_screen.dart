@@ -70,7 +70,9 @@ class _TelegramAuthScreenState extends ConsumerState<TelegramAuthScreen> {
             _countdownTimer?.cancel();
             setState(() { _status = 'expired'; _error = 'Код истёк'; });
           }
-        } catch (_) {}
+        } catch (_) {
+          // Network error during poll — skip silently, next poll will retry
+        }
       });
     } catch (e) {
       setState(() { _status = 'error'; _error = 'Не удалось подключиться к боту'; });

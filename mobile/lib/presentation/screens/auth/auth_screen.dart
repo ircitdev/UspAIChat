@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -65,15 +66,17 @@ class AuthScreen extends ConsumerWidget {
                       ),
                       const SizedBox(height: 10),
 
-                      // Apple
-                      _OAuthButton(
-                        onPressed: auth.loading ? null : () => ref.read(authProvider.notifier).loginWithApple(),
-                        icon: Icons.apple,
-                        label: 'Войти через Apple',
-                        backgroundColor: Colors.white,
-                        textColor: Colors.black87,
-                      ),
-                      const SizedBox(height: 10),
+                      // Apple (iOS only — Android has no native Apple Sign-In)
+                      if (Platform.isIOS) ...[
+                        _OAuthButton(
+                          onPressed: auth.loading ? null : () => ref.read(authProvider.notifier).loginWithApple(),
+                          icon: Icons.apple,
+                          label: 'Войти через Apple',
+                          backgroundColor: Colors.white,
+                          textColor: Colors.black87,
+                        ),
+                        const SizedBox(height: 10),
+                      ],
 
                       // Telegram
                       _OAuthButton(
